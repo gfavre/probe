@@ -1,0 +1,5 @@
+{% extends 'admin/login.html' %}{% load i18n %}
+{% block content %}
+{{ block.super }}
+{% if google_configured %}<div style="padding-top:20px;margin-top:20px;border-top:1px solid var(--hairline-color)"><form action="{% url 'google_login' %}" method="post">{% csrf_token %}<input type="hidden" name="next" value="/admin/"><input type="submit" value="{% translate 'Continuer avec Google' %}" style="width:100%;cursor:pointer"></form></div>{% endif %}
+{% endblock %}

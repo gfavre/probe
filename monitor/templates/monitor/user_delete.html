@@ -1,0 +1,10 @@
+{% extends 'monitor/base.html' %}{% load i18n %}
+{% block title %}{% translate 'Supprimer le compte' %}{% endblock %}
+{% block content %}
+<div class="page-heading"><h1>{% translate 'Supprimer le compte' %}?</h1></div>
+<div class="panel panel-pad">
+  <p><strong>{{ account.username }}</strong> · {{ account.email }}</p>
+  <p>{% translate 'Le compte, son profil, ses accès Google et son invitation seront définitivement supprimés. Les sondes et leur historique sont conservés.' %}</p>
+  <div class="actions"><form method="post">{% csrf_token %}<button class="button danger">{% translate 'Supprimer définitivement' %}</button></form><a class="button" href="{% url 'platform_settings' %}">{% translate 'Annuler' %}</a></div>
+</div>
+{% endblock %}

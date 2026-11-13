@@ -1,0 +1,61 @@
+:root, html[data-theme="light"], html[data-theme="dark"], html[data-theme="auto"] {
+  color-scheme: dark;
+  --primary: #6c50d4;
+  --secondary: #11182e;
+  --accent: #97e4ff;
+  --primary-fg: #fff;
+  --body-fg: #e3eaff;
+  --body-bg: #080d1e;
+  --body-quiet-color: #a4b2ce;
+  --body-medium-color: #bdc9e2;
+  --body-loud-color: #f2f5ff;
+  --header-color: #a2e9ff;
+  --header-branding-color: #eaf0ff;
+  --header-bg: #10172c;
+  --header-link-color: #eaf0ff;
+  --breadcrumbs-fg: #bec8df;
+  --breadcrumbs-link-fg: #b8a8ff;
+  --breadcrumbs-bg: #151c33;
+  --link-fg: #b9a7ff;
+  --link-hover-color: #75ddff;
+  --link-selected-fg: #d5c8ff;
+  --hairline-color: #26334e;
+  --border-color: #34415d;
+  --error-fg: #ff9ab1;
+  --message-success-bg: #173a30;
+  --message-warning-bg: #3c321b;
+  --message-error-bg: #402332;
+  --darkened-bg: #11192f;
+  --selected-bg: #222c47;
+  --selected-row: #292145;
+  --button-fg: #fff;
+  --button-bg: #674bd0;
+  --button-hover-bg: #7c5de1;
+  --default-button-bg: #5941bb;
+  --default-button-hover-bg: #7358d6;
+  --close-button-bg: #34405a;
+  --close-button-hover-bg: #495876;
+  --delete-button-bg: #97415f;
+  --delete-button-hover-bg: #b24a70;
+  --object-tools-fg: #e5eaff;
+  --object-tools-bg: #2c3754;
+  --object-tools-hover-bg: #53428a;
+}
+body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+#header { border-bottom: 1px solid #323957; }
+#site-name { font-size: 20px; font-weight: 650; letter-spacing: -.5px; }
+#site-name img { border-radius: 6px; }
+.module, #changelist, #changelist-filter { border-radius: 6px; overflow: hidden; }
+input:not([type=submit]):not([type=checkbox]):not([type=radio]), textarea, select { background: #0c1327; color: #e3eaff; border-color: #36445f; }
+input:focus, textarea:focus, select:focus { outline: 2px solid #9882df; outline-offset: 2px; }
+.theme-toggle { display: none; }
+.login #container { background: #11182e; border-color: #34405c; border-radius: 12px; box-shadow: 0 20px 60px #0005; }
+body.login { background: radial-gradient(ellipse at top, #282047, transparent 70%), #080d1e; }
+.login .submit-row { padding-top: 10px; }
+:focus-visible { outline-color: #7adeff; }
+body { background: #080d1e url('grid-background.png') center bottom / cover fixed no-repeat; }
+#content, #nav-sidebar { background: #080d1ef5; }
+#content { border-radius: 8px; }
+.module, #changelist, #changelist-filter { background: #11182ef7; }
+body.login { background: #080d1e url('grid-background.png') center bottom / cover fixed no-repeat; }
+@media(max-width: 720px) { body, body.login { background-attachment: scroll; } }

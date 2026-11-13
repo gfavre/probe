@@ -1,0 +1,1255 @@
+# English interface for beyond the probe.
+msgid ""
+msgstr ""
+"Project-Id-Version: beyond the probe\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+
+#: monitor/auth.py:24
+msgid "Ce compte n’a pas accès à cette application."
+msgstr "This account does not have access to this application."
+
+#: monitor/forms.py:31
+msgid "Laisser vide pour conserver la valeur enregistrée."
+msgstr "Leave blank to keep the saved value."
+
+#: monitor/forms.py:47 monitor/templates/monitor/platform.html:1
+msgid "Droits"
+msgstr "Access level"
+
+#: monitor/forms.py:48 monitor/templates/monitor/profile.html:1
+msgid "Adresse email"
+msgstr "Email address"
+
+#: monitor/forms.py:52 monitor/templates/monitor/profile_password.html:1
+msgid "Mot de passe"
+msgstr "Password"
+
+#: monitor/forms.py:53
+msgid "Confirmer le mot de passe"
+msgstr "Confirm password"
+
+#: monitor/forms.py:63
+msgid "Les mots de passe ne correspondent pas."
+msgstr "The passwords do not match."
+
+#: monitor/forms.py:74 monitor/templates/monitor/account_panel.html:1
+msgid "Langue de l’interface"
+msgstr "Interface language"
+
+#: monitor/forms.py:75
+msgid "Sans préférence enregistrée, l’interface suit la langue du navigateur."
+msgstr "Without a saved preference, the interface follows your browser language."
+
+#: monitor/forms.py:81
+msgid "Prénom"
+msgstr "First name"
+
+#: monitor/forms.py:81 monitor/models.py:15
+msgid "Nom"
+msgstr "Name"
+
+#: monitor/forms.py:81
+msgid "Identifiant local"
+msgstr "Local username"
+
+#: monitor/forms.py:92
+msgid "Clé serveur Postmark"
+msgstr "Postmark server token"
+
+#: monitor/forms.py:93
+msgid "Expéditeur email"
+msgstr "Email sender"
+
+#: monitor/forms.py:94
+msgid "Destinataire email par défaut"
+msgstr "Default email recipient"
+
+#: monitor/forms.py:95
+msgid "Message Stream Postmark"
+msgstr "Postmark message stream"
+
+#: monitor/forms.py:96
+msgid "Webhook Slack"
+msgstr "Slack webhook"
+
+#: monitor/forms.py:97
+msgid "Token du bot Telegram"
+msgstr "Telegram bot token"
+
+#: monitor/forms.py:98
+msgid "Conversation Telegram par défaut"
+msgstr "Default Telegram chat"
+
+#: monitor/forms.py:99
+msgid "Client ID Google"
+msgstr "Google client ID"
+
+#: monitor/forms.py:100
+msgid "Client secret Google"
+msgstr "Google client secret"
+
+#: monitor/forms.py:108
+msgid "Configuré. Laisser vide pour conserver le secret."
+msgstr "Configured. Leave blank to keep the secret."
+
+#: monitor/forms.py:108
+msgid "Non configuré."
+msgstr "Not configured."
+
+#: monitor/forms.py:109
+msgid "Effacer ce secret"
+msgstr "Clear this secret"
+
+#: monitor/forms.py:117
+msgid "Utilisez un webhook entrant Slack en HTTPS."
+msgstr "Use an HTTPS Slack incoming webhook."
+
+#: monitor/invitations.py:37
+msgid "Droits invalides."
+msgstr "Invalid access level."
+
+#: monitor/invitations.py:42
+msgid "Un compte existe déjà pour cette adresse."
+msgstr "An account already exists for this email address."
+
+#: monitor/invitations.py:75
+msgid "Cette invitation n’est plus valable."
+msgstr "This invitation is no longer valid."
+
+#: monitor/models.py:14
+msgid "Email"
+msgstr "Email"
+
+#: monitor/models.py:14
+msgid "Slack"
+msgstr "Slack"
+
+#: monitor/models.py:14
+msgid "Telegram"
+msgstr "Telegram"
+
+#: monitor/models.py:16
+msgid "URL HTTP(S)"
+msgstr "HTTP(S) URL"
+
+#: monitor/models.py:17 monitor/templates/monitor/detail.html:9
+msgid "Notes"
+msgstr "Notes"
+
+#: monitor/models.py:18
+msgid "Surveillance active"
+msgstr "Monitoring enabled"
+
+#: monitor/models.py:19
+msgid "Intervalle en minutes"
+msgstr "Interval in minutes"
+
+#: monitor/models.py:20
+msgid "Échecs consécutifs avant alerte"
+msgstr "Consecutive failures before alert"
+
+#: monitor/models.py:21
+msgid "Délai avant alerte en minutes"
+msgstr "Notification delay in minutes"
+
+#: monitor/models.py:22
+msgid "Canal de notification"
+msgstr "Notification channel"
+
+#: monitor/models.py:23
+msgid "Destinataire email"
+msgstr "Email recipient"
+
+#: monitor/models.py:23
+msgid "Vide: utiliser le destinataire configuré sur le serveur."
+msgstr "Leave blank to use the default server recipient."
+
+#: monitor/models.py:24
+msgid "Conversation Telegram"
+msgstr "Telegram chat"
+
+#: monitor/models.py:24
+msgid "Vide: utiliser la conversation configurée sur le serveur."
+msgstr "Leave blank to use the default server chat."
+
+#: monitor/models.py:25
+msgid "Timeout en secondes"
+msgstr "Timeout in seconds"
+
+#: monitor/models.py:26
+msgid "Version IP"
+msgstr "IP version"
+
+#: monitor/models.py:26
+msgid "IPv4 ou IPv6"
+msgstr "IPv4 or IPv6"
+
+#: monitor/models.py:26
+msgid "IPv4"
+msgstr "IPv4"
+
+#: monitor/models.py:26
+msgid "IPv6"
+msgstr "IPv6"
+
+#: monitor/models.py:27
+msgid "Vérifier le certificat TLS"
+msgstr "Verify TLS certificate"
+
+#: monitor/models.py:28
+msgid "Suivre les redirections"
+msgstr "Follow redirects"
+
+#: monitor/models.py:29
+msgid "Contourner le cache"
+msgstr "Bypass cache"
+
+#: monitor/models.py:30
+msgid "Méthode HTTP"
+msgstr "HTTP method"
+
+#: monitor/models.py:31
+msgid "Authentification HTTP"
+msgstr "HTTP authentication"
+
+#: monitor/models.py:31
+msgid "Aucune"
+msgstr "None"
+
+#: monitor/models.py:31
+msgid "Basic"
+msgstr "Basic"
+
+#: monitor/models.py:31
+msgid "Bearer"
+msgstr "Bearer"
+
+#: monitor/models.py:32
+msgid "Identifiant HTTP"
+msgstr "HTTP username"
+
+#: monitor/models.py:33
+msgid "Mot de passe HTTP"
+msgstr "HTTP password"
+
+#: monitor/models.py:34
+msgid "Jeton Bearer"
+msgstr "Bearer token"
+
+#: monitor/models.py:35
+msgid "Format du corps"
+msgstr "Body format"
+
+#: monitor/models.py:35
+msgid "Texte brut"
+msgstr "Raw text"
+
+#: monitor/models.py:35
+msgid "JSON"
+msgstr "JSON"
+
+#: monitor/models.py:35
+msgid "Formulaire"
+msgstr "Form data"
+
+#: monitor/models.py:36
+msgid "Corps de la requête"
+msgstr "Request body"
+
+#: monitor/models.py:37
+msgid "En-têtes de la requête"
+msgstr "Request headers"
+
+#: monitor/models.py:38
+msgid "Codes HTTP acceptés"
+msgstr "Accepted HTTP status codes"
+
+#: monitor/models.py:39
+msgid "Texte attendu dans la réponse"
+msgstr "Expected response text"
+
+#: monitor/models.py:40
+msgid "Ignorer la casse"
+msgstr "Ignore case"
+
+#: monitor/models.py:41
+msgid "En-têtes attendus dans la réponse"
+msgstr "Expected response headers"
+
+#: monitor/models.py:51 monitor/templates/monitor/dashboard.html:4
+#: monitor/templates/monitor/incidents.html:1
+msgid "Probe"
+msgstr "Probe"
+
+#: monitor/models.py:52 monitor/templates/monitor/base.html:1
+#: monitor/templates/monitor/base.html:2
+#: monitor/templates/monitor/dashboard.html:1
+msgid "Probes"
+msgstr "Probes"
+
+#: monitor/models.py:66
+msgid "Le corps doit contenir un JSON valide."
+msgstr "The body must contain valid JSON."
+
+#: monitor/models.py:71
+msgid "Utilisez le format clé=valeur&autre=valeur."
+msgstr "Use the key=value&other=value format."
+
+#: monitor/models.py:73
+msgid "Indiquez l’identifiant HTTP."
+msgstr "Enter the HTTP username."
+
+#: monitor/models.py:75
+msgid "Indiquez le jeton Bearer."
+msgstr "Enter the Bearer token."
+
+#: monitor/models.py:77
+msgid "Un contrôle HEAD ne renvoie pas de corps. Choisissez GET pour chercher un texte."
+msgstr "HEAD checks do not return a body. Choose GET to search for text."
+
+#: monitor/models.py:132
+msgid "Consultation"
+msgstr "Read-only"
+
+#: monitor/models.py:133
+msgid "Gestion des sondes"
+msgstr "Probe management"
+
+#: monitor/models.py:134
+msgid "Administration plateforme"
+msgstr "Platform administration"
+
+#: monitor/models.py:137
+msgid "Français"
+msgstr "Français"
+
+#: monitor/models.py:138
+msgid "English"
+msgstr "English"
+
+#: monitor/templates/admin/login.html:4
+#: monitor/templates/monitor/accept_invitation.html:1
+msgid "Continuer avec Google"
+msgstr "Continue with Google"
+
+#: monitor/templates/monitor/accept_invitation.html:1
+msgid "Activer votre compte"
+msgstr "Activate your account"
+
+#: monitor/templates/monitor/accept_invitation.html:1
+msgid "Invitation pour"
+msgstr "Invitation for"
+
+#: monitor/templates/monitor/accept_invitation.html:1
+msgid ". Vous aurez accès aux sondes selon les droits définis dans votre invitation."
+msgstr ". Your probe access follows the permissions set in your invitation."
+
+#: monitor/templates/monitor/accept_invitation.html:1
+msgid "ou choisir un mot de passe"
+msgstr "or choose a password"
+
+#: monitor/templates/monitor/accept_invitation.html:1
+msgid "Au moins 12 caractères. Évitez les mots de passe courants."
+msgstr "At least 12 characters. Avoid common passwords."
+
+#: monitor/templates/monitor/accept_invitation.html:1
+msgid "Activer le compte local"
+msgstr "Activate local account"
+
+#: monitor/templates/monitor/access_denied.html:1
+msgid "Accès refusé · beyond the probe"
+msgstr "Access denied · beyond the probe"
+
+#: monitor/templates/monitor/access_denied.html:1
+msgid "Ce compte n’a pas accès."
+msgstr "This account does not have access."
+
+#: monitor/templates/monitor/access_denied.html:1
+msgid "Utilisez le compte Google autorisé pour cette application."
+msgstr "Use a Google account that has been invited to this application."
+
+#: monitor/templates/monitor/access_denied.html:1
+#: monitor/templates/monitor/invitation_invalid.html:1
+msgid "Revenir à la connexion"
+msgstr "Back to sign in"
+
+#: monitor/templates/monitor/account_panel.html:1
+msgid "Modifier le profil"
+msgstr "Edit profile"
+
+#: monitor/templates/monitor/account_panel.html:1
+msgid "Se déconnecter"
+msgstr "Sign out"
+
+#: monitor/templates/monitor/base.html:1
+msgid "· beyond the probe"
+msgstr "· beyond the probe"
+
+#: monitor/templates/monitor/base.html:2
+#: monitor/templates/monitor/detail.html:8
+#: monitor/templates/monitor/incidents.html:1
+msgid "Incidents"
+msgstr "Incidents"
+
+#: monitor/templates/monitor/base.html:2
+#: monitor/templates/monitor/invitations.html:1
+msgid "Invitations"
+msgstr "Invitations"
+
+#: monitor/templates/monitor/base.html:2
+#: monitor/templates/monitor/platform.html:1
+msgid "Plateforme"
+msgstr "Platform"
+
+#: monitor/templates/monitor/dashboard.html:2
+msgid "Tableau de bord"
+msgstr "Dashboard"
+
+#: monitor/templates/monitor/dashboard.html:2
+msgid "Vos probes"
+msgstr "Your probes"
+
+#: monitor/templates/monitor/dashboard.html:2
+msgid "L’état de vos services et leur disponibilité."
+msgstr "Your services, their status and availability."
+
+#: monitor/templates/monitor/dashboard.html:2
+msgid "＋ Ajouter une probe"
+msgstr "＋ Add a probe"
+
+#: monitor/templates/monitor/dashboard.html:3
+msgid "Disponibles"
+msgstr "Available"
+
+#: monitor/templates/monitor/dashboard.html:3
+msgid "Réponse conforme"
+msgstr "Response matches"
+
+#: monitor/templates/monitor/dashboard.html:3
+msgid "Indisponibles"
+msgstr "Unavailable"
+
+#: monitor/templates/monitor/dashboard.html:3
+#: monitor/templates/monitor/test_result.html:1
+msgid "Contrôle en échec"
+msgstr "Check failed"
+
+#: monitor/templates/monitor/dashboard.html:3
+msgid "Sans résultat récent"
+msgstr "No recent result"
+
+#: monitor/templates/monitor/dashboard.html:3
+msgid "État inconnu"
+msgstr "Unknown status"
+
+#: monitor/templates/monitor/dashboard.html:3
+msgid "Suspendues"
+msgstr "Paused"
+
+#: monitor/templates/monitor/dashboard.html:3
+msgid "Historique conservé"
+msgstr "History retained"
+
+#: monitor/templates/monitor/dashboard.html:4
+msgid "État actuel"
+msgstr "Current status"
+
+#: monitor/templates/monitor/dashboard.html:4
+#: monitor/templates/monitor/detail.html:5
+msgid "Temps de réponse"
+msgstr "Response time"
+
+#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:69
+msgid "24 heures"
+msgstr "24 hours"
+
+#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:69
+msgid "7 jours"
+msgstr "7 days"
+
+#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:69
+msgid "30 jours"
+msgstr "30 days"
+
+#: monitor/templates/monitor/dashboard.html:4
+#: monitor/templates/monitor/detail.html:3 monitor/views.py:119
+msgid "Alertes"
+msgstr "Alerts"
+
+#: monitor/templates/monitor/dashboard.html:4
+msgid "Chaque"
+msgstr "Every"
+
+#: monitor/templates/monitor/dashboard.html:4
+msgid "observés"
+msgstr "observed"
+
+#: monitor/templates/monitor/dashboard.html:4
+msgid "Aucune probe pour le moment."
+msgstr "No probes yet."
+
+#: monitor/templates/monitor/dashboard.html:4
+msgid "Ajoutez une URL pour commencer à suivre sa disponibilité."
+msgstr "Add a URL to start tracking its availability."
+
+#: monitor/templates/monitor/dashboard.html:4
+#: monitor/templates/monitor/form.html:1 monitor/templates/monitor/form.html:2
+msgid "Ajouter une probe"
+msgstr "Add a probe"
+
+#: monitor/templates/monitor/dashboard.html:5
+msgid "Disponibilité calculée sur les périodes observées. Les périodes sans contrôle restent inconnues."
+msgstr "Availability is calculated over observed periods. Periods without checks remain unknown."
+
+#: monitor/templates/monitor/dashboard.html:5
+msgid "Actualisé le"
+msgstr "Updated"
+
+#: monitor/templates/monitor/dashboard.html:5
+msgid "Actualiser"
+msgstr "Refresh"
+
+#: monitor/templates/monitor/delete.html:1
+msgid "Supprimer"
+msgstr "Delete"
+
+#: monitor/templates/monitor/delete.html:1
+msgid "La probe, ses contrôles et ses incidents seront définitivement supprimés. Vous pouvez aussi suspendre la surveillance pour conserver l’historique."
+msgstr "The probe, its checks and incidents will be permanently deleted. You can pause monitoring instead to keep its history."
+
+#: monitor/templates/monitor/delete.html:1
+msgid "Supprimer la probe et son historique"
+msgstr "Delete probe and history"
+
+#: monitor/templates/monitor/delete.html:1
+#: monitor/templates/monitor/form.html:3
+#: monitor/templates/monitor/profile.html:1
+#: monitor/templates/monitor/profile_password.html:1
+msgid "Annuler"
+msgstr "Cancel"
+
+#: monitor/templates/monitor/detail.html:2
+msgid "← Toutes les probes"
+msgstr "← All probes"
+
+#: monitor/templates/monitor/detail.html:2
+msgid "Suspendre"
+msgstr "Pause"
+
+#: monitor/templates/monitor/detail.html:2
+msgid "Activer"
+msgstr "Enable"
+
+#: monitor/templates/monitor/detail.html:3
+msgid "Détails de la probe"
+msgstr "Probe details"
+
+#: monitor/templates/monitor/detail.html:3
+msgid "Vue d’ensemble"
+msgstr "Overview"
+
+#: monitor/templates/monitor/detail.html:3
+msgid "Contrôles échoués"
+msgstr "Failed checks"
+
+#: monitor/templates/monitor/detail.html:3
+msgid "Paramètres"
+msgstr "Settings"
+
+#: monitor/templates/monitor/detail.html:5
+msgid "· millisecondes"
+msgstr "· milliseconds"
+
+#: monitor/templates/monitor/detail.html:5
+msgid "24 h"
+msgstr "24 h"
+
+#: monitor/templates/monitor/detail.html:5
+msgid "7 j"
+msgstr "7 d"
+
+#: monitor/templates/monitor/detail.html:5
+msgid "30 j"
+msgstr "30 d"
+
+#: monitor/templates/monitor/detail.html:5
+#, python-format
+msgid "Temps de réponse sur %(chart_days)s jours, maximum %(chart_peak)s millisecondes"
+msgstr "Response times over %(chart_days)s days, maximum %(chart_peak)s milliseconds"
+
+#: monitor/templates/monitor/detail.html:5
+msgid "Il y a"
+msgstr "Past"
+
+#: monitor/templates/monitor/detail.html:5
+msgid "jour"
+msgstr "day"
+
+#: monitor/templates/monitor/detail.html:5
+msgid "Maintenant"
+msgstr "Now"
+
+#: monitor/templates/monitor/detail.html:5
+msgid "contrôles · maximum 240 points affichés"
+msgstr "checks · up to 240 points displayed"
+
+#: monitor/templates/monitor/detail.html:5
+msgid "Les temps de réponse apparaîtront après les premiers contrôles."
+msgstr "Response times will appear after the first checks."
+
+#: monitor/templates/monitor/detail.html:6
+msgid "Réponse moyenne ·"
+msgstr "Average response ·"
+
+#: monitor/templates/monitor/detail.html:6
+msgid "j"
+msgstr "d"
+
+#: monitor/templates/monitor/detail.html:6
+msgid "Contrôles réussis"
+msgstr "Successful checks"
+
+#: monitor/templates/monitor/detail.html:6
+msgid "Disponibilité · 24 h"
+msgstr "Availability · 24 h"
+
+#: monitor/templates/monitor/detail.html:6
+msgid "Couverture:"
+msgstr "Coverage:"
+
+#: monitor/templates/monitor/detail.html:6
+msgid "Dernière réponse"
+msgstr "Latest response"
+
+#: monitor/templates/monitor/detail.html:6
+msgid "Aucun contrôle"
+msgstr "No checks yet"
+
+#: monitor/templates/monitor/detail.html:6
+msgid "Certificat TLS"
+msgstr "TLS certificate"
+
+#: monitor/templates/monitor/detail.html:6
+msgid "Date d’expiration"
+msgstr "Expiry date"
+
+#: monitor/templates/monitor/detail.html:6
+msgid "Certificat non disponible"
+msgstr "Certificate unavailable"
+
+#: monitor/templates/monitor/detail.html:6
+msgid "Pas encore vérifié"
+msgstr "Not checked yet"
+
+#: monitor/templates/monitor/detail.html:7
+msgid "Historique de disponibilité"
+msgstr "Availability history"
+
+#: monitor/templates/monitor/detail.html:7
+msgid "· 90 jours"
+msgstr "· 90 days"
+
+#: monitor/templates/monitor/detail.html:7
+msgid "Disponibilité quotidienne"
+msgstr "Daily availability"
+
+#: monitor/templates/monitor/detail.html:7
+msgid "Il y a 90 jours"
+msgstr "90 days ago"
+
+#: monitor/templates/monitor/detail.html:7
+msgid "Vert: disponible · Rouge: échec · Gris: inconnu"
+msgstr "Green: available · Red: failed · Grey: unknown"
+
+#: monitor/templates/monitor/detail.html:7
+msgid "Aujourd’hui"
+msgstr "Today"
+
+#: monitor/templates/monitor/detail.html:8
+msgid "Période"
+msgstr "Period"
+
+#: monitor/templates/monitor/detail.html:8
+msgid "Disponibilité"
+msgstr "Availability"
+
+#: monitor/templates/monitor/detail.html:8
+msgid "Couverture"
+msgstr "Coverage"
+
+#: monitor/templates/monitor/detail.html:8
+msgid "Durée des incidents"
+msgstr "Incident duration"
+
+#: monitor/templates/monitor/detail.html:8
+msgid "Le plus long"
+msgstr "Longest incident"
+
+#: monitor/templates/monitor/detail.html:8
+msgid "Durée moyenne"
+msgstr "Average duration"
+
+#: monitor/templates/monitor/detail.html:10
+msgid "Derniers incidents"
+msgstr "Recent incidents"
+
+#: monitor/templates/monitor/detail.html:10
+#: monitor/templates/monitor/incidents.html:1
+msgid "Début"
+msgstr "Started"
+
+#: monitor/templates/monitor/detail.html:10
+#: monitor/templates/monitor/incidents.html:1
+msgid "Fin"
+msgstr "Ended"
+
+#: monitor/templates/monitor/detail.html:10
+msgid "Durée"
+msgstr "Duration"
+
+#: monitor/templates/monitor/detail.html:10
+msgid "Alerte"
+msgstr "Alert"
+
+#: monitor/templates/monitor/detail.html:10
+#: monitor/templates/monitor/incidents.html:1
+msgid "En cours"
+msgstr "Ongoing"
+
+#: monitor/templates/monitor/detail.html:10
+#: monitor/templates/monitor/incidents.html:1
+msgid "Rétablissement envoyé"
+msgstr "Recovery sent"
+
+#: monitor/templates/monitor/detail.html:10
+#: monitor/templates/monitor/incidents.html:1
+msgid "Panne signalée"
+msgstr "Outage reported"
+
+#: monitor/templates/monitor/detail.html:10
+#: monitor/templates/monitor/incidents.html:1
+msgid "Clos sans envoi"
+msgstr "Closed without notification"
+
+#: monitor/templates/monitor/detail.html:10
+#: monitor/templates/monitor/incidents.html:1
+#: monitor/templates/monitor/invitations.html:1
+msgid "En attente"
+msgstr "Pending"
+
+#: monitor/templates/monitor/detail.html:10
+#: monitor/templates/monitor/incidents.html:1
+msgid "Aucun incident enregistré."
+msgstr "No incidents recorded."
+
+#: monitor/templates/monitor/detail.html:11
+msgid "La durée des incidents suit le seuil d’alerte; la disponibilité tient compte de chaque contrôle. Une période sans mesure n’est pas supposée disponible."
+msgstr "Incident duration follows the alert threshold; availability includes every check. Unobserved periods are not assumed to be available."
+
+#: monitor/templates/monitor/detail.html:13
+msgid "Réponse"
+msgstr "Response"
+
+#: monitor/templates/monitor/detail.html:13
+msgid "Tous les échecs"
+msgstr "All failures"
+
+#: monitor/templates/monitor/detail.html:13
+msgid "Réseau, DNS ou TLS"
+msgstr "Network, DNS or TLS"
+
+#: monitor/templates/monitor/detail.html:13
+msgid "Filtrer"
+msgstr "Filter"
+
+#: monitor/templates/monitor/detail.html:13
+#, python-format
+msgid "%(count)s contrôle échoué"
+msgid_plural "%(count)s contrôles échoués"
+msgstr[0] "%(count)s failed check"
+msgstr[1] "%(count)s failed checks"
+
+#: monitor/templates/monitor/detail.html:13
+msgid "Date"
+msgstr "Date"
+
+#: monitor/templates/monitor/detail.html:13
+msgid "Temps de requête"
+msgstr "Request time"
+
+#: monitor/templates/monitor/detail.html:13
+msgid "Aucun échec pour ce filtre."
+msgstr "No failures match this filter."
+
+#: monitor/templates/monitor/detail.html:15
+msgid "✉ Email"
+msgstr "✉ Email"
+
+#: monitor/templates/monitor/detail.html:15
+msgid "# Slack"
+msgstr "# Slack"
+
+#: monitor/templates/monitor/detail.html:15
+msgid "➤ Telegram"
+msgstr "➤ Telegram"
+
+#: monitor/templates/monitor/detail.html:15
+#: monitor/templates/monitor/form.html:4
+msgid "Notifications"
+msgstr "Notifications"
+
+#: monitor/templates/monitor/detail.html:15
+msgid "Une alerte à la panne confirmée, puis une au rétablissement. Aucun rappel pendant la panne."
+msgstr "One alert when an outage is confirmed, then one on recovery. No reminders during the outage."
+
+#: monitor/templates/monitor/detail.html:15
+msgid "Seuil d’alerte"
+msgstr "Alert threshold"
+
+#: monitor/templates/monitor/detail.html:15
+#, python-format
+msgid "%(count)s échec consécutif"
+msgid_plural "%(count)s échecs consécutifs"
+msgstr[0] "%(count)s consecutive failure"
+msgstr[1] "%(count)s consecutive failures"
+
+#: monitor/templates/monitor/detail.html:15
+msgid "Délai minimum"
+msgstr "Minimum delay"
+
+#: monitor/templates/monitor/detail.html:15
+msgid "minute"
+msgstr "minute"
+
+#: monitor/templates/monitor/detail.html:15
+msgid "Destination"
+msgstr "Destination"
+
+#: monitor/templates/monitor/detail.html:15
+msgid "Destinataire du serveur"
+msgstr "Default server recipient"
+
+#: monitor/templates/monitor/detail.html:15
+msgid "Conversation du serveur"
+msgstr "Default server chat"
+
+#: monitor/templates/monitor/detail.html:15
+msgid "Canal associé au webhook du serveur"
+msgstr "Channel linked to the server webhook"
+
+#: monitor/templates/monitor/detail.html:15
+msgid "Modifier les alertes"
+msgstr "Edit alerts"
+
+#: monitor/templates/monitor/detail.html:15
+msgid "Envoyer un test"
+msgstr "Send a test"
+
+#: monitor/templates/monitor/detail.html:15
+msgid "Le test envoie un vrai message sur le canal sélectionné. Le canal d’un incident est conservé jusqu’à son rétablissement."
+msgstr "The test sends a real message through the selected channel. Each incident keeps its channel until recovery."
+
+#: monitor/templates/monitor/form.html:1 monitor/templates/monitor/form.html:2
+msgid "Paramètres de"
+msgstr "Settings for"
+
+#: monitor/templates/monitor/form.html:2
+msgid "← Retour"
+msgstr "← Back"
+
+#: monitor/templates/monitor/form.html:2
+msgid "Définissez la requête, la réponse attendue et le canal d’alerte."
+msgstr "Set the request, expected response and alert channel."
+
+#: monitor/templates/monitor/form.html:3
+msgid "La probe n’a pas été enregistrée. Corrigez les champs indiqués."
+msgstr "The probe was not saved. Correct the highlighted fields."
+
+#: monitor/templates/monitor/form.html:3
+#: monitor/templates/monitor/platform.html:1
+#: monitor/templates/monitor/profile.html:1
+#: monitor/templates/monitor/profile_password.html:1
+msgid "Enregistrer"
+msgstr "Save"
+
+#: monitor/templates/monitor/form.html:3
+msgid "Créer la probe"
+msgstr "Create probe"
+
+#: monitor/templates/monitor/form.html:4
+msgid "Aperçu de la requête"
+msgstr "Request preview"
+
+#: monitor/templates/monitor/form.html:4
+msgid "Méthode"
+msgstr "Method"
+
+#: monitor/templates/monitor/form.html:4
+msgid "Fréquence"
+msgstr "Frequency"
+
+#: monitor/templates/monitor/form.html:4
+msgid "Timeout"
+msgstr "Timeout"
+
+#: monitor/templates/monitor/form.html:4
+msgid "Les paramètres prennent effet après enregistrement."
+msgstr "Settings take effect after saving."
+
+#: monitor/templates/monitor/form.html:4
+msgid "Tester la configuration enregistrée"
+msgstr "Test saved configuration"
+
+#: monitor/templates/monitor/form.html:4
+msgid "Un contrôle manuel, sans incident ni notification."
+msgstr "A manual check without incidents or notifications."
+
+#: monitor/templates/monitor/form.html:4
+msgid "Tester la requête"
+msgstr "Test request"
+
+#: monitor/templates/monitor/form.html:4
+msgid "Supprimer la probe"
+msgstr "Delete probe"
+
+#: monitor/templates/monitor/incidents.html:1
+msgid "Historique"
+msgstr "History"
+
+#: monitor/templates/monitor/incidents.html:1
+msgid "Les pannes confirmées et leur rétablissement."
+msgstr "Confirmed outages and their recovery."
+
+#: monitor/templates/monitor/incidents.html:1
+msgid "Canal"
+msgstr "Channel"
+
+#: monitor/templates/monitor/incidents.html:1
+msgid "Notification"
+msgstr "Notification"
+
+#: monitor/templates/monitor/invitation_invalid.html:1
+msgid "Ce lien n’est plus valable."
+msgstr "This link is no longer valid."
+
+#: monitor/templates/monitor/invitation_invalid.html:1
+msgid "L’invitation a expiré, a été révoquée ou a déjà été utilisée. Demandez une nouvelle invitation à une personne ayant accès au tableau de bord."
+msgstr "The invitation has expired, was revoked or has already been used. Ask someone with dashboard access for a new invitation."
+
+#: monitor/templates/monitor/invitations.html:1
+msgid "Accès"
+msgstr "Access"
+
+#: monitor/templates/monitor/invitations.html:1
+msgid "Les administrateurs plateforme invitent les comptes et définissent leurs droits."
+msgstr "Platform administrators invite accounts and assign their access levels."
+
+#: monitor/templates/monitor/invitations.html:1
+#: monitor/templates/monitor/platform.html:1
+msgid "Inviter par email"
+msgstr "Invite by email"
+
+#: monitor/templates/monitor/invitations.html:1
+msgid "Créer le compte et envoyer l’invitation"
+msgstr "Create account and send invitation"
+
+#: monitor/templates/monitor/invitations.html:1
+msgid "Le compte reste inactif jusqu’à l’activation. Le lien expire après 7 jours. Renvoyer une invitation invalide son ancien lien."
+msgstr "The account stays inactive until activation. The link expires after 7 days. Resending an invitation invalidates its previous link."
+
+#: monitor/templates/monitor/invitations.html:1
+msgid "État"
+msgstr "Status"
+
+#: monitor/templates/monitor/invitations.html:1
+msgid "Expiration"
+msgstr "Expires"
+
+#: monitor/templates/monitor/invitations.html:1
+msgid "Actions"
+msgstr "Actions"
+
+#: monitor/templates/monitor/invitations.html:1
+msgid "Compte activé"
+msgstr "Account activated"
+
+#: monitor/templates/monitor/invitations.html:1
+msgid "Révoquée"
+msgstr "Revoked"
+
+#: monitor/templates/monitor/invitations.html:1
+msgid "Expirée"
+msgstr "Expired"
+
+#: monitor/templates/monitor/invitations.html:1
+msgid "Renvoyer"
+msgstr "Resend"
+
+#: monitor/templates/monitor/invitations.html:1
+msgid "Révoquer"
+msgstr "Revoke"
+
+#: monitor/templates/monitor/invitations.html:1
+msgid "Lien d’invitation"
+msgstr "Invitation link"
+
+#: monitor/templates/monitor/invitations.html:1
+msgid "Aucune invitation envoyée."
+msgstr "No invitations sent."
+
+#: monitor/templates/monitor/local_login.html:1
+#: monitor/templates/monitor/login.html:1
+msgid "Compte local"
+msgstr "Local account"
+
+#: monitor/templates/monitor/local_login.html:1
+msgid "Se connecter"
+msgstr "Sign in"
+
+#: monitor/templates/monitor/login.html:1
+#: monitor/templates/monitor/profile.html:1
+msgid "Connexion"
+msgstr "Sign in"
+
+#: monitor/templates/monitor/login.html:1
+msgid "La connexion Google n’est pas encore configurée."
+msgstr "Google sign-in has not been configured yet."
+
+#: monitor/templates/monitor/pagination.html:1
+msgid "Page"
+msgstr "Page"
+
+#: monitor/templates/monitor/pagination.html:1
+msgid "sur"
+msgstr "of"
+
+#: monitor/templates/monitor/pagination.html:1
+msgid "Précédente"
+msgstr "Previous"
+
+#: monitor/templates/monitor/pagination.html:1
+msgid "Suivante"
+msgstr "Next"
+
+#: monitor/templates/monitor/platform.html:1
+msgid "Réglages plateforme"
+msgstr "Platform settings"
+
+#: monitor/templates/monitor/platform.html:1
+msgid "Connecteurs, identifiants et droits d’accès."
+msgstr "Connectors, credentials and access levels."
+
+#: monitor/templates/monitor/platform.html:1
+msgid "Administration Django"
+msgstr "Django administration"
+
+#: monitor/templates/monitor/platform.html:1
+msgid "Les secrets sont chiffrés en base et ne sont jamais réaffichés. Les changements prennent effet sans redémarrage."
+msgstr "Secrets are encrypted in the database and never displayed again. Changes take effect without a restart."
+
+#: monitor/templates/monitor/platform.html:1
+msgid "Comptes et droits"
+msgstr "Accounts and access"
+
+#: monitor/templates/monitor/platform.html:1
+msgid "Compte"
+msgstr "Account"
+
+#: monitor/templates/monitor/platform.html:1
+msgid "Action"
+msgstr "Action"
+
+#: monitor/templates/monitor/profile.html:1
+msgid "Profil"
+msgstr "Profile"
+
+#: monitor/templates/monitor/profile.html:1
+msgid "Vos informations"
+msgstr "Your information"
+
+#: monitor/templates/monitor/profile.html:1
+msgid "Cette adresse est liée à votre invitation et à votre compte Google."
+msgstr "This email is linked to your invitation and Google account."
+
+#: monitor/templates/monitor/profile.html:1
+#: monitor/templates/monitor/profile_password.html:1
+msgid "Modifier le mot de passe"
+msgstr "Change password"
+
+#: monitor/templates/monitor/profile.html:1
+#: monitor/templates/monitor/profile_password.html:1
+msgid "Définir un mot de passe local"
+msgstr "Set a local password"
+
+#: monitor/templates/monitor/test_result.html:1
+msgid "Test de"
+msgstr "Test for"
+
+#: monitor/templates/monitor/test_result.html:1
+msgid "Contrôle manuel"
+msgstr "Manual check"
+
+#: monitor/templates/monitor/test_result.html:1
+msgid "Revenir aux paramètres"
+msgstr "Back to settings"
+
+#: monitor/templates/monitor/test_result.html:1
+msgid "Requête conforme"
+msgstr "Request matches"
+
+#: monitor/templates/monitor/test_result.html:1
+msgid "Configuration enregistrée. Ce test ne modifie pas l’historique et n’envoie pas d’alerte."
+msgstr "Saved configuration. This test does not change history or send alerts."
+
+#: monitor/templatetags/monitor_i18n.py:12
+msgid "En-tête attendu absent ou différent"
+msgstr "Expected header missing or different"
+
+#: monitor/templatetags/monitor_i18n.py:13
+msgid "Texte attendu absent (premier Mio)"
+msgstr "Expected text missing (first MiB)"
+
+#: monitor/templatetags/monitor_i18n.py:14
+msgid "Erreur réseau, DNS ou TLS"
+msgstr "Network, DNS or TLS error"
+
+#: monitor/templatetags/monitor_i18n.py:15
+msgid "Délai de réponse dépassé"
+msgstr "Response timed out"
+
+#: monitor/validators.py:10
+msgid "Indiquez une URL HTTP(S) sans identifiants, paramètres ni fragment."
+msgstr "Enter an HTTP(S) URL without credentials, query parameters or a fragment."
+
+#: monitor/validators.py:18
+msgid "Saisissez un objet JSON avec des noms et valeurs d’en-têtes textuels."
+msgstr "Enter a JSON object with header names and values as strings."
+
+#: monitor/validators.py:31
+msgid "Exemple de codes acceptés: 200-299,301,302."
+msgstr "Example accepted codes: 200-299,301,302."
+
+#: monitor/views.py:31
+msgid "Suspendu"
+msgstr "Paused"
+
+#: monitor/views.py:31
+msgid "Inconnu"
+msgstr "Unknown"
+
+#: monitor/views.py:33
+msgid "Disponible"
+msgstr "Available"
+
+#: monitor/views.py:33
+msgid "Indisponible"
+msgstr "Unavailable"
+
+#: monitor/views.py:69
+msgid "90 jours"
+msgstr "90 days"
+
+#: monitor/views.py:77
+msgid "couverture"
+msgstr "coverage"
+
+#: monitor/views.py:112
+msgid "Probe enregistrée."
+msgstr "Probe saved."
+
+#: monitor/views.py:115
+msgid "Général"
+msgstr "General"
+
+#: monitor/views.py:115
+msgid "L’URL surveillée et son nom dans le tableau de bord."
+msgstr "The monitored URL and its dashboard name."
+
+#: monitor/views.py:116
+msgid "Contrôles"
+msgstr "Checks"
+
+#: monitor/views.py:116
+msgid "Un contrôle à chaque échéance, sans retry."
+msgstr "One check at each scheduled time, without retries."
+
+#: monitor/views.py:117
+msgid "Requête HTTP"
+msgstr "HTTP request"
+
+#: monitor/views.py:117
+msgid "Les données envoyées au service à chaque contrôle."
+msgstr "The data sent to the service on each check."
+
+#: monitor/views.py:118
+msgid "Réponse attendue"
+msgstr "Expected response"
+
+#: monitor/views.py:118
+msgid "Un contrôle réussit si tous les critères sont remplis."
+msgstr "A check succeeds when all criteria are met."
+
+#: monitor/views.py:119
+msgid "Un canal par probe. Aucun rappel pendant une panne."
+msgstr "One channel per probe. No reminders during an outage."
+
+#: monitor/views.py:131
+msgid "Surveillance activée."
+msgstr "Monitoring enabled."
+
+#: monitor/views.py:131
+msgid "Surveillance suspendue."
+msgstr "Monitoring paused."
+
+#: monitor/views.py:151
+msgid "Envoi refusé. Vérifiez la configuration du canal sur le serveur."
+msgstr "Message rejected. Check the channel configuration on the server."
+
+#: monitor/views.py:153
+msgid "Message accepté. Vérifiez sa réception."
+msgstr "Message accepted. Check that it arrived."
+
+#: monitor/views.py:162
+msgid "Probe et historique supprimés."
+msgstr "Probe and history deleted."
+
+#: monitor/views.py:195
+msgid "Compte créé, mais l’email n’a pas été envoyé. Vous pouvez copier le lien ou renvoyer l’invitation."
+msgstr "Account created, but the email was not sent. Copy the link or resend the invitation."
+
+#: monitor/views.py:197
+msgid "Invitation envoyée. Le lien est valable 7 jours."
+msgstr "Invitation sent. The link is valid for 7 days."
+
+#: monitor/views.py:208
+msgid "Invitation révoquée."
+msgstr "Invitation revoked."
+
+#: monitor/views.py:227
+msgid "Compte activé."
+msgstr "Account activated."
+
+#: monitor/views.py:264
+msgid "Profil enregistré."
+msgstr "Profile saved."
+
+#: monitor/views.py:278
+msgid "Mot de passe enregistré."
+msgstr "Password saved."
+
+#: monitor/views.py:292
+msgid "Réglages plateforme enregistrés."
+msgstr "Platform settings saved."
+
+#: monitor/views.py:321
+msgid "Au moins un administrateur plateforme doit rester actif."
+msgstr "At least one platform administrator must remain active."
+
+#: monitor/views.py:326
+msgid "Droits enregistrés."
+msgstr "Access level saved."
