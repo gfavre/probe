@@ -1,5 +1,5 @@
 import logging
-from datetime import timedelta
+from datetime import timedelta, timezone as dt_timezone
 from celery import shared_task
 from django.conf import settings
 from django.db import transaction
@@ -8,6 +8,7 @@ from .models import Check, Incident, Target
 from .notifications import send_notification, incident_notification
 from .probes import probe, certificate_expiry
 from .platform import platform_values
+from .history import maintain_target, result_snapshot
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,8 @@ def record_result(target, now, result):
         target.first_failure_at = None
         if incident:
             incident.ended_at = now
-            incident.save(update_fields=['ended_at'])
+            incident.recovery_result = result_snapshot(result)
+            incident.save(update_fields=['ended_at', 'recovery_result'])
     else:
         target.consecutive_failures += 1
         if target.first_failure_at is None:
@@ -45,7 +47,15 @@ def record_result(target, now, result):
             incident = Incident.objects.create(
                 target=target, started_at=target.first_failure_at, confirmed_at=now,
                 notification_channel=target.notification_channel, notification_destination=destination,
+                service_name=target.name, service_url=target.url,
+                initial_result=result_snapshot(target.checks.filter(
+                    healthy=False, checked_at__gte=target.first_failure_at,
+                ).order_by('checked_at').first() or result),
+                confirmation_result=result_snapshot(result), latest_failure=result_snapshot(result),
             )
+        elif incident:
+            incident.latest_failure = result_snapshot(result)
+            incident.save(update_fields=['latest_failure'])
     interval_seconds = target.interval_minutes * 60
     if not result.healthy and incident is None:
         interval_seconds = Target.CONFIRMATION_DELAY_SECONDS
@@ -96,3 +106,26 @@ def check_target(pk):
         target = Target.objects.select_for_update().filter(pk=pk).first()
         if target:
             notify_pending(target)
+
+
+@shared_task(max_retries=0)
+def maintain_history():
+    for pk in Target.objects.values_list('pk', flat=True):
+        maintain_target_history.apply_async(args=[pk], retry=False)
+
+
+@shared_task(max_retries=0)
+def maintain_history_dst():
+    # Swiss 02:00 does not exist on the spring clock-change night; catch up at 03:00.
+    local = timezone.localtime()
+    scheduled = local.replace(hour=2, minute=0, second=0, microsecond=0, fold=0)
+    actual = scheduled.astimezone(dt_timezone.utc).astimezone(local.tzinfo)
+    if actual.hour != 2:
+        maintain_history()
+
+
+@shared_task(max_retries=0)
+def maintain_target_history(pk):
+    # A continuation is new maintenance work, never a retry of an HTTP observation.
+    if maintain_target(pk):
+        maintain_target_history.apply_async(args=[pk], countdown=1, retry=False)

@@ -1,0 +1,14 @@
+{% load i18n %}
+<div class="panel panel-pad">
+  <h2>{% translate "Conservation de l’historique" %}</h2>
+  <p>{% translate "Maintenance chaque nuit à 02:00, heure suisse." %}</p>
+  <dl>
+    <div class="preview-row"><dt>{% translate "Contrôles détaillés" %}</dt><dd>{{ maintenance.raw_days }} {% translate "jours" %} · {{ maintenance.checks }} · {{ maintenance.check_bytes|filesizeformat }}</dd></div>
+    <div class="preview-row"><dt>{% translate "Contrôles échoués" %}</dt><dd>{{ maintenance.failure_days }} {% translate "jours" %}</dd></div>
+    <div class="preview-row"><dt>{% translate "Statistiques horaires" %}</dt><dd>{{ maintenance.hourly_days }} {% translate "jours" %} · {{ maintenance.hours }}</dd></div>
+    <div class="preview-row"><dt>{% translate "Statistiques journalières" %}</dt><dd>{{ maintenance.daily_days }} {% translate "jours" %} · {{ maintenance.days }} · {{ maintenance.aggregate_bytes|filesizeformat }}</dd></div>
+    <div class="preview-row"><dt>{% translate "Dernier cycle terminé pour les sondes" %}</dt><dd>{{ maintenance.last_success|date:"d.m.Y H:i"|default:_("Pas encore exécuté") }}</dd></div>
+  </dl>
+  {% if maintenance.warning %}<p class="status down">{% translate "Maintenance en erreur ou en retard de plus de 48 heures." %}</p>{% endif %}
+  <p class="muted">{% translate "Les incidents sont conservés. Les périodes sans mesure restent inconnues." %} <a href="{% url 'admin:monitor_historystate_changelist' %}">{% translate "Détail par sonde" %}</a></p>
+</div>

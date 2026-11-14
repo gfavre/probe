@@ -1,4 +1,5 @@
 import requests
+from types import SimpleNamespace
 from django.conf import settings
 from django.views.decorators.debug import sensitive_variables
 from django.template.loader import render_to_string
@@ -64,8 +65,13 @@ def incident_notification(target, incident, *, recovered=False):
     """Build escaped HTML and readable plain text from recorded observations."""
     end = incident.ended_at or timezone.now()
     failures = target.checks.filter(healthy=False, checked_at__gte=incident.started_at, checked_at__lte=end)
-    failure = failures.order_by('-checked_at').first()
-    latest = target.checks.filter(checked_at__lte=end).order_by('-checked_at').first()
+    failure = (SimpleNamespace(**incident.latest_failure) if incident.latest_failure
+               else failures.order_by('-checked_at').first())
+    saved_latest = incident.recovery_result if recovered else incident.latest_failure
+    latest = (SimpleNamespace(**saved_latest) if saved_latest
+              else target.checks.filter(checked_at__lte=end).order_by('-checked_at').first())
+    service_name = incident.service_name or target.name
+    service_url = incident.service_url or target.url
     elapsed = readable_duration((end - incident.started_at).total_seconds())
     if failure is None:
         kind, diagnostic = _('Erreur non précisée'), _('Diagnostic indisponible')
@@ -86,12 +92,12 @@ def incident_notification(target, incident, *, recovered=False):
     title = _('Service rétabli') if recovered else _('Service indisponible')
     subject = (
         _('[RÉTABLI] %(service)s — %(duration)s d’indisponibilité')
-        % {'service': target.name, 'duration': elapsed}
+        % {'service': service_name, 'duration': elapsed}
         if recovered else _('[INDISPONIBLE] %(service)s — %(diagnostic)s')
-        % {'service': target.name, 'diagnostic': diagnostic}
+        % {'service': service_name, 'diagnostic': diagnostic}
     )
     rows = [
-        (_('Service'), target.name), (_('URL'), target.url),
+        (_('Service'), service_name), (_('URL'), service_url),
         (_('Type de panne'), kind), (_('Diagnostic'), diagnostic),
         (_('Premier échec'), timestamp(incident.started_at)),
         (_('Panne confirmée'), timestamp(incident.confirmed_at)),
@@ -110,7 +116,7 @@ def incident_notification(target, incident, *, recovered=False):
     body = title + '\n\n' + '\n'.join(f'{label}: {value}' for label, value in rows)
     body += f'\n\n{note}\n\n' + _('Voir la sonde') + f': {url}'
     html = render_to_string('monitor/email/incident.html', {
-        'title': title, 'service': target.name, 'rows': rows, 'url': url,
+        'title': title, 'service': service_name, 'rows': rows, 'url': url,
         'note': note, 'recovered': recovered, 'elapsed': elapsed,
     })
     return subject, body, html

@@ -32,6 +32,7 @@ monitor/network.py              per-session IP family selection
 monitor/notifications.py         Postmark, Slack and Telegram delivery
 monitor/invitations.py          account invitations and activation
 monitor/metrics.py              uptime, observation coverage and durations
+monitor/history.py              bounded aggregation, safe retention and incident snapshots
 monitor/auth.py                 account admission and Google integration
 monitor/middleware.py           profile and browser language selection
 monitor/templates/              pages and reusable components
@@ -163,3 +164,19 @@ Report what was verified and any remaining limitations.
 
 Demo data and local test credentials must never be introduced in migrations or
 become production accounts.
+
+## History retention
+
+Preserve 7/30/365-day retention, time-weighted uptime and separate coverage.
+Use persisted boundaries to choose disjoint raw/hourly/daily sources; retained
+old failures are diagnostic rows, never an additional statistical contribution.
+Split observation coverage at UTC bucket boundaries and count each observation
+only in the bucket containing its timestamp. Never average averages or uptime
+percentages. A failed check still counts when it produces no incident.
+
+Archive incident identity and diagnostics before purging sources. Preserve the
+latest check and raw boundary anchor. Validate aggregates before deletion, keep
+transactions bounded, and coordinate with the existing probe lock. Maintenance
+must be resumable, idempotent and must not send notifications or make HTTP calls.
+Tests must cover missing data, boundaries, paused probes and recovery after
+source deletion. Nightly scheduling uses Europe/Zurich, buckets use UTC.

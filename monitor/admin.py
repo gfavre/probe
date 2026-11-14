@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .forms import TargetForm
-from .models import Target, Check, Incident
+from .models import Target, Check, Incident, HistoryState
 
 
 @admin.register(Target)
@@ -31,3 +31,8 @@ class IncidentAdmin(ReadOnlyAdmin):
 class CheckAdmin(ReadOnlyAdmin):
     list_display = ['target', 'checked_at', 'healthy', 'detail', 'duration_ms']
     list_filter = ['target', 'healthy']
+
+
+@admin.register(HistoryState)
+class HistoryStateAdmin(ReadOnlyAdmin):
+    list_display = ['target', 'last_started_at', 'last_success_at', 'last_error', 'deleted_checks']

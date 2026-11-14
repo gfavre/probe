@@ -2,12 +2,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: beyond the probe\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-14 08:26+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
 
 #: monitor/auth.py:24
 msgid "Ce compte n’a pas accès à cette application."
@@ -316,117 +317,117 @@ msgstr "Enter the Bearer token."
 msgid "Un contrôle HEAD ne renvoie pas de corps. Choisissez GET pour chercher un texte."
 msgstr "HEAD checks do not return a body. Choose GET to search for text."
 
-#: monitor/models.py:136
+#: monitor/models.py:181
 msgid "Consultation"
 msgstr "Read-only"
 
-#: monitor/models.py:137
+#: monitor/models.py:182
 msgid "Gestion des sondes"
 msgstr "Probe management"
 
-#: monitor/models.py:138
+#: monitor/models.py:183
 msgid "Administration plateforme"
 msgstr "Platform administration"
 
-#: monitor/models.py:141
+#: monitor/models.py:186
 msgid "Français"
 msgstr "Français"
 
-#: monitor/models.py:142
+#: monitor/models.py:187
 msgid "English"
 msgstr "English"
 
-#: monitor/notifications.py:56 monitor/templates/monitor/detail.html:6
+#: monitor/notifications.py:57 monitor/templates/monitor/detail.html:6
 msgid "j"
 msgstr "d"
 
-#: monitor/notifications.py:71
+#: monitor/notifications.py:77
 msgid "Erreur non précisée"
 msgstr "Unspecified error"
 
-#: monitor/notifications.py:71
+#: monitor/notifications.py:77
 msgid "Diagnostic indisponible"
 msgstr "Diagnostic unavailable"
 
-#: monitor/notifications.py:77
+#: monitor/notifications.py:83
 msgid "Erreur serveur"
 msgstr "Server error"
 
-#: monitor/notifications.py:79
+#: monitor/notifications.py:85
 msgid "Erreur HTTP"
 msgstr "HTTP error"
 
-#: monitor/notifications.py:81
+#: monitor/notifications.py:87
 msgid "Réponse non conforme"
 msgstr "Unexpected response"
 
-#: monitor/notifications.py:86
+#: monitor/notifications.py:92
 msgid "Service rétabli"
 msgstr "Service recovered"
 
-#: monitor/notifications.py:86
+#: monitor/notifications.py:92
 msgid "Service indisponible"
 msgstr "Service unavailable"
 
-#: monitor/notifications.py:88
+#: monitor/notifications.py:94
 #, python-format
 msgid "[RÉTABLI] %(service)s — %(duration)s d’indisponibilité"
 msgstr "[RECOVERED] %(service)s — %(duration)s downtime"
 
-#: monitor/notifications.py:90
+#: monitor/notifications.py:96
 #, python-format
 msgid "[INDISPONIBLE] %(service)s — %(diagnostic)s"
 msgstr "[DOWN] %(service)s — %(diagnostic)s"
 
-#: monitor/notifications.py:94
+#: monitor/notifications.py:100
 msgid "Service"
 msgstr "Service"
 
-#: monitor/notifications.py:94
+#: monitor/notifications.py:100
 msgid "URL"
 msgstr "URL"
 
-#: monitor/notifications.py:95
+#: monitor/notifications.py:101
 msgid "Type de panne"
 msgstr "Failure type"
 
-#: monitor/notifications.py:95
+#: monitor/notifications.py:101
 msgid "Diagnostic"
 msgstr "Diagnostic"
 
-#: monitor/notifications.py:96
+#: monitor/notifications.py:102
 msgid "Premier échec"
 msgstr "First failure"
 
-#: monitor/notifications.py:97
+#: monitor/notifications.py:103
 msgid "Panne confirmée"
 msgstr "Outage confirmed"
 
-#: monitor/notifications.py:100
+#: monitor/notifications.py:106
 msgid "Rétablissement"
 msgstr "Recovery"
 
-#: monitor/notifications.py:101 monitor/templates/monitor/email/incident.html:7
+#: monitor/notifications.py:107 monitor/templates/monitor/email/incident.html:7
 msgid "Durée totale observée"
 msgstr "Total observed duration"
 
-#: monitor/notifications.py:101 monitor/templates/monitor/email/incident.html:7
+#: monitor/notifications.py:107 monitor/templates/monitor/email/incident.html:7
 msgid "Durée observée — en cours"
 msgstr "Observed duration — ongoing"
 
-#: monitor/notifications.py:106
+#: monitor/notifications.py:112
 msgid "Dernier contrôle"
 msgstr "Latest check"
 
-#: monitor/notifications.py:107
+#: monitor/notifications.py:113
 msgid "Incident"
 msgstr "Incident"
 
-#: monitor/notifications.py:109
+#: monitor/notifications.py:115
 msgid "Les durées sont mesurées entre les contrôles; elles ne donnent pas l’instant exact de la panne."
 msgstr "Durations are measured between checks; they do not identify the exact moment of an outage."
 
-#: monitor/notifications.py:111 monitor/templates/monitor/email/incident.html:9
+#: monitor/notifications.py:117 monitor/templates/monitor/email/incident.html:9
 msgid "Voir la sonde"
 msgstr "View probe"
 
@@ -570,20 +571,20 @@ msgstr "Current status"
 msgid "Temps de réponse"
 msgstr "Response time"
 
-#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:70
+#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:72
 msgid "24 heures"
 msgstr "24 hours"
 
-#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:70
+#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:72
 msgid "7 jours"
 msgstr "7 days"
 
-#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:70
+#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:72
 msgid "30 jours"
 msgstr "30 days"
 
 #: monitor/templates/monitor/dashboard.html:4
-#: monitor/templates/monitor/detail.html:3 monitor/views.py:121
+#: monitor/templates/monitor/detail.html:3 monitor/views.py:131
 msgid "Alertes"
 msgstr "Alerts"
 
@@ -662,6 +663,7 @@ msgid "Vue d’ensemble"
 msgstr "Overview"
 
 #: monitor/templates/monitor/detail.html:3
+#: monitor/templates/monitor/history_status.html:7
 msgid "Contrôles échoués"
 msgstr "Failed checks"
 
@@ -701,6 +703,10 @@ msgstr "day"
 #: monitor/templates/monitor/detail.html:5
 msgid "Maintenant"
 msgstr "Now"
+
+#: monitor/templates/monitor/detail.html:5
+msgid "Moyennes horaires puis mesures détaillées · pointillés: maximum horaire"
+msgstr "Hourly means followed by individual checks · dashed: hourly maximum"
 
 #: monitor/templates/monitor/detail.html:5
 msgid "contrôles · maximum 240 points affichés"
@@ -755,8 +761,9 @@ msgid "Historique de disponibilité"
 msgstr "Availability history"
 
 #: monitor/templates/monitor/detail.html:7
-msgid "· 90 jours"
-msgstr "· 90 days"
+#| msgid "· 90 jours"
+msgid "· 90 jours UTC"
+msgstr "· 90 UTC days"
 
 #: monitor/templates/monitor/detail.html:7
 msgid "Disponibilité quotidienne"
@@ -854,6 +861,10 @@ msgstr "No incidents recorded."
 #: monitor/templates/monitor/detail.html:11
 msgid "La durée des incidents suit le seuil d’alerte; la disponibilité tient compte de chaque contrôle. Une période sans mesure n’est pas supposée disponible."
 msgstr "Incident duration follows the alert threshold; availability includes every check. Unobserved periods are not assumed to be available."
+
+#: monitor/templates/monitor/detail.html:13
+msgid "Contrôles échoués conservés 30 jours. Les incidents restent disponibles dans leur historique."
+msgstr "Failed checks are kept for 30 days. Incidents remain in their history."
 
 #: monitor/templates/monitor/detail.html:13
 msgid "Réponse"
@@ -1028,6 +1039,59 @@ msgstr "Test request"
 #: monitor/templates/monitor/form.html:4
 msgid "Supprimer la probe"
 msgstr "Delete probe"
+
+#: monitor/templates/monitor/history_status.html:3
+#| msgid "Conversation du serveur"
+msgid "Conservation de l’historique"
+msgstr "History retention"
+
+#: monitor/templates/monitor/history_status.html:4
+msgid "Maintenance chaque nuit à 02:00, heure suisse."
+msgstr "Maintenance every night at 02:00 Swiss time."
+
+#: monitor/templates/monitor/history_status.html:6
+#| msgid "Contrôles échoués"
+msgid "Contrôles détaillés"
+msgstr "Detailed checks"
+
+#: monitor/templates/monitor/history_status.html:6
+#: monitor/templates/monitor/history_status.html:7
+#: monitor/templates/monitor/history_status.html:8
+#: monitor/templates/monitor/history_status.html:9
+#| msgid "jour"
+msgid "jours"
+msgstr "days"
+
+#: monitor/templates/monitor/history_status.html:8
+msgid "Statistiques horaires"
+msgstr "Hourly statistics"
+
+#: monitor/templates/monitor/history_status.html:9
+msgid "Statistiques journalières"
+msgstr "Daily statistics"
+
+#: monitor/templates/monitor/history_status.html:10
+msgid "Dernier cycle terminé pour les sondes"
+msgstr "Last completed cycle across probes"
+
+#: monitor/templates/monitor/history_status.html:10
+#| msgid "Pas encore vérifié"
+msgid "Pas encore exécuté"
+msgstr "Not run yet"
+
+#: monitor/templates/monitor/history_status.html:12
+msgid "Maintenance en erreur ou en retard de plus de 48 heures."
+msgstr "Maintenance failed or is more than 48 hours overdue."
+
+#: monitor/templates/monitor/history_status.html:13
+#| msgid "Disponibilité calculée sur les périodes observées. Les périodes sans contrôle restent inconnues."
+msgid "Les incidents sont conservés. Les périodes sans mesure restent inconnues."
+msgstr "Incidents are retained. Periods without observations remain unknown."
+
+#: monitor/templates/monitor/history_status.html:13
+#| msgid "Détails de la probe"
+msgid "Détail par sonde"
+msgstr "Details by probe"
 
 #: monitor/templates/monitor/incidents.html:1
 msgid "Historique"
@@ -1305,164 +1369,169 @@ msgstr "Enter a JSON object with header names and values as strings."
 msgid "Exemple de codes acceptés: 200-299,301,302."
 msgstr "Example accepted codes: 200-299,301,302."
 
-#: monitor/views.py:32
+#: monitor/views.py:33
 msgid "Suspendu"
 msgstr "Paused"
 
-#: monitor/views.py:32
+#: monitor/views.py:33
 msgid "Inconnu"
 msgstr "Unknown"
 
-#: monitor/views.py:34
+#: monitor/views.py:35
 msgid "Disponible"
 msgstr "Available"
 
-#: monitor/views.py:34
+#: monitor/views.py:35
 msgid "Indisponible"
 msgstr "Unavailable"
 
-#: monitor/views.py:70
+#: monitor/views.py:73
 msgid "90 jours"
 msgstr "90 days"
 
-#: monitor/views.py:78
+#: monitor/views.py:73
+#| msgid "30 jours"
+msgid "365 jours"
+msgstr "365 days"
+
+#: monitor/views.py:83
 msgid "couverture"
 msgstr "coverage"
 
-#: monitor/views.py:114
+#: monitor/views.py:124
 msgid "Probe enregistrée."
 msgstr "Probe saved."
 
-#: monitor/views.py:117
+#: monitor/views.py:127
 msgid "Général"
 msgstr "General"
 
-#: monitor/views.py:117
+#: monitor/views.py:127
 msgid "L’URL surveillée et son nom dans le tableau de bord."
 msgstr "The monitored URL and its dashboard name."
 
-#: monitor/views.py:118
+#: monitor/views.py:128
 msgid "Contrôles"
 msgstr "Checks"
 
-#: monitor/views.py:118
+#: monitor/views.py:128
 msgid "Au premier échec, confirmation après 60 s avant toute alerte."
 msgstr "After the first failure, confirm after 60 seconds before alerting."
 
-#: monitor/views.py:119
+#: monitor/views.py:129
 msgid "Requête HTTP"
 msgstr "HTTP request"
 
-#: monitor/views.py:119
+#: monitor/views.py:129
 msgid "Les données envoyées au service à chaque contrôle."
 msgstr "The data sent to the service on each check."
 
-#: monitor/views.py:120
+#: monitor/views.py:130
 msgid "Réponse attendue"
 msgstr "Expected response"
 
-#: monitor/views.py:120
+#: monitor/views.py:130
 msgid "Un contrôle réussit si tous les critères sont remplis."
 msgstr "A check succeeds when all criteria are met."
 
-#: monitor/views.py:121
+#: monitor/views.py:131
 msgid "Un canal par probe. Aucun rappel pendant une panne."
 msgstr "One channel per probe. No reminders during an outage."
 
-#: monitor/views.py:133
+#: monitor/views.py:143
 msgid "Surveillance activée."
 msgstr "Monitoring enabled."
 
-#: monitor/views.py:133
+#: monitor/views.py:143
 msgid "Surveillance suspendue."
 msgstr "Monitoring paused."
 
-#: monitor/views.py:153
+#: monitor/views.py:163
 msgid "Envoi refusé. Vérifiez la configuration du canal sur le serveur."
 msgstr "Message rejected. Check the channel configuration on the server."
 
-#: monitor/views.py:155
+#: monitor/views.py:165
 msgid "Message accepté. Vérifiez sa réception."
 msgstr "Message accepted. Check that it arrived."
 
-#: monitor/views.py:165
+#: monitor/views.py:175
 #, python-format
 msgid "Simulation de panne pour %(name)s."
 msgstr "Outage simulation for %(name)s."
 
-#: monitor/views.py:166
+#: monitor/views.py:176
 msgid "L’état de la sonde et son historique restent inchangés."
 msgstr "The probe status and history remain unchanged."
 
-#: monitor/views.py:170
+#: monitor/views.py:180
 #, python-format
 msgid "SIMULATION DE PANNE: %(name)s"
 msgstr "OUTAGE SIMULATION: %(name)s"
 
-#: monitor/views.py:174
+#: monitor/views.py:184
 msgid "Simulation refusée. Vérifiez les réglages du canal."
 msgstr "Simulation rejected. Check the channel settings."
 
-#: monitor/views.py:176
+#: monitor/views.py:186
 msgid "Simulation acceptée. Vérifiez sa réception."
 msgstr "Simulation accepted. Check that it was received."
 
-#: monitor/views.py:185
+#: monitor/views.py:195
 msgid "Probe et historique supprimés."
 msgstr "Probe and history deleted."
 
-#: monitor/views.py:218
+#: monitor/views.py:228
 msgid "Compte créé, mais l’email n’a pas été envoyé. Vous pouvez copier le lien ou renvoyer l’invitation."
 msgstr "Account created, but the email was not sent. Copy the link or resend the invitation."
 
-#: monitor/views.py:220
+#: monitor/views.py:230
 msgid "Invitation envoyée. Le lien est valable 7 jours."
 msgstr "Invitation sent. The link is valid for 7 days."
 
-#: monitor/views.py:231
+#: monitor/views.py:241
 msgid "Invitation révoquée."
 msgstr "Invitation revoked."
 
-#: monitor/views.py:251
+#: monitor/views.py:261
 msgid "Compte activé."
 msgstr "Account activated."
 
-#: monitor/views.py:288
+#: monitor/views.py:298
 msgid "Profil enregistré."
 msgstr "Profile saved."
 
-#: monitor/views.py:303
+#: monitor/views.py:313
 msgid "Mot de passe enregistré."
 msgstr "Password saved."
 
-#: monitor/views.py:318
+#: monitor/views.py:328
 msgid "Réglages plateforme enregistrés."
 msgstr "Platform settings saved."
 
-#: monitor/views.py:347 monitor/views.py:371
+#: monitor/views.py:360 monitor/views.py:384
 msgid "Au moins un administrateur plateforme doit rester actif."
 msgstr "At least one platform administrator must remain active."
 
-#: monitor/views.py:352
+#: monitor/views.py:365
 msgid "Droits enregistrés."
 msgstr "Access level saved."
 
-#: monitor/views.py:369
+#: monitor/views.py:382
 msgid "Vous ne pouvez pas désactiver ou supprimer votre propre compte."
 msgstr "You cannot disable or delete your own account."
 
-#: monitor/views.py:374
+#: monitor/views.py:387
 msgid "Compte supprimé."
 msgstr "Account deleted."
 
-#: monitor/views.py:383
+#: monitor/views.py:396
 msgid "Compte désactivé."
 msgstr "Account disabled."
 
-#: monitor/views.py:385
+#: monitor/views.py:398
 msgid "Ce compte doit accepter une invitation avant son activation."
 msgstr "This account must accept an invitation before activation."
 
-#: monitor/views.py:389
+#: monitor/views.py:402
 msgid "Compte réactivé."
 msgstr "Account reactivated."

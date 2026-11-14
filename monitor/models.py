@@ -108,10 +108,55 @@ class Incident(models.Model):
     recovery_sent_at = models.DateTimeField(null=True, blank=True)
     notification_channel = models.CharField(max_length=10, choices=Target.CHANNELS, default='email')
     notification_destination = models.CharField(max_length=500, blank=True)
+    service_name = models.CharField(max_length=200, blank=True)
+    service_url = models.CharField(max_length=2000, blank=True)
+    initial_result = models.JSONField(default=dict, blank=True)
+    confirmation_result = models.JSONField(default=dict, blank=True)
+    latest_failure = models.JSONField(default=dict, blank=True)
+    recovery_result = models.JSONField(default=dict, blank=True)
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['target'], condition=Q(ended_at__isnull=True), name='one_open_incident')]
         ordering = ['-started_at']
+
+
+class ProbeStats(models.Model):
+    target = models.ForeignKey(Target, on_delete=models.CASCADE, related_name='%(class)s_rows')
+    started_at = models.DateTimeField()
+    up_seconds = models.FloatField(default=0)
+    down_seconds = models.FloatField(default=0)
+    observable_seconds = models.FloatField(default=0)
+    success_count = models.PositiveIntegerField(default=0)
+    failure_count = models.PositiveIntegerField(default=0)
+    response_sum_ms = models.PositiveBigIntegerField(default=0)
+    response_min_ms = models.PositiveIntegerField(null=True)
+    response_max_ms = models.PositiveIntegerField(null=True)
+    calculated_at = models.DateTimeField(auto_now=True)
+    calculation_version = models.PositiveSmallIntegerField(default=1)
+
+    class Meta:
+        abstract = True
+        constraints = [models.UniqueConstraint(fields=['target', 'started_at'], name='%(class)s_period')]
+
+
+class HourlyProbeStats(ProbeStats):
+    pass
+
+
+class DailyProbeStats(ProbeStats):
+    pass
+
+
+class HistoryState(models.Model):
+    target = models.OneToOneField(Target, on_delete=models.CASCADE, related_name='history_state')
+    hourly_until = models.DateTimeField(null=True)
+    daily_until = models.DateTimeField(null=True)
+    raw_before = models.DateTimeField(null=True)
+    hourly_before = models.DateTimeField(null=True)
+    last_started_at = models.DateTimeField(null=True)
+    last_success_at = models.DateTimeField(null=True)
+    last_error = models.CharField(max_length=100, blank=True)
+    deleted_checks = models.PositiveBigIntegerField(default=0)
 
 
 class Invitation(models.Model):

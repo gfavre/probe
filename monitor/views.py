@@ -11,7 +11,8 @@ from django.views.decorators.debug import sensitive_post_parameters
 from .auth import operator_required
 from .permissions import probe_editor_required, platform_admin_required
 from .forms import TargetForm
-from .metrics import availability, period_stats, duration
+from .metrics import HistoryReader, period_stats, duration
+from .history import DAY, day_start, maintenance_status
 from .models import Target, Incident
 from .notifications import send_notification
 from .probes import probe
@@ -41,8 +42,8 @@ def dashboard(request):
     rows = []
     for target in Target.objects.all():
         row = summary(target, now)
-        checks = list(target.checks.filter(checked_at__gte=now - timedelta(days=30, minutes=5)).order_by('checked_at'))
-        row['windows'] = [availability(checks, max(target.created_at, now - timedelta(days=d)), now) for d in (1, 7, 30)]
+        reader = HistoryReader(target, now)
+        row['windows'] = [reader.stats(reader.period_start(d), now) for d in (1, 7, 30)]
         rows.append(row)
     counts = {tone: sum(r['tone'] == tone for r in rows) for tone in ('up', 'down', 'unknown', 'paused')}
     return render(request, 'monitor/dashboard.html', {'rows': rows, 'counts': counts, 'now': now})
@@ -54,7 +55,7 @@ def target_detail(request, pk, tab='overview'):
     now = timezone.now()
     context = {**summary(target, now), 'tab': tab, 'now': now}
     if tab == 'failures':
-        failures = target.checks.filter(healthy=False)
+        failures = target.checks.filter(healthy=False, checked_at__gte=now - timedelta(days=settings.FAILURE_RETENTION_DAYS))
         status = request.GET.get('status', '')
         if status.isdigit():
             failures = failures.filter(status_code=int(status))
@@ -65,41 +66,50 @@ def target_detail(request, pk, tab='overview'):
     elif tab == 'alerts':
         context['form'] = TargetForm(instance=target)
     else:
-        checks = list(target.checks.filter(checked_at__gte=now - timedelta(days=90, minutes=5)).order_by('checked_at'))
+        reader = HistoryReader(target, now)
         incidents = list(target.incidents.all())
-        context['periods'] = [{'label': label, **period_stats(checks, incidents, max(target.created_at, now - timedelta(days=d)), now)} for label, d in [(_('24 heures'), 1), (_('7 jours'), 7), (_('30 jours'), 30), (_('90 jours'), 90)]]
+        context['periods'] = []
+        for label, days in [(_('24 heures'), 1), (_('7 jours'), 7), (_('30 jours'), 30),
+                            (_('90 jours'), 90), (_('365 jours'), 365)]:
+            start = reader.period_start(days)
+            context['periods'].append({'label': label, 'start': start,
+                                       **period_stats([], incidents, start, now), **reader.stats(start, now)})
         context['history'] = []
         for offset in range(89, -1, -1):
-            end = now - timedelta(days=offset)
-            start = end - timedelta(days=1)
-            day = [c for c in checks if start - timedelta(minutes=5) <= c.checked_at < end]
-            stats = availability(day, start, end)
-            tone = 'unknown' if stats['uptime'] == '—' else ('down' if any(not c.healthy for c in day if c.checked_at >= start) else 'up')
+            start = day_start(now) - DAY * offset
+            end = min(start + DAY, now)
+            stats = reader.stats(max(start, target.created_at), end)
+            tone = 'unknown' if stats['uptime'] == '—' else ('down' if stats['down_seconds'] else 'up')
             context['history'].append({'tone': tone, 'label': f'{start:%d.%m}: {stats["uptime"]}, {_("couverture")} {stats["coverage"]}'})
         chart_days = {'1': 1, '7': 7, '30': 30}.get(request.GET.get('range'), 1)
-        start = now - timedelta(days=chart_days)
-        recent = [c for c in checks if c.checked_at >= start]
+        start = reader.period_start(chart_days)
+        recent = reader.response_points(start, now)
         # At most 240 real observations; gaps split lines instead of inventing data.
         step = max(1, (len(recent) + 239) // 240)
         selected = recent[::step]
         if recent and (not selected or selected[-1] is not recent[-1]):
             selected.append(recent[-1])
-        peak = max((c.duration_ms for c in selected), default=1) or 1
-        segments, points = [], []
+        peak = max((c.maximum_ms for c in recent), default=1) or 1
+        segments, maximum_segments, points, maxima = [], [], [], []
         previous = None
         for c in selected:
             if previous and c.checked_at - previous.checked_at > timedelta(seconds=previous.coverage_seconds * step * 1.5):
                 segments.append(' '.join(points))
-                points = []
+                maximum_segments.append(' '.join(maxima))
+                points, maxima = [], []
             x = 20 + 960 * (c.checked_at - start).total_seconds() / (now - start).total_seconds()
             y = 180 - 150 * c.duration_ms / peak
             points.append(f'{x:.1f},{y:.1f}')
+            maxima.append(f'{x:.1f},{180 - 150 * c.maximum_ms / peak:.1f}')
             previous = c
         if points:
             segments.append(' '.join(points))
-        healthy_recent = [c.duration_ms for c in recent if c.healthy]
-        context.update(segments=segments, chart_points=len(recent), chart_peak=peak, chart_days=chart_days,
-                       mean_ms=round(sum(healthy_recent) / len(healthy_recent)) if healthy_recent else None,
+            maximum_segments.append(' '.join(maxima))
+        values = reader.values(start, now)
+        mixed_resolution = any(c.aggregated for c in recent)
+        context.update(segments=segments, maximum_segments=maximum_segments, chart_points=len(recent), chart_peak=peak, chart_days=chart_days,
+                       mean_ms=round(values['response_sum_ms'] / values['success_count']) if values['success_count'] else None,
+                       mixed_resolution=mixed_resolution,
                        incidents=[{'incident': i, 'duration': duration(((i.ended_at or now) - i.started_at).total_seconds())} for i in incidents[:20]])
     return render(request, 'monitor/detail.html', context)
 
@@ -324,7 +334,10 @@ def platform_settings(request):
         ('Telegram', ['telegram_bot_token', 'clear_telegram_bot_token', 'telegram_chat_id']),
         ('Google', ['google_client_id', 'google_client_secret', 'clear_google_client_secret']),
     ]
-    return render(request, 'monitor/platform.html', {'form': form, 'groups': [(label, [form[name] for name in fields]) for label, fields in groups], 'accounts': accounts, 'roles': UserProfile.Role.choices})
+    return render(request, 'monitor/platform.html', {
+        'form': form, 'groups': [(label, [form[name] for name in fields]) for label, fields in groups],
+        'accounts': accounts, 'roles': UserProfile.Role.choices, 'maintenance': maintenance_status(timezone.now()),
+    })
 
 
 @platform_admin_required

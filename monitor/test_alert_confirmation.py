@@ -100,4 +100,5 @@ class ConfirmationMigrationTests(TransactionTestCase):
             self.assertEqual(migrated.objects.get(name='Default').failure_threshold, 2)
             self.assertEqual(migrated.objects.get(name='Custom').failure_threshold, 4)
         finally:
-            MigrationExecutor(connection).migrate(after)
+            executor = MigrationExecutor(connection)
+            executor.migrate(executor.loader.graph.leaf_nodes())

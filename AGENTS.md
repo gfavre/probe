@@ -88,6 +88,13 @@ confirmation.
 - Every failure affects uptime, even before the alert threshold.
 - Statistics use all relevant observations; charts may reduce displayed points.
 - Periodic checks cannot measure exact outage duration between observations.
+- Compact history nightly at 02:00 Europe/Zurich (03:00 catch-up on the spring
+  clock-change night). Retain raw checks for 7 days, failures and hourly statistics
+  for 30 days, daily statistics for 365 days, and incidents without automatic expiry.
+- Validate UTC rollups before deleting source observations. Preserve unknown time,
+  weighted sums/counts, the latest check and the raw boundary anchor. Use persisted
+  cutoffs to read disjoint resolutions. Snapshot incident identity and diagnostics
+  before purge. Maintenance must not send notifications or perform HTTP requests.
 - TLS expiration is a separate diagnostic checked at most daily. It is not an
   independent certificate-expiry alert system.
 

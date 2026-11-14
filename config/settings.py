@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from celery.schedules import crontab
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
@@ -104,13 +105,31 @@ CELERY_WORKER_PREFETCH_MULTIPLIER = 1
 CELERY_TASK_SOFT_TIME_LIMIT = 40
 CELERY_TASK_TIME_LIMIT = 45
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_TIMEZONE = TIME_ZONE
 CELERY_BEAT_SCHEDULE = {
+    'maintain-history': {
+        'task': 'monitor.tasks.maintain_history',
+        'schedule': crontab(hour=2, minute=0),
+        'options': {'expires': 3600},
+    },
+    'maintain-history-dst': {
+        'task': 'monitor.tasks.maintain_history_dst',
+        'schedule': crontab(hour=3, minute=0),
+        'options': {'expires': 3600},
+    },
     'dispatch-checks': {
         'task': 'monitor.tasks.dispatch_checks',
         'schedule': 15.0,
         'options': {'expires': 15},
     },
 }
+
+CHECK_RETENTION_DAYS = int(os.getenv('CHECK_RETENTION_DAYS', '7'))
+FAILURE_RETENTION_DAYS = int(os.getenv('FAILURE_RETENTION_DAYS', '30'))
+HOURLY_RETENTION_DAYS = int(os.getenv('HOURLY_RETENTION_DAYS', '30'))
+DAILY_RETENTION_DAYS = int(os.getenv('DAILY_RETENTION_DAYS', '365'))
+if not 1 <= CHECK_RETENTION_DAYS <= FAILURE_RETENTION_DAYS <= HOURLY_RETENTION_DAYS <= DAILY_RETENTION_DAYS:
+    raise ValueError('Retention must satisfy 1 <= checks <= failures <= hourly <= daily days.')
 
 # Google login by invitation, alongside Django local accounts.
 INSTALLED_APPS += ['allauth', 'allauth.account', 'allauth.socialaccount', 'allauth.socialaccount.providers.google']

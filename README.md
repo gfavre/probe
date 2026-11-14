@@ -250,10 +250,33 @@ Every failed check counts toward uptime, including failures below the alert
 threshold. Incident duration reflects confirmed incidents and can differ from
 failed-check duration.
 
-The chart displays at most 240 observations; statistics use all relevant
-observations. Measurements are periodic, not continuous. Pausing a probe retains
+The chart displays at most 240 points; statistics use all relevant
+observations or aggregates. Measurements are periodic, not continuous. Pausing a probe retains
 its data; deleting one removes its checks and incidents after confirmation.
-There is no automatic retention purge.
+History maintenance runs nightly at 02:00 Europe/Zurich through Celery Beat.
+All individual observations are retained for 7 days; failed observations for
+30 days. Hourly statistics remain for 30 days, daily statistics for 365 days.
+Incidents retain their service identity and diagnostic snapshots without expiry.
+The latest observation and one boundary anchor are preserved even for paused
+probes. Cleanup is conservative around UTC bucket boundaries and only follows
+validated aggregation. It never sends alerts or creates observations.
+
+Availability and coverage combine disjoint raw, hourly and daily ranges using
+persisted compaction boundaries. Durations and response-time sums/counts are
+added before computing ratios or means. Unknown time remains unknown; isolated
+failures still count. Archived period starts are rounded down to the available
+UTC hour/day and shown on the probe page. Daily history uses UTC calendar days.
+The 30-day chart combines hourly means/maxima with recent individual checks;
+there are no invented historical percentiles.
+
+Platform administrators can inspect policy, progress, sizes and maintenance
+warnings on the platform page and read-only per-probe progress in Django admin.
+See [DEPLOYMENT.md](DEPLOYMENT.md#nightly-history-maintenance) for commands,
+settings, rollout and recovery. For a read-only preview:
+
+```sh
+docker compose exec -T web python manage.py maintain_history --dry-run
+```
 
 ## Operations and tests
 

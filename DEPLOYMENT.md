@@ -379,3 +379,53 @@ timers. Immediately after reboot, the whole VM reported approximately 650 MiB of
 used RAM with an empty production database. This is an idle observation, not a
 capacity or load test. Provider firewall, DNS and resource use must still be checked
 for each new installation.
+
+## Nightly history maintenance
+
+Celery Beat schedules `monitor.tasks.maintain_history` at **02:00 Europe/Zurich**.
+Beat and the worker must both be running; there is no host cron or extra container.
+A 03:00 guard catches up only on the spring night when local 02:00 does not exist.
+Repeated autumn runs are harmless because compaction and deletion are idempotent.
+If the host misses the schedule, the next nightly run catches up from persisted
+per-probe watermarks. Run the command manually when immediate catch-up is needed.
+
+Default retention is 7 days of all checks, 30 days of individual failures,
+30 days of hourly statistics and 365 days of daily statistics. UTC bucket
+boundaries and the nightly schedule can leave up to about one extra day of data.
+The latest check and the observation preceding the raw boundary are protected.
+Incident diagnostics and service identity are copied into each incident before
+source deletion; incidents have no automatic expiry.
+
+```sh
+# Read-only policy/count preview.
+docker compose exec -T web python manage.py maintain_history --dry-run
+# Build and verify aggregates and incident snapshots without deleting sources.
+docker compose exec -T web python manage.py maintain_history --no-purge
+# Run the complete nightly maintenance now; optionally add --target <id>.
+docker compose exec -T web python manage.py maintain_history
+```
+
+The command drains bounded units synchronously. Scheduled maintenance instead
+queues one probe-day or one deletion batch at a time, allowing probe tasks to run
+between units. It neither sends notifications nor performs HTTP checks. Advisory
+locks prevent overlapping maintenance; short transactions share the probe lock
+with the observation writer and notification sender. Do not use a transaction
+pooler for these session advisory locks without adapting the locking strategy.
+
+For the first rollout, back up PostgreSQL, apply migrations, run `--no-purge`,
+compare raw and aggregated statistics, then run normal maintenance. Each hourly
+batch is checked against its raw source. Missing aggregates refuse the related
+purge, and a failed batch does not advance its watermark. Worker failures are
+recorded as exception class names without secret diagnostics. The platform page
+shows retention, row counts, table/index sizes, failures and delays over 48 hours;
+Django admin exposes read-only per-probe progress. Check the worker logs for
+unexpected failures.
+
+Environment settings are `CHECK_RETENTION_DAYS=7`, `FAILURE_RETENTION_DAYS=30`,
+`HOURLY_RETENTION_DAYS=30`, `DAILY_RETENTION_DAYS=365`. They must satisfy
+`1 <= checks <= failures <= hourly <= daily`. Raising retention later does not
+restore deleted observations or their original resolution. Restore a backup to
+recover deleted raw measurements. Retention changes do not affect existing
+backup rotation. Keep autovacuum enabled: ordinary deletion makes PostgreSQL
+space reusable without necessarily shrinking files on disk. Do not schedule
+`VACUUM FULL` as routine maintenance.
