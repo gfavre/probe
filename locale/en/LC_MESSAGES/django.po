@@ -13,99 +13,103 @@ msgstr ""
 msgid "Ce compte n’a pas accès à cette application."
 msgstr "This account does not have access to this application."
 
-#: monitor/forms.py:31
+#: monitor/forms.py:19 monitor/models.py:17
+msgid "URL HTTP(S)"
+msgstr "HTTP(S) URL"
+
+#: monitor/forms.py:50
 msgid "Laisser vide pour conserver la valeur enregistrée."
 msgstr "Leave blank to keep the saved value."
 
-#: monitor/forms.py:47 monitor/templates/monitor/platform.html:1
+#: monitor/forms.py:66 monitor/templates/monitor/platform.html:1
 msgid "Droits"
 msgstr "Access level"
 
-#: monitor/forms.py:48 monitor/templates/monitor/profile.html:1
+#: monitor/forms.py:67 monitor/templates/monitor/profile.html:1
 msgid "Adresse email"
 msgstr "Email address"
 
-#: monitor/forms.py:52 monitor/templates/monitor/profile_password.html:1
+#: monitor/forms.py:71 monitor/templates/monitor/profile_password.html:1
 msgid "Mot de passe"
 msgstr "Password"
 
-#: monitor/forms.py:53
+#: monitor/forms.py:72
 msgid "Confirmer le mot de passe"
 msgstr "Confirm password"
 
-#: monitor/forms.py:63
+#: monitor/forms.py:82
 msgid "Les mots de passe ne correspondent pas."
 msgstr "The passwords do not match."
 
-#: monitor/forms.py:74 monitor/templates/monitor/account_panel.html:1
+#: monitor/forms.py:93 monitor/templates/monitor/account_panel.html:1
 msgid "Langue de l’interface"
 msgstr "Interface language"
 
-#: monitor/forms.py:75
+#: monitor/forms.py:94
 msgid "Sans préférence enregistrée, l’interface suit la langue du navigateur."
 msgstr "Without a saved preference, the interface follows your browser language."
 
-#: monitor/forms.py:81
+#: monitor/forms.py:100
 msgid "Prénom"
 msgstr "First name"
 
-#: monitor/forms.py:81 monitor/models.py:15
+#: monitor/forms.py:100 monitor/models.py:16
 msgid "Nom"
 msgstr "Name"
 
-#: monitor/forms.py:81
+#: monitor/forms.py:100
 msgid "Identifiant local"
 msgstr "Local username"
 
-#: monitor/forms.py:92
+#: monitor/forms.py:111
 msgid "Clé serveur Postmark"
 msgstr "Postmark server token"
 
-#: monitor/forms.py:93
+#: monitor/forms.py:112
 msgid "Expéditeur email"
 msgstr "Email sender"
 
-#: monitor/forms.py:94
+#: monitor/forms.py:113
 msgid "Destinataire email par défaut"
 msgstr "Default email recipient"
 
-#: monitor/forms.py:95
+#: monitor/forms.py:114
 msgid "Message Stream Postmark"
 msgstr "Postmark message stream"
 
-#: monitor/forms.py:96
+#: monitor/forms.py:115
 msgid "Webhook Slack"
 msgstr "Slack webhook"
 
-#: monitor/forms.py:97
+#: monitor/forms.py:116
 msgid "Token du bot Telegram"
 msgstr "Telegram bot token"
 
-#: monitor/forms.py:98
+#: monitor/forms.py:117
 msgid "Conversation Telegram par défaut"
 msgstr "Default Telegram chat"
 
-#: monitor/forms.py:99
+#: monitor/forms.py:118
 msgid "Client ID Google"
 msgstr "Google client ID"
 
-#: monitor/forms.py:100
+#: monitor/forms.py:119
 msgid "Client secret Google"
 msgstr "Google client secret"
 
-#: monitor/forms.py:108
+#: monitor/forms.py:127
 msgid "Configuré. Laisser vide pour conserver le secret."
 msgstr "Configured. Leave blank to keep the secret."
 
-#: monitor/forms.py:108
+#: monitor/forms.py:127
 msgid "Non configuré."
 msgstr "Not configured."
 
-#: monitor/forms.py:109
+#: monitor/forms.py:128
 msgid "Effacer ce secret"
 msgstr "Clear this secret"
 
-#: monitor/forms.py:117
+#: monitor/forms.py:136
 msgid "Utilisez un webhook entrant Slack en HTTPS."
 msgstr "Use an HTTPS Slack incoming webhook."
 
@@ -121,216 +125,318 @@ msgstr "An account already exists for this email address."
 msgid "Cette invitation n’est plus valable."
 msgstr "This invitation is no longer valid."
 
-#: monitor/models.py:14
+#: monitor/models.py:15
 msgid "Email"
 msgstr "Email"
 
-#: monitor/models.py:14
+#: monitor/models.py:15
 msgid "Slack"
 msgstr "Slack"
 
-#: monitor/models.py:14
+#: monitor/models.py:15
 msgid "Telegram"
 msgstr "Telegram"
 
-#: monitor/models.py:16
-msgid "URL HTTP(S)"
-msgstr "HTTP(S) URL"
-
-#: monitor/models.py:17 monitor/templates/monitor/detail.html:9
+#: monitor/models.py:18 monitor/templates/monitor/detail.html:9
 msgid "Notes"
 msgstr "Notes"
 
-#: monitor/models.py:18
+#: monitor/models.py:19
 msgid "Surveillance active"
 msgstr "Monitoring enabled"
 
-#: monitor/models.py:19
+#: monitor/models.py:20
 msgid "Intervalle en minutes"
 msgstr "Interval in minutes"
 
-#: monitor/models.py:20
+#: monitor/models.py:22
 msgid "Échecs consécutifs avant alerte"
 msgstr "Consecutive failures before alert"
 
-#: monitor/models.py:21
+#: monitor/models.py:23
+msgid "Au moins deux échecs avant de confirmer une panne."
+msgstr "At least two failures before confirming an outage."
+
+#: monitor/models.py:25
 msgid "Délai avant alerte en minutes"
 msgstr "Notification delay in minutes"
 
-#: monitor/models.py:22
+#: monitor/models.py:26
 msgid "Canal de notification"
 msgstr "Notification channel"
 
-#: monitor/models.py:23
+#: monitor/models.py:27
 msgid "Destinataire email"
 msgstr "Email recipient"
 
-#: monitor/models.py:23
+#: monitor/models.py:27
 msgid "Vide: utiliser le destinataire configuré sur le serveur."
 msgstr "Leave blank to use the default server recipient."
 
-#: monitor/models.py:24
+#: monitor/models.py:28
 msgid "Conversation Telegram"
 msgstr "Telegram chat"
 
-#: monitor/models.py:24
+#: monitor/models.py:28
 msgid "Vide: utiliser la conversation configurée sur le serveur."
 msgstr "Leave blank to use the default server chat."
 
-#: monitor/models.py:25
+#: monitor/models.py:29
 msgid "Timeout en secondes"
 msgstr "Timeout in seconds"
 
-#: monitor/models.py:26
+#: monitor/models.py:30
 msgid "Version IP"
 msgstr "IP version"
 
-#: monitor/models.py:26
+#: monitor/models.py:30
 msgid "IPv4 ou IPv6"
 msgstr "IPv4 or IPv6"
 
-#: monitor/models.py:26
+#: monitor/models.py:30
 msgid "IPv4"
 msgstr "IPv4"
 
-#: monitor/models.py:26
+#: monitor/models.py:30
 msgid "IPv6"
 msgstr "IPv6"
 
-#: monitor/models.py:27
+#: monitor/models.py:31
 msgid "Vérifier le certificat TLS"
 msgstr "Verify TLS certificate"
 
-#: monitor/models.py:28
+#: monitor/models.py:32
 msgid "Suivre les redirections"
 msgstr "Follow redirects"
 
-#: monitor/models.py:29
+#: monitor/models.py:33
 msgid "Contourner le cache"
 msgstr "Bypass cache"
 
-#: monitor/models.py:30
+#: monitor/models.py:34
 msgid "Méthode HTTP"
 msgstr "HTTP method"
 
-#: monitor/models.py:31
+#: monitor/models.py:35
 msgid "Authentification HTTP"
 msgstr "HTTP authentication"
 
-#: monitor/models.py:31
+#: monitor/models.py:35
 msgid "Aucune"
 msgstr "None"
 
-#: monitor/models.py:31
+#: monitor/models.py:35
 msgid "Basic"
 msgstr "Basic"
 
-#: monitor/models.py:31
+#: monitor/models.py:35
 msgid "Bearer"
 msgstr "Bearer"
 
-#: monitor/models.py:32
+#: monitor/models.py:36
 msgid "Identifiant HTTP"
 msgstr "HTTP username"
 
-#: monitor/models.py:33
+#: monitor/models.py:37
 msgid "Mot de passe HTTP"
 msgstr "HTTP password"
 
-#: monitor/models.py:34
+#: monitor/models.py:38
 msgid "Jeton Bearer"
 msgstr "Bearer token"
 
-#: monitor/models.py:35
+#: monitor/models.py:39
 msgid "Format du corps"
 msgstr "Body format"
 
-#: monitor/models.py:35
+#: monitor/models.py:39
 msgid "Texte brut"
 msgstr "Raw text"
 
-#: monitor/models.py:35
+#: monitor/models.py:39
 msgid "JSON"
 msgstr "JSON"
 
-#: monitor/models.py:35
+#: monitor/models.py:39
 msgid "Formulaire"
 msgstr "Form data"
 
-#: monitor/models.py:36
+#: monitor/models.py:40
 msgid "Corps de la requête"
 msgstr "Request body"
 
-#: monitor/models.py:37
+#: monitor/models.py:41
 msgid "En-têtes de la requête"
 msgstr "Request headers"
 
-#: monitor/models.py:38
+#: monitor/models.py:42
 msgid "Codes HTTP acceptés"
 msgstr "Accepted HTTP status codes"
 
-#: monitor/models.py:39
+#: monitor/models.py:43
 msgid "Texte attendu dans la réponse"
 msgstr "Expected response text"
 
-#: monitor/models.py:40
+#: monitor/models.py:44
 msgid "Ignorer la casse"
 msgstr "Ignore case"
 
-#: monitor/models.py:41
+#: monitor/models.py:45
 msgid "En-têtes attendus dans la réponse"
 msgstr "Expected response headers"
 
-#: monitor/models.py:51 monitor/templates/monitor/dashboard.html:4
+#: monitor/models.py:55 monitor/templates/monitor/dashboard.html:4
 #: monitor/templates/monitor/incidents.html:1
 msgid "Probe"
 msgstr "Probe"
 
-#: monitor/models.py:52 monitor/templates/monitor/base.html:1
+#: monitor/models.py:56 monitor/templates/monitor/base.html:1
 #: monitor/templates/monitor/base.html:2
 #: monitor/templates/monitor/dashboard.html:1
 msgid "Probes"
 msgstr "Probes"
 
-#: monitor/models.py:66
+#: monitor/models.py:70
 msgid "Le corps doit contenir un JSON valide."
 msgstr "The body must contain valid JSON."
 
-#: monitor/models.py:71
+#: monitor/models.py:75
 msgid "Utilisez le format clé=valeur&autre=valeur."
 msgstr "Use the key=value&other=value format."
 
-#: monitor/models.py:73
+#: monitor/models.py:77
 msgid "Indiquez l’identifiant HTTP."
 msgstr "Enter the HTTP username."
 
-#: monitor/models.py:75
+#: monitor/models.py:79
 msgid "Indiquez le jeton Bearer."
 msgstr "Enter the Bearer token."
 
-#: monitor/models.py:77
+#: monitor/models.py:81
 msgid "Un contrôle HEAD ne renvoie pas de corps. Choisissez GET pour chercher un texte."
 msgstr "HEAD checks do not return a body. Choose GET to search for text."
 
-#: monitor/models.py:132
+#: monitor/models.py:136
 msgid "Consultation"
 msgstr "Read-only"
 
-#: monitor/models.py:133
+#: monitor/models.py:137
 msgid "Gestion des sondes"
 msgstr "Probe management"
 
-#: monitor/models.py:134
+#: monitor/models.py:138
 msgid "Administration plateforme"
 msgstr "Platform administration"
 
-#: monitor/models.py:137
+#: monitor/models.py:141
 msgid "Français"
 msgstr "Français"
 
-#: monitor/models.py:138
+#: monitor/models.py:142
 msgid "English"
 msgstr "English"
+
+#: monitor/notifications.py:56 monitor/templates/monitor/detail.html:6
+msgid "j"
+msgstr "d"
+
+#: monitor/notifications.py:71
+msgid "Erreur non précisée"
+msgstr "Unspecified error"
+
+#: monitor/notifications.py:71
+msgid "Diagnostic indisponible"
+msgstr "Diagnostic unavailable"
+
+#: monitor/notifications.py:77
+msgid "Erreur serveur"
+msgstr "Server error"
+
+#: monitor/notifications.py:79
+msgid "Erreur HTTP"
+msgstr "HTTP error"
+
+#: monitor/notifications.py:81
+msgid "Réponse non conforme"
+msgstr "Unexpected response"
+
+#: monitor/notifications.py:86
+msgid "Service rétabli"
+msgstr "Service recovered"
+
+#: monitor/notifications.py:86
+msgid "Service indisponible"
+msgstr "Service unavailable"
+
+#: monitor/notifications.py:88
+#, python-format
+msgid "[RÉTABLI] %(service)s — %(duration)s d’indisponibilité"
+msgstr "[RECOVERED] %(service)s — %(duration)s downtime"
+
+#: monitor/notifications.py:90
+#, python-format
+msgid "[INDISPONIBLE] %(service)s — %(diagnostic)s"
+msgstr "[DOWN] %(service)s — %(diagnostic)s"
+
+#: monitor/notifications.py:94
+msgid "Service"
+msgstr "Service"
+
+#: monitor/notifications.py:94
+msgid "URL"
+msgstr "URL"
+
+#: monitor/notifications.py:95
+msgid "Type de panne"
+msgstr "Failure type"
+
+#: monitor/notifications.py:95
+msgid "Diagnostic"
+msgstr "Diagnostic"
+
+#: monitor/notifications.py:96
+msgid "Premier échec"
+msgstr "First failure"
+
+#: monitor/notifications.py:97
+msgid "Panne confirmée"
+msgstr "Outage confirmed"
+
+#: monitor/notifications.py:100
+msgid "Rétablissement"
+msgstr "Recovery"
+
+#: monitor/notifications.py:101 monitor/templates/monitor/email/incident.html:7
+msgid "Durée totale observée"
+msgstr "Total observed duration"
+
+#: monitor/notifications.py:101 monitor/templates/monitor/email/incident.html:7
+msgid "Durée observée — en cours"
+msgstr "Observed duration — ongoing"
+
+#: monitor/notifications.py:106
+msgid "Dernier contrôle"
+msgstr "Latest check"
+
+#: monitor/notifications.py:107
+msgid "Incident"
+msgstr "Incident"
+
+#: monitor/notifications.py:109
+msgid "Les durées sont mesurées entre les contrôles; elles ne donnent pas l’instant exact de la panne."
+msgstr "Durations are measured between checks; they do not identify the exact moment of an outage."
+
+#: monitor/notifications.py:111 monitor/templates/monitor/email/incident.html:9
+msgid "Voir la sonde"
+msgstr "View probe"
+
+#: monitor/security.py:63
+msgid "Trop de tentatives. Réessayez dans quelques minutes."
+msgstr "Too many attempts. Try again in a few minutes."
+
+#: monitor/security.py:71
+msgid "La connexion est temporairement indisponible. Réessayez plus tard."
+msgstr "Sign-in is temporarily unavailable. Try again later."
 
 #: monitor/templates/admin/login.html:4
 #: monitor/templates/monitor/accept_invitation.html:1
@@ -464,20 +570,20 @@ msgstr "Current status"
 msgid "Temps de réponse"
 msgstr "Response time"
 
-#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:69
+#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:70
 msgid "24 heures"
 msgstr "24 hours"
 
-#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:69
+#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:70
 msgid "7 jours"
 msgstr "7 days"
 
-#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:69
+#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:70
 msgid "30 jours"
 msgstr "30 days"
 
 #: monitor/templates/monitor/dashboard.html:4
-#: monitor/templates/monitor/detail.html:3 monitor/views.py:119
+#: monitor/templates/monitor/detail.html:3 monitor/views.py:121
 msgid "Alertes"
 msgstr "Alerts"
 
@@ -515,6 +621,7 @@ msgid "Actualiser"
 msgstr "Refresh"
 
 #: monitor/templates/monitor/delete.html:1
+#: monitor/templates/monitor/platform.html:1
 msgid "Supprimer"
 msgstr "Delete"
 
@@ -530,6 +637,7 @@ msgstr "Delete probe and history"
 #: monitor/templates/monitor/form.html:3
 #: monitor/templates/monitor/profile.html:1
 #: monitor/templates/monitor/profile_password.html:1
+#: monitor/templates/monitor/user_delete.html:8
 msgid "Annuler"
 msgstr "Cancel"
 
@@ -605,10 +713,6 @@ msgstr "Response times will appear after the first checks."
 #: monitor/templates/monitor/detail.html:6
 msgid "Réponse moyenne ·"
 msgstr "Average response ·"
-
-#: monitor/templates/monitor/detail.html:6
-msgid "j"
-msgstr "d"
 
 #: monitor/templates/monitor/detail.html:6
 msgid "Contrôles réussis"
@@ -819,6 +923,14 @@ msgstr[0] "%(count)s consecutive failure"
 msgstr[1] "%(count)s consecutive failures"
 
 #: monitor/templates/monitor/detail.html:15
+msgid "Confirmation"
+msgstr "Confirmation"
+
+#: monitor/templates/monitor/detail.html:15
+msgid "après le premier échec"
+msgstr "after the first failure"
+
+#: monitor/templates/monitor/detail.html:15
 msgid "Délai minimum"
 msgstr "Minimum delay"
 
@@ -963,6 +1075,7 @@ msgid "Le compte reste inactif jusqu’à l’activation. Le lien expire après 
 msgstr "The account stays inactive until activation. The link expires after 7 days. Resending an invitation invalidates its previous link."
 
 #: monitor/templates/monitor/invitations.html:1
+#: monitor/templates/monitor/platform.html:1
 msgid "État"
 msgstr "Status"
 
@@ -1013,6 +1126,7 @@ msgstr "Sign in"
 
 #: monitor/templates/monitor/login.html:1
 #: monitor/templates/monitor/profile.html:1
+#: monitor/templates/monitor/security_error.html:2
 msgid "Connexion"
 msgstr "Sign in"
 
@@ -1064,6 +1178,26 @@ msgstr "Account"
 msgid "Action"
 msgstr "Action"
 
+#: monitor/templates/monitor/platform.html:1
+msgid "Actif"
+msgstr "Active"
+
+#: monitor/templates/monitor/platform.html:1
+msgid "Invitation non acceptée"
+msgstr "Invitation not accepted"
+
+#: monitor/templates/monitor/platform.html:1
+msgid "Désactivé"
+msgstr "Disabled"
+
+#: monitor/templates/monitor/platform.html:1
+msgid "Désactiver"
+msgstr "Disable"
+
+#: monitor/templates/monitor/platform.html:1
+msgid "Réactiver"
+msgstr "Reactivate"
+
 #: monitor/templates/monitor/profile.html:1
 msgid "Profil"
 msgstr "Profile"
@@ -1086,6 +1220,14 @@ msgstr "Change password"
 msgid "Définir un mot de passe local"
 msgstr "Set a local password"
 
+#: monitor/templates/monitor/simulate_outage_button.html:1
+msgid "Simuler une panne"
+msgstr "Simulate an outage"
+
+#: monitor/templates/monitor/simulate_outage_button.html:1
+msgid "Envoie une alerte de simulation, sans créer d’incident ni modifier les statistiques."
+msgstr "Sends a simulated alert without creating an incident or changing statistics."
+
 #: monitor/templates/monitor/test_result.html:1
 msgid "Test de"
 msgstr "Test for"
@@ -1106,6 +1248,19 @@ msgstr "Request matches"
 msgid "Configuration enregistrée. Ce test ne modifie pas l’historique et n’envoie pas d’alerte."
 msgstr "Saved configuration. This test does not change history or send alerts."
 
+#: monitor/templates/monitor/user_delete.html:2
+#: monitor/templates/monitor/user_delete.html:4
+msgid "Supprimer le compte"
+msgstr "Delete account"
+
+#: monitor/templates/monitor/user_delete.html:7
+msgid "Le compte, son profil, ses accès Google et son invitation seront définitivement supprimés. Les sondes et leur historique sont conservés."
+msgstr "The account, its profile, Google connections and invitation will be permanently deleted. Probes and their history will be kept."
+
+#: monitor/templates/monitor/user_delete.html:8
+msgid "Supprimer définitivement"
+msgstr "Delete permanently"
+
 #: monitor/templatetags/monitor_i18n.py:12
 msgid "En-tête attendu absent ou différent"
 msgstr "Expected header missing or different"
@@ -1122,6 +1277,22 @@ msgstr "Network, DNS or TLS error"
 msgid "Délai de réponse dépassé"
 msgstr "Response timed out"
 
+#: monitor/templatetags/monitor_i18n.py:16
+msgid "Erreur DNS"
+msgstr "DNS error"
+
+#: monitor/templatetags/monitor_i18n.py:17
+msgid "Erreur TLS"
+msgstr "TLS error"
+
+#: monitor/templatetags/monitor_i18n.py:18
+msgid "Connexion impossible"
+msgstr "Connection failed"
+
+#: monitor/templatetags/monitor_i18n.py:19
+msgid "Trop de redirections"
+msgstr "Too many redirects"
+
 #: monitor/validators.py:10
 msgid "Indiquez une URL HTTP(S) sans identifiants, paramètres ni fragment."
 msgstr "Enter an HTTP(S) URL without credentials, query parameters or a fragment."
@@ -1134,122 +1305,164 @@ msgstr "Enter a JSON object with header names and values as strings."
 msgid "Exemple de codes acceptés: 200-299,301,302."
 msgstr "Example accepted codes: 200-299,301,302."
 
-#: monitor/views.py:31
+#: monitor/views.py:32
 msgid "Suspendu"
 msgstr "Paused"
 
-#: monitor/views.py:31
+#: monitor/views.py:32
 msgid "Inconnu"
 msgstr "Unknown"
 
-#: monitor/views.py:33
+#: monitor/views.py:34
 msgid "Disponible"
 msgstr "Available"
 
-#: monitor/views.py:33
+#: monitor/views.py:34
 msgid "Indisponible"
 msgstr "Unavailable"
 
-#: monitor/views.py:69
+#: monitor/views.py:70
 msgid "90 jours"
 msgstr "90 days"
 
-#: monitor/views.py:77
+#: monitor/views.py:78
 msgid "couverture"
 msgstr "coverage"
 
-#: monitor/views.py:112
+#: monitor/views.py:114
 msgid "Probe enregistrée."
 msgstr "Probe saved."
 
-#: monitor/views.py:115
+#: monitor/views.py:117
 msgid "Général"
 msgstr "General"
 
-#: monitor/views.py:115
+#: monitor/views.py:117
 msgid "L’URL surveillée et son nom dans le tableau de bord."
 msgstr "The monitored URL and its dashboard name."
 
-#: monitor/views.py:116
+#: monitor/views.py:118
 msgid "Contrôles"
 msgstr "Checks"
 
-#: monitor/views.py:116
-msgid "Un contrôle à chaque échéance, sans retry."
-msgstr "One check at each scheduled time, without retries."
+#: monitor/views.py:118
+msgid "Au premier échec, confirmation après 60 s avant toute alerte."
+msgstr "After the first failure, confirm after 60 seconds before alerting."
 
-#: monitor/views.py:117
+#: monitor/views.py:119
 msgid "Requête HTTP"
 msgstr "HTTP request"
 
-#: monitor/views.py:117
+#: monitor/views.py:119
 msgid "Les données envoyées au service à chaque contrôle."
 msgstr "The data sent to the service on each check."
 
-#: monitor/views.py:118
+#: monitor/views.py:120
 msgid "Réponse attendue"
 msgstr "Expected response"
 
-#: monitor/views.py:118
+#: monitor/views.py:120
 msgid "Un contrôle réussit si tous les critères sont remplis."
 msgstr "A check succeeds when all criteria are met."
 
-#: monitor/views.py:119
+#: monitor/views.py:121
 msgid "Un canal par probe. Aucun rappel pendant une panne."
 msgstr "One channel per probe. No reminders during an outage."
 
-#: monitor/views.py:131
+#: monitor/views.py:133
 msgid "Surveillance activée."
 msgstr "Monitoring enabled."
 
-#: monitor/views.py:131
+#: monitor/views.py:133
 msgid "Surveillance suspendue."
 msgstr "Monitoring paused."
 
-#: monitor/views.py:151
+#: monitor/views.py:153
 msgid "Envoi refusé. Vérifiez la configuration du canal sur le serveur."
 msgstr "Message rejected. Check the channel configuration on the server."
 
-#: monitor/views.py:153
+#: monitor/views.py:155
 msgid "Message accepté. Vérifiez sa réception."
 msgstr "Message accepted. Check that it arrived."
 
-#: monitor/views.py:162
+#: monitor/views.py:165
+#, python-format
+msgid "Simulation de panne pour %(name)s."
+msgstr "Outage simulation for %(name)s."
+
+#: monitor/views.py:166
+msgid "L’état de la sonde et son historique restent inchangés."
+msgstr "The probe status and history remain unchanged."
+
+#: monitor/views.py:170
+#, python-format
+msgid "SIMULATION DE PANNE: %(name)s"
+msgstr "OUTAGE SIMULATION: %(name)s"
+
+#: monitor/views.py:174
+msgid "Simulation refusée. Vérifiez les réglages du canal."
+msgstr "Simulation rejected. Check the channel settings."
+
+#: monitor/views.py:176
+msgid "Simulation acceptée. Vérifiez sa réception."
+msgstr "Simulation accepted. Check that it was received."
+
+#: monitor/views.py:185
 msgid "Probe et historique supprimés."
 msgstr "Probe and history deleted."
 
-#: monitor/views.py:195
+#: monitor/views.py:218
 msgid "Compte créé, mais l’email n’a pas été envoyé. Vous pouvez copier le lien ou renvoyer l’invitation."
 msgstr "Account created, but the email was not sent. Copy the link or resend the invitation."
 
-#: monitor/views.py:197
+#: monitor/views.py:220
 msgid "Invitation envoyée. Le lien est valable 7 jours."
 msgstr "Invitation sent. The link is valid for 7 days."
 
-#: monitor/views.py:208
+#: monitor/views.py:231
 msgid "Invitation révoquée."
 msgstr "Invitation revoked."
 
-#: monitor/views.py:227
+#: monitor/views.py:251
 msgid "Compte activé."
 msgstr "Account activated."
 
-#: monitor/views.py:264
+#: monitor/views.py:288
 msgid "Profil enregistré."
 msgstr "Profile saved."
 
-#: monitor/views.py:278
+#: monitor/views.py:303
 msgid "Mot de passe enregistré."
 msgstr "Password saved."
 
-#: monitor/views.py:292
+#: monitor/views.py:318
 msgid "Réglages plateforme enregistrés."
 msgstr "Platform settings saved."
 
-#: monitor/views.py:321
+#: monitor/views.py:347 monitor/views.py:371
 msgid "Au moins un administrateur plateforme doit rester actif."
 msgstr "At least one platform administrator must remain active."
 
-#: monitor/views.py:326
+#: monitor/views.py:352
 msgid "Droits enregistrés."
 msgstr "Access level saved."
+
+#: monitor/views.py:369
+msgid "Vous ne pouvez pas désactiver ou supprimer votre propre compte."
+msgstr "You cannot disable or delete your own account."
+
+#: monitor/views.py:374
+msgid "Compte supprimé."
+msgstr "Account deleted."
+
+#: monitor/views.py:383
+msgid "Compte désactivé."
+msgstr "Account disabled."
+
+#: monitor/views.py:385
+msgid "Ce compte doit accepter une invitation avant son activation."
+msgstr "This account must accept an invitation before activation."
+
+#: monitor/views.py:389
+msgid "Compte réactivé."
+msgstr "Account reactivated."

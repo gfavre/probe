@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 from .models import Check, Incident, Target
-from .notifications import send_notification
+from .notifications import send_notification, incident_notification
 from .probes import probe, certificate_expiry
 from .platform import platform_values
 
@@ -23,9 +23,6 @@ def record_result(target, now, result):
     if previous and now > previous.checked_at + timedelta(seconds=previous.coverage_seconds * 2):
         target.consecutive_failures = 0
         target.first_failure_at = None
-    Check.objects.create(target=target, checked_at=now, healthy=result.healthy, detail=result.detail,
-                         duration_ms=result.duration_ms, status_code=result.status_code,
-                         coverage_seconds=target.interval_minutes * 60)
     incident = target.incidents.filter(ended_at__isnull=True).first()
     if result.healthy:
         target.consecutive_failures = 0
@@ -37,16 +34,25 @@ def record_result(target, now, result):
         target.consecutive_failures += 1
         if target.first_failure_at is None:
             target.first_failure_at = now
-        if not incident and target.consecutive_failures >= target.failure_threshold:
+        confirmation_ready = now >= target.first_failure_at + timedelta(seconds=Target.CONFIRMATION_DELAY_SECONDS)
+        if not incident and target.consecutive_failures >= target.failure_threshold and confirmation_ready:
             destination = ''
             platform = platform_values()
             if target.notification_channel == 'email':
                 destination = target.email_to or platform["email_to"]
             elif target.notification_channel == 'telegram':
                 destination = target.telegram_chat_id or platform["telegram_chat_id"]
-            Incident.objects.create(target=target, started_at=target.first_failure_at, confirmed_at=now,
-                                    notification_channel=target.notification_channel, notification_destination=destination)
-    target.next_check_at = now + timedelta(minutes=target.interval_minutes)
+            incident = Incident.objects.create(
+                target=target, started_at=target.first_failure_at, confirmed_at=now,
+                notification_channel=target.notification_channel, notification_destination=destination,
+            )
+    interval_seconds = target.interval_minutes * 60
+    if not result.healthy and incident is None:
+        interval_seconds = Target.CONFIRMATION_DELAY_SECONDS
+    target.next_check_at = now + timedelta(seconds=interval_seconds)
+    Check.objects.create(target=target, checked_at=now, healthy=result.healthy, detail=result.detail,
+                         duration_ms=result.duration_ms, status_code=result.status_code,
+                         coverage_seconds=interval_seconds)
     target.save(update_fields=['consecutive_failures', 'first_failure_at', 'next_check_at', 'tls_checked_at', 'tls_expires_at'])
 
 
@@ -54,8 +60,9 @@ def notify_pending(target):
     cutoff = timezone.now() - timedelta(minutes=target.notification_delay_minutes)
     for incident in target.incidents.filter(ended_at__isnull=True, down_sent_at__isnull=True, started_at__lte=cutoff):
         try:
-            send_notification(f'INDISPONIBLE: {target.name}', f'{target.url}\nDepuis {incident.started_at.isoformat()}',
-                              incident.notification_channel, incident.notification_destination)
+            subject, body, html = incident_notification(target, incident)
+            send_notification(subject, body, incident.notification_channel,
+                              incident.notification_destination, html_body=html)
         except ValueError:
             logger.warning('Notification de panne en attente pour cible %s', target.pk)
         else:
@@ -63,9 +70,9 @@ def notify_pending(target):
             incident.save(update_fields=['down_sent_at'])
     for incident in target.incidents.filter(ended_at__isnull=False, down_sent_at__isnull=False, recovery_sent_at__isnull=True):
         try:
-            send_notification(f'RÉTABLI: {target.name}',
-                              f'{target.url}\nIncident du {incident.started_at.isoformat()} au {incident.ended_at.isoformat()}',
-                              incident.notification_channel, incident.notification_destination)
+            subject, body, html = incident_notification(target, incident, recovered=True)
+            send_notification(subject, body, incident.notification_channel,
+                              incident.notification_destination, html_body=html)
         except ValueError:
             logger.warning('Notification de rétablissement en attente pour cible %s', target.pk)
         else:

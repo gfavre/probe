@@ -1,10 +1,28 @@
 from django.utils.translation import gettext_lazy as _
+import re
 from django import forms
 from django.contrib.auth import get_user_model
 from .models import Target, UserProfile
 
 
+class ProbeURLField(forms.URLField):
+    def to_python(self, value):
+        value = super().to_python(value)
+        # A bare hostname with a port can otherwise be mistaken for a URI scheme.
+        if value and not re.match(r'^[a-z][a-z0-9+.-]*://', value, re.IGNORECASE):
+            value = 'https://' + value
+        return value
+
+
 class TargetForm(forms.ModelForm):
+    url = ProbeURLField(
+        label=_('URL HTTP(S)'), max_length=2000, assume_scheme='https',
+        widget=forms.TextInput(attrs={
+            'inputmode': 'url', 'autocomplete': 'url', 'autocapitalize': 'none',
+            'autocorrect': 'off', 'spellcheck': 'false', 'placeholder': 'example.org/health',
+        }),
+    )
+
     class Meta:
         model = Target
         fields = [

@@ -51,18 +51,52 @@ TIME_ZONE = 'Europe/Zurich'
 USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Docker builds a content-hashed manifest; local runserver keeps source URLs.
+STORAGES = {
+    'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+        if os.getenv('STATIC_MANIFEST', 'false') == 'true'
+        else 'django.contrib.staticfiles.storage.StaticFilesStorage',
+    },
+}
 LOGIN_URL = '/admin/login/'
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = os.getenv('HTTPS', 'false') == 'true'
 CSRF_COOKIE_SECURE = SESSION_COOKIE_SECURE
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = 12 * 60 * 60
+SECURE_SSL_REDIRECT = SESSION_COOKIE_SECURE
+SECURE_HSTS_SECONDS = int(os.getenv('SECURE_HSTS_SECONDS', '3600')) if SESSION_COOKIE_SECURE else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
+SECURE_CONTENT_TYPE_NOSNIFF = True
+# HTTPS form posts need a same-origin referrer for Django's CSRF checks.
+SECURE_REFERRER_POLICY = 'same-origin'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'
+X_FRAME_OPTIONS = 'DENY'
+# Enable only when the reverse proxy overwrites these headers and cannot be bypassed.
+TRUST_PROXY_HEADERS = os.getenv('TRUST_PROXY_HEADERS', 'false') == 'true'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') if TRUST_PROXY_HEADERS else None
+DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 200
+DATA_UPLOAD_MAX_NUMBER_FILES = 0
 HTTP_TIMEOUT = float(os.getenv('HTTP_TIMEOUT', '10'))
 if not 0 < HTTP_TIMEOUT <= 15:
-    raise ValueError('HTTP_TIMEOUT doit être compris entre 0 et 15 secondes, 0 exclu.')
+    raise ValueError('HTTP_TIMEOUT must be greater than 0 and at most 15 seconds.')
 POSTMARK_SERVER_TOKEN = os.getenv('POSTMARK_SERVER_TOKEN', '')
 EMAIL_FROM = os.getenv('EMAIL_FROM', '')
 EMAIL_TO = os.getenv('EMAIL_TO', '')
 POSTMARK_MESSAGE_STREAM = os.getenv('POSTMARK_MESSAGE_STREAM', 'outbound')
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://redis:6379/0')
+CACHES = {'default': {
+    'BACKEND': 'django.core.cache.backends.redis.RedisCache' if SESSION_COOKIE_SECURE
+    else 'django.core.cache.backends.locmem.LocMemCache',
+    'LOCATION': os.getenv('CACHE_URL', CELERY_BROKER_URL) if SESSION_COOKIE_SECURE else 'local-security',
+    'KEY_PREFIX': 'probe-security',
+}}
 CELERY_TASK_IGNORE_RESULT = True
 CELERY_TASK_PUBLISH_RETRY = False
 CELERY_TASK_ACKS_LATE = False
@@ -118,3 +152,6 @@ LOCALE_PATHS = [BASE_DIR / 'locale']
 USE_I18N = True
 MIDDLEWARE.insert(MIDDLEWARE.index('django.contrib.auth.middleware.AuthenticationMiddleware') + 1, 'monitor.middleware.ProfileLanguageMiddleware')
 PLATFORM_ENCRYPTION_KEY = os.getenv('PLATFORM_ENCRYPTION_KEY', '')
+MIDDLEWARE.insert(1, 'monitor.security.SecurityHeadersMiddleware')
+MIDDLEWARE.insert(MIDDLEWARE.index('monitor.middleware.ProfileLanguageMiddleware') + 1,
+                  'monitor.security.AuthenticationThrottleMiddleware')

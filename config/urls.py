@@ -39,5 +39,6 @@ urlpatterns = [
     path('probes/<int:pk>/toggle/', views.target_toggle, name='target_toggle'),
     path('probes/<int:pk>/test/', views.target_test, name='target_test'),
     path('probes/<int:pk>/test-notification/', views.notification_test, name='notification_test'),
+    path('probes/<int:pk>/simulate-outage/', views.simulate_outage, name='simulate_outage'),
     path('probes/<int:pk>/delete/', views.target_delete, name='target_delete'),
 ]

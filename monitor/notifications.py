@@ -1,9 +1,16 @@
 import requests
 from django.conf import settings
+from django.views.decorators.debug import sensitive_variables
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils import timezone
+from django.utils.formats import date_format, number_format
+from django.utils.translation import gettext as _
 from .platform import platform_values
 
 
-def send_notification(subject, body, channel='email', destination=''):
+@sensitive_variables()
+def send_notification(subject, body, channel='email', destination='', *, html_body=None):
     config = platform_values()
     if channel == 'email':
         recipient = destination or config["email_to"]
@@ -12,6 +19,8 @@ def send_notification(subject, body, channel='email', destination=''):
         url = 'https://api.postmarkapp.com/email'
         headers = {'X-Postmark-Server-Token': config["postmark_server_token"], 'Accept': 'application/json'}
         payload = {'From': config["email_from"], 'To': recipient, 'Subject': subject, 'TextBody': body, 'MessageStream': config["postmark_message_stream"]}
+        if html_body:
+            payload['HtmlBody'] = html_body
     elif channel == 'slack':
         if not config["slack_webhook_url"].startswith('https://hooks.slack.com/services/'):
             raise ValueError('Configurer le webhook Slack.')
@@ -39,3 +48,69 @@ def send_notification(subject, body, channel='email', destination=''):
     except requests.RequestException:
         # Never include a webhook URL, bot token or provider response in logs.
         raise ValueError('Service de notification inaccessible.') from None
+
+
+def readable_duration(seconds):
+    remaining = max(0, int(seconds))
+    parts = []
+    for size, unit in ((86400, _('j')), (3600, 'h'), (60, 'min'), (1, 's')):
+        count, remaining = divmod(remaining, size)
+        if count:
+            parts.append(f'{count} {unit}')
+    return ' '.join(parts) or '0 s'
+
+
+def incident_notification(target, incident, *, recovered=False):
+    """Build escaped HTML and readable plain text from recorded observations."""
+    end = incident.ended_at or timezone.now()
+    failures = target.checks.filter(healthy=False, checked_at__gte=incident.started_at, checked_at__lte=end)
+    failure = failures.order_by('-checked_at').first()
+    latest = target.checks.filter(checked_at__lte=end).order_by('-checked_at').first()
+    elapsed = readable_duration((end - incident.started_at).total_seconds())
+    if failure is None:
+        kind, diagnostic = _('Erreur non précisée'), _('Diagnostic indisponible')
+    else:
+        diagnostic = failure.detail
+        if not diagnostic.startswith('HTTP '):
+            kind = diagnostic
+        elif failure.status_code and failure.status_code >= 500:
+            kind = _('Erreur serveur')
+        elif failure.status_code and failure.status_code >= 400:
+            kind = _('Erreur HTTP')
+        else:
+            kind = _('Réponse non conforme')
+
+    def timestamp(value):
+        return date_format(timezone.localtime(value), 'd.m.Y H:i:s T')
+
+    title = _('Service rétabli') if recovered else _('Service indisponible')
+    subject = (
+        _('[RÉTABLI] %(service)s — %(duration)s d’indisponibilité')
+        % {'service': target.name, 'duration': elapsed}
+        if recovered else _('[INDISPONIBLE] %(service)s — %(diagnostic)s')
+        % {'service': target.name, 'diagnostic': diagnostic}
+    )
+    rows = [
+        (_('Service'), target.name), (_('URL'), target.url),
+        (_('Type de panne'), kind), (_('Diagnostic'), diagnostic),
+        (_('Premier échec'), timestamp(incident.started_at)),
+        (_('Panne confirmée'), timestamp(incident.confirmed_at)),
+    ]
+    if recovered:
+        rows.append((_('Rétablissement'), timestamp(incident.ended_at)))
+    rows.append(((_('Durée totale observée') if recovered else _('Durée observée — en cours')), elapsed))
+    if latest:
+        response = f'HTTP {latest.status_code}' if latest.status_code else latest.detail
+        response_time = (f'{latest.duration_ms} ms' if latest.duration_ms < 1000
+                         else f'{number_format(latest.duration_ms / 1000, decimal_pos=2)} s')
+        rows.append((_('Dernier contrôle'), f'{response} · {response_time}'))
+    rows.append((_('Incident'), f'#{incident.pk}'))
+    url = settings.PUBLIC_URL.rstrip('/') + reverse('target_detail', args=[target.pk])
+    note = _('Les durées sont mesurées entre les contrôles; elles ne donnent pas l’instant exact de la panne.')
+    body = title + '\n\n' + '\n'.join(f'{label}: {value}' for label, value in rows)
+    body += f'\n\n{note}\n\n' + _('Voir la sonde') + f': {url}'
+    html = render_to_string('monitor/email/incident.html', {
+        'title': title, 'service': target.name, 'rows': rows, 'url': url,
+        'note': note, 'recovered': recovered, 'elapsed': elapsed,
+    })
+    return subject, body, html

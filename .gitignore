@@ -5,3 +5,5 @@ __pycache__/
 *.pyc
 staticfiles/
 .coverage
+._*
+.DS_Store

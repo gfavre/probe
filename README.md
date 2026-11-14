@@ -9,9 +9,10 @@ Application services use one Python slim image, without Node or dependency compi
 - [AGENTS.md](AGENTS.md): product context, architecture and business invariants.
 - [CONTRIBUTING.md](CONTRIBUTING.md): development conventions and verification.
 - [STYLEGUIDE.md](STYLEGUIDE.md): visual identity, navigation and components.
+- [SECURITY.md](SECURITY.md): security controls, proxy requirements and verification.
+- [DEPLOYMENT.md](DEPLOYMENT.md): small-server sizing and a complete Docker deployment walkthrough.
 
-These rules adapt general eFBL Admin principles to this project. The visual
-reference is available at `/styleguide/`, without a navigation link.
+The visual reference is available at `/styleguide/`, without a navigation link.
 All project documentation, code, comments and docstrings must be in English.
 The interface supports French and English.
 
@@ -33,6 +34,8 @@ The interface supports French and English.
 - Expected status codes or ranges, text with optional case-insensitive matching,
   and response headers.
 - Configuration preview and manual tests of saved settings.
+- Manual outage simulation through each probe’s saved notification channel,
+  without changing probe state, checks, incidents or uptime statistics.
 
 The application is a simple shared workspace. Multiple monitoring locations,
 subscribers, billing, an integration catalogue, screenshots, ICMP, TCP, DNS, RUM
@@ -131,6 +134,9 @@ its existing reverse proxy to terminate TLS and forward
 This repository does not provision DNS, certificates or the proxy.
 `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS` are configured for this domain.
 `HTTPS=true` enables secure cookies.
+It also enables HTTPS redirects, HSTS and shared Redis authentication limits.
+Set `TRUST_PROXY_HEADERS=true` only when your reverse proxy overwrites forwarded
+headers and clients cannot bypass it. See [SECURITY.md](SECURITY.md) before deployment.
 
 For local HTTP testing, use `HTTPS=false` and register a local OAuth callback in
 Google Cloud if needed. There is no authentication bypass mode.
@@ -139,6 +145,12 @@ Sign in with the initial local account or Google, add a probe, select its
 channel, then use **Send a test** on the Alerts tab and verify receipt. This sends
 a real message. **Test request** runs a manual HTTP check of the saved settings
 without changing statistics or sending alerts.
+
+On a saved probe’s settings page, **Simulate an outage** sends an explicitly
+labelled simulation through its saved channel and destination. It creates no
+checks or incidents, changes no probe state or statistics, and starts no automatic
+recovery notification. Rejected delivery is reported immediately rather than
+queued for a later monitoring check.
 
 ### Invitations and accounts
 
@@ -173,14 +185,20 @@ from `monitor/static/monitor/`.
 ## Checks and incidents
 
 Each probe has a whole-minute interval **from 1 to 5 minutes** (default 3), a
-1–15 second timeout (default 10), a consecutive-failure threshold (default 1)
+1–15 second timeout (default 10), a consecutive-failure threshold (minimum/default 2)
 and a minimum notification delay (default 0).
 
 Beat dispatches due checks every 15 seconds. PostgreSQL locking prevents
 simultaneous checks of a probe. Queued tasks expire after 30 seconds. There are
-no HTTP or Celery retries: after a failure, the next check waits until its next
-scheduled time. Worker load and dispatching can add a small delay. Results become
-stale after the configured interval plus a 15-second dispatch margin.
+no automatic HTTP or Celery retries. A failure schedules a confirmation check
+after 60 seconds using durable database state, without sleeping in the worker.
+Until the configured threshold is reached, further failures keep that shorter
+confirmation interval. With the default threshold, one failed check followed by
+a healthy confirmation affects uptime but sends no messages. After confirmation
+or recovery, the normal interval resumes. Worker load and dispatching can add a
+small delay: confirmation typically starts after 60–75 seconds, not at an exact
+deadline. Results become stale after their recorded coverage interval plus a
+15-second dispatch margin.
 
 - A confirmed failure opens an incident dated from the first failure in the series.
 - Send one accepted outage notification, without reminders during the incident.
@@ -195,6 +213,12 @@ The minimum notification delay is evaluated during scheduled checks, not by a
 retry task. State survives restarts. A crash between message acceptance and the
 database update can produce a duplicate. Deduplication is per probe: two failing
 URLs on the same server open two incidents.
+
+Incident emails include both HTML and plain text: service and URL, failure type,
+diagnostic, first failure, confirmation, recovery where applicable, observed
+duration, latest response and a direct probe link. Times use the configured local
+timezone and durations use readable units. DNS, TLS, connection failures and
+timeouts are distinguished for newly recorded checks without storing raw exceptions.
 
 Monitor an application health endpoint such as
 `https://service.example.com/health/`. A static page returning 200 does not
@@ -235,8 +259,10 @@ There is no automatic retention purge.
 
 One Python slim image uses wheels only, without C compilation or a frontend
 build. Redis is the broker without a Celery result backend; PostgreSQL is durable
-storage. Two probe processes and one web process with two threads are sufficient
-for a small URL list.
+storage. One probe child process and one web worker with two threads serve a
+small URL list. PostgreSQL uses a 64 MiB shared buffer pool and 30 connections;
+database and Redis containers have explicit memory limits. See
+[DEPLOYMENT.md](DEPLOYMENT.md) for sizing assumptions and capacity checks.
 
 ```sh
 docker compose logs -f worker beat

@@ -14,6 +14,8 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) before technical changes and
 [STYLEGUIDE.md](STYLEGUIDE.md) before interface changes. [README.md](README.md)
 covers installation and operation. Verify current facts in code; documentation
 is not evidence of deployment.
+Read [SECURITY.md](SECURITY.md) before changing security controls and
+[DEPLOYMENT.md](DEPLOYMENT.md) for resource sizing and deployment procedures.
 
 ## Language
 
@@ -42,14 +44,17 @@ apostrophes as thousands separators.
 1. Each probe checks an HTTP(S) URL every 1–5 minutes according to its settings.
 2. Beat dispatches due checks every 15 seconds. Actual start times may vary;
    never promise a check at exactly every minute.
-3. **No HTTP or Celery retries for checks.** After failure, wait for the next
-   scheduled check. Incident thresholds and alert delays are separate settings.
+3. **No HTTP or Celery automatic retries.** A failed observation schedules a
+   confirmation after 60 seconds through durable `next_check_at`, without sleeping
+   in the worker. Keep confirming at that interval until the failure threshold
+   (at least two) is reached; then return to the normal probe interval.
 4. Prevent concurrent checks of one probe with PostgreSQL locking. Expire queued
    tasks rather than catching up in a burst after an interruption.
 5. Record observations before attempting notification delivery. A connector
    outage must not discard a check result.
 6. Open at most one active incident per probe after the failure threshold.
    Date it from the series’ first failure and close it at the first healthy check.
+   An isolated failure still reduces uptime, but sends neither outage nor recovery.
 7. Send one accepted outage alert without reminders, followed by recovery.
    A later outage may open a new incident.
 8. Rejected delivery stays pending and may be attempted during the next scheduled
@@ -62,6 +67,10 @@ apostrophes as thousands separators.
     administrators configure encrypted database credentials, with environment
     fallback before configuration. Manual request tests create neither uptime
     observations nor incidents; notification tests remain explicit actions.
+    The outage simulation button sends a clearly labelled simulation through the
+    saved channel without recording monitoring history or changing probe state.
+    Real incident emails include HTML and plain text, error type, diagnostic,
+    local timestamps, observed duration and a link to the probe.
 
 Core models are `Target` (probe configuration/state), `Check` (observation),
 `Incident` (confirmed outage and notifications), `Invitation` (email admission),

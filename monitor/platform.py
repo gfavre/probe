@@ -4,6 +4,7 @@ import json
 from cryptography.fernet import Fernet, InvalidToken
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.views.decorators.debug import sensitive_variables
 from .models import PlatformSettings
 
 SETTINGS_PK = 1
@@ -11,6 +12,7 @@ SECRET_FIELDS = ('postmark_server_token', 'slack_webhook_url', 'telegram_bot_tok
 PUBLIC_FIELDS = ('email_from', 'email_to', 'telegram_chat_id', 'postmark_message_stream', 'google_client_id')
 
 
+@sensitive_variables()
 def cipher():
     key = getattr(settings, 'PLATFORM_ENCRYPTION_KEY', '')
     if not key:
@@ -18,6 +20,7 @@ def cipher():
     return Fernet(key)
 
 
+@sensitive_variables()
 def decrypt_secrets(value):
     if not value:
         return {}
@@ -27,10 +30,12 @@ def decrypt_secrets(value):
         raise ImproperlyConfigured('Unable to decrypt platform credentials.') from None
 
 
+@sensitive_variables()
 def encrypt_secrets(value):
     return cipher().encrypt(json.dumps(value).encode()).decode()
 
 
+@sensitive_variables()
 def platform_values():
     """Database overrides, with environment fallback for initial setup."""
     record = PlatformSettings.objects.filter(pk=SETTINGS_PK).first()

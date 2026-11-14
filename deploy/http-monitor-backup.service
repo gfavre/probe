@@ -1,0 +1,11 @@
+[Unit]
+Description=Back up HTTP monitoring database and environment
+Requires=docker.service
+After=docker.service http-monitor.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/http-monitor-backup
+UMask=0077
+Nice=10
+IOSchedulingClass=idle

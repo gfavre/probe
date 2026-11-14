@@ -77,6 +77,9 @@ not to introduce an abstract architecture.
 - Mutations require POST and CSRF. Apply `operator_required` to shared read-only
   pages, `probe_editor_required` to probe changes and manual tests, and
   `platform_admin_required` to connectors, invitations and account management.
+- Preserve the security controls documented in [SECURITY.md](SECURITY.md).
+  Inline scripts require `nonce="{{ request.csp_nonce }}"`; prefer external scripts.
+  Do not broaden CSP or trust forwarded headers to work around configuration errors.
 - Roles are cumulative: viewer, probe editor, platform administrator. There is
   no per-probe ownership. Hiding a button does not enforce permissions.
 - Role selectors save immediately on change through the existing POST endpoint.
@@ -88,6 +91,9 @@ not to introduce an abstract architecture.
 - Account deletion requires a confirmation page. Preserve probes and history.
   Administrators cannot disable or delete their own account from this interface.
 - Never trust hidden fields or browser validation.
+- Probe URL forms accept a bare hostname and assume HTTPS, including hostnames
+  with ports. Preserve explicit HTTP(S) schemes and keep model validation after
+  normalization. Native browser URL validation must not block bare hostnames.
 - Preserve existing secrets when an edit field is blank. Never render saved
   secrets in plaintext. `platform.py` resolves settings and encrypts credentials.
 - Manual HTTP tests must not create observations or incidents. Notification
@@ -97,7 +103,12 @@ not to introduce an abstract architecture.
 
 ## Network and tasks
 
-- Never retry probe requests. Respect the schedule and per-probe lock.
+- No automatic HTTP or Celery retries. Failed observations schedule durable
+  confirmation checks after 60 seconds until the threshold (minimum two) is met.
+  Use `next_check_at`, not a worker sleep or in-memory delayed-task state.
+  Record the initial failure for uptime even if confirmation succeeds silently.
+  Keep the normal interval once an incident is confirmed or a check succeeds.
+  Respect the schedule and per-probe lock.
 - Expire obsolete tasks rather than building a backlog of old checks.
 - Configure timeouts, redirects and TLS explicitly. IPv4/IPv6 selection is local
   to the request session; never modify process-wide DNS behaviour.
@@ -114,6 +125,11 @@ Follow [STYLEGUIDE.md](STYLEGUIDE.md). Reuse shared templates and CSS files grou
 by responsibility. Do not duplicate component rules or embed `<style>` blocks in
 page templates. Calculated styleguide specimens may use dedicated CSS variables
 or style attributes.
+
+Docker enables `STATIC_MANIFEST=true`: `collectstatic` produces content-hashed,
+compressed assets through WhiteNoise. Always use Django's `static` tag rather
+than hardcoding asset URLs. Rebuild the image after asset changes so browsers
+and CDN caches receive the new filenames. Local runserver uses source filenames.
 
 Prefer native HTML and focused JavaScript. Bootstrap, HTMX, Alpine, Tom Select
 and a frontend build pipeline are not part of this application; a minor

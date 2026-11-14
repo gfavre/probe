@@ -104,6 +104,9 @@ shell                           left offset matches sidebar
   actions require editor rights. Enforce these restrictions server-side as well.
 - Group profile, language and logout into one quiet footer block. Clicking the
   identity opens the profile. FR/EN saves immediately; no Auto button.
+- When a display name is available, omit the secondary email line. Keep the email
+  in the identity tooltip and profile. Otherwise show username and email without
+  wrapping, using an ellipsis when the sidebar cannot fit the full value.
 
 ## Pages and content
 

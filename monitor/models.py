@@ -11,13 +11,17 @@ from .validators import validate_target_url, validate_headers, validate_status_c
 
 
 class Target(models.Model):
+    CONFIRMATION_DELAY_SECONDS = 60
     CHANNELS = [('email', _('Email')), ('slack', _('Slack')), ('telegram', _('Telegram'))]
     name = models.CharField(_('Nom'), max_length=200)
     url = models.URLField(_('URL HTTP(S)'), max_length=2000, unique=True, validators=[validate_target_url])
     notes = models.TextField(_('Notes'), blank=True)
     enabled = models.BooleanField(_('Surveillance active'), default=True)
     interval_minutes = models.PositiveSmallIntegerField(_('Intervalle en minutes'), default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
-    failure_threshold = models.PositiveSmallIntegerField(_('Échecs consécutifs avant alerte'), default=1, validators=[MinValueValidator(1)])
+    failure_threshold = models.PositiveSmallIntegerField(
+        _('Échecs consécutifs avant alerte'), default=2, validators=[MinValueValidator(2)],
+        help_text=_('Au moins deux échecs avant de confirmer une panne.'),
+    )
     notification_delay_minutes = models.PositiveSmallIntegerField(_('Délai avant alerte en minutes'), default=0, validators=[MaxValueValidator(60)])
     notification_channel = models.CharField(_('Canal de notification'), max_length=10, choices=CHANNELS, default='email')
     email_to = models.EmailField(_('Destinataire email'), blank=True, help_text=_('Vide: utiliser le destinataire configuré sur le serveur.'))
@@ -52,7 +56,7 @@ class Target(models.Model):
         verbose_name_plural = _('Probes')
         constraints = [
             models.CheckConstraint(condition=Q(interval_minutes__gte=1, interval_minutes__lte=5), name='interval_1_to_5'),
-            models.CheckConstraint(condition=Q(failure_threshold__gte=1), name='positive_failure_threshold'),
+            models.CheckConstraint(condition=Q(failure_threshold__gte=2), name='failure_threshold_at_least_two'),
             models.CheckConstraint(condition=Q(timeout_seconds__gte=1, timeout_seconds__lte=15), name='timeout_1_to_15'),
         ]
 

@@ -26,15 +26,18 @@ from .tasks import check_target, dispatch_checks
 class MonitoringTests(TestCase):
     def setUp(self):
         self.target = Target.objects.create(name='Service', url='https://example.org', interval_minutes=1, tls_checked_at=timezone.now())
+        self.now = timezone.now()
 
     def run_check(self, healthy):
-        Target.objects.filter(pk=self.target.pk).update(next_check_at=timezone.now() - timedelta(seconds=1))
-        with patch('monitor.tasks.probe', return_value=ProbeResult(healthy, 'HTTP 200' if healthy else 'HTTP 503', 12, 200 if healthy else 503)):
+        self.now += timedelta(seconds=60)
+        Target.objects.filter(pk=self.target.pk).update(next_check_at=self.now - timedelta(seconds=1))
+        with patch('monitor.tasks.timezone.now', return_value=self.now), patch('monitor.tasks.probe', return_value=ProbeResult(healthy, 'HTTP 200' if healthy else 'HTTP 503', 12, 200 if healthy else 503)):
             check_target(self.target.pk)
 
     @patch('monitor.tasks.send_notification')
     def test_one_notification_per_incident_then_recovery(self, send):
         self.run_check(False)
+        send.assert_not_called()
         for _ in range(4):
             self.run_check(False)
         self.assertEqual(send.call_count, 1)
@@ -43,14 +46,17 @@ class MonitoringTests(TestCase):
         self.assertEqual(send.call_count, 2)
         self.assertIsNotNone(Incident.objects.get().ended_at)
         self.run_check(False)
+        self.assertEqual(send.call_count, 2)
+        self.run_check(False)
         self.assertEqual(send.call_count, 3)
         self.assertEqual(Incident.objects.count(), 2)
-        self.assertEqual(Check.objects.count(), 8)
+        self.assertEqual(Check.objects.count(), 9)
         self.assertEqual(Check.objects.first().status_code, 503)
 
     @patch('monitor.tasks.send_notification')
     def test_channel_is_snapshotted_for_recovery(self, send):
         Target.objects.filter(pk=self.target.pk).update(notification_channel='telegram', telegram_chat_id='123')
+        self.run_check(False)
         self.run_check(False)
         Target.objects.filter(pk=self.target.pk).update(notification_channel='slack')
         self.run_check(True)
@@ -74,7 +80,8 @@ class MonitoringTests(TestCase):
         Target.objects.filter(pk=self.target.pk).update(notification_delay_minutes=2)
         self.run_check(False)
         send.assert_not_called()
-        Incident.objects.update(started_at=timezone.now() - timedelta(minutes=3))
+        self.run_check(False)
+        send.assert_not_called()
         self.run_check(False)
         send.assert_called_once()
         self.run_check(False)
@@ -82,6 +89,7 @@ class MonitoringTests(TestCase):
 
     @patch('monitor.tasks.send_notification')
     def test_failed_recovery_is_pending_until_next_check(self, send):
+        self.run_check(False)
         self.run_check(False)
         send.side_effect = ValueError('offline')
         self.run_check(True)
@@ -103,6 +111,49 @@ class MonitoringTests(TestCase):
         dispatch_checks()
         enqueue.assert_called_once_with(args=[self.target.pk], expires=30, retry=False)
         self.assertEqual(check_target.max_retries, 0)
+
+    @patch('monitor.tasks.send_notification')
+    def test_confirmation_is_durable_due_after_sixty_seconds_without_early_alert(self, send):
+        Target.objects.filter(pk=self.target.pk).update(interval_minutes=5)
+        start = timezone.now()
+        failure = ProbeResult(False, 'HTTP 503', 12, 503)
+        with patch('monitor.tasks.probe', return_value=failure) as request:
+            with patch('monitor.tasks.timezone.now', return_value=start):
+                check_target(self.target.pk)
+            self.target.refresh_from_db()
+            self.assertEqual(self.target.next_check_at, start + timedelta(seconds=60))
+            self.assertEqual(Check.objects.get().coverage_seconds, 60)
+            self.assertFalse(Incident.objects.exists())
+            send.assert_not_called()
+            with patch('monitor.tasks.timezone.now', return_value=start + timedelta(seconds=59)):
+                check_target(self.target.pk)
+            self.assertEqual(request.call_count, 1)
+            with patch('monitor.tasks.timezone.now', return_value=start + timedelta(seconds=60)):
+                check_target(self.target.pk)
+        incident = Incident.objects.get()
+        self.assertEqual(incident.started_at, start)
+        self.assertEqual(incident.confirmed_at, start + timedelta(seconds=60))
+        self.assertEqual(request.call_count, 2)
+        send.assert_called_once()
+        self.target.refresh_from_db()
+        self.assertEqual(self.target.next_check_at, start + timedelta(seconds=360))
+
+    @patch('monitor.tasks.send_notification')
+    def test_isolated_failure_counts_as_downtime_without_outage_or_recovery_alert(self, send):
+        Target.objects.filter(pk=self.target.pk).update(interval_minutes=5)
+        start = timezone.now()
+        for offset, healthy in ((0, False), (60, True)):
+            with patch('monitor.tasks.timezone.now', return_value=start + timedelta(seconds=offset)), \
+                    patch('monitor.tasks.probe', return_value=ProbeResult(healthy, 'HTTP 200' if healthy else 'HTTP 503', 10)):
+                check_target(self.target.pk)
+        send.assert_not_called()
+        self.assertFalse(Incident.objects.exists())
+        self.assertEqual(Check.objects.count(), 2)
+        stats = availability(list(Check.objects.order_by('checked_at')), start, start + timedelta(seconds=300))
+        self.assertEqual(stats, {'uptime': '80.00%', 'coverage': '100.0%'})
+        self.target.refresh_from_db()
+        self.assertEqual(self.target.consecutive_failures, 0)
+        self.assertIsNone(self.target.first_failure_at)
 
 
 class MetricsTests(SimpleTestCase):
@@ -127,7 +178,7 @@ class InterfaceTests(TestCase):
 
     def form_data(self):
         return {'name': 'New', 'url': 'https://new.example.org', 'enabled': 'on', 'interval_minutes': 2,
-                'failure_threshold': 1, 'notification_delay_minutes': 0, 'timeout_seconds': 10, 'ip_version': 'any',
+                'failure_threshold': 2, 'notification_delay_minutes': 0, 'timeout_seconds': 10, 'ip_version': 'any',
                 'verify_tls': 'on', 'follow_redirects': 'on', 'method': 'GET', 'auth_type': 'none',
                 'body_type': 'raw', 'expected_status_codes': '200-299', 'notification_channel': 'telegram',
                 'request_headers': '{}', 'response_headers': '{}'}
@@ -160,6 +211,34 @@ class InterfaceTests(TestCase):
         self.target.refresh_from_db()
         self.assertEqual(self.target.auth_password, 'saved-secret')
 
+    def test_probe_urls_assume_https_and_preserve_explicit_http(self):
+        for entered, expected in [
+            ('new.example.org', 'https://new.example.org'),
+            ('  new.example.org/health/  ', 'https://new.example.org/health/'),
+            ('new.example.org:8443/health', 'https://new.example.org:8443/health'),
+            ('127.0.0.1:8080/health', 'https://127.0.0.1:8080/health'),
+            ('//new.example.org/health', 'https://new.example.org/health'),
+            ('http://new.example.org/health', 'http://new.example.org/health'),
+        ]:
+            with self.subTest(entered=entered):
+                data = self.form_data()
+                data['url'] = entered
+                form = TargetForm(data)
+                self.assertTrue(form.is_valid(), form.errors)
+                self.assertEqual(form.cleaned_data['url'], expected)
+        data = self.form_data()
+        data['url'] = 'new.example.org/health'
+        self.assertEqual(self.client.post('/probes/new/', data).status_code, 302)
+        self.assertEqual(Target.objects.get(name='New').url, 'https://new.example.org/health')
+
+    def test_probe_url_normalization_keeps_security_validation(self):
+        for value in ('ftp://new.example.org', 'user:password@new.example.org',
+                      'new.example.org/?token=secret', 'new.example.org/#fragment'):
+            with self.subTest(value=value):
+                data = self.form_data()
+                data['url'] = value
+                self.assertIn('url', TargetForm(data).errors)
+
     def test_validation_of_intervals_headers_and_json(self):
         for field, value in [('interval_minutes', 6), ('timeout_seconds', 0), ('request_headers', '{"X-Test":"a\\nb"}'), ('expected_status_codes', '600'), ('auth_type', 'bearer')]:
             data = self.form_data()
@@ -169,6 +248,54 @@ class InterfaceTests(TestCase):
         data = self.form_data()
         data.update(body_type='json', body='{broken')
         self.assertIn('body', TargetForm(data).errors)
+
+    @patch('monitor.views.send_notification')
+    def test_outage_simulation_uses_saved_channel_without_recording_history(self, send):
+        now = timezone.now()
+        Check.objects.create(target=self.target, checked_at=now, healthy=False, detail='HTTP 503',
+                             duration_ms=12, coverage_seconds=180, status_code=503)
+        Incident.objects.create(target=self.target, started_at=now, confirmed_at=now, down_sent_at=now)
+        for channel, destination in [('email', 'ops@example.org'), ('slack', ''), ('telegram', '987')]:
+            with self.subTest(channel=channel):
+                self.target.notification_channel = channel
+                self.target.email_to = 'ops@example.org'
+                self.target.telegram_chat_id = '987'
+                self.target.save()
+                target_before = Target.objects.filter(pk=self.target.pk).values().get()
+                checks_before = list(Check.objects.values())
+                incidents_before = list(Incident.objects.values())
+                send.reset_mock()
+                response = self.client.post(f'/probes/{self.target.pk}/simulate-outage/')
+                self.assertRedirects(response, f'/probes/{self.target.pk}/edit/', fetch_redirect_response=False)
+                send.assert_called_once()
+                self.assertIn('SIMULATION', send.call_args.args[0])
+                self.assertIn(self.target.url, send.call_args.args[1])
+                self.assertEqual(send.call_args.args[2:], (channel, destination))
+                self.assertEqual(Target.objects.filter(pk=self.target.pk).values().get(), target_before)
+                self.assertEqual(list(Check.objects.values()), checks_before)
+                self.assertEqual(list(Incident.objects.values()), incidents_before)
+
+    @patch('monitor.views.send_notification', side_effect=ValueError('private-provider-detail'))
+    def test_rejected_outage_simulation_does_not_record_or_expose_provider_details(self, send):
+        response = self.client.post(f'/probes/{self.target.pk}/simulate-outage/', follow=True)
+        self.assertContains(response, 'Simulation refusée.')
+        self.assertNotContains(response, 'private-provider-detail')
+        self.assertFalse(Check.objects.exists())
+        self.assertFalse(Incident.objects.exists())
+
+    @patch('monitor.views.send_notification')
+    def test_outage_simulation_requires_editor_post_and_csrf(self, send):
+        url = f'/probes/{self.target.pk}/simulate-outage/'
+        self.assertEqual(self.client.get(url).status_code, 405)
+        protected = Client(enforce_csrf_checks=True)
+        protected.force_login(self.user)
+        self.assertEqual(protected.post(url).status_code, 403)
+        viewer = get_user_model().objects.create_user('simulation-viewer')
+        self.client.force_login(viewer)
+        self.assertEqual(self.client.post(url).status_code, 403)
+        self.client.logout()
+        self.assertEqual(self.client.post(url).status_code, 302)
+        send.assert_not_called()
 
     def test_mutations_require_post_and_csrf(self):
         for suffix in ['toggle', 'test', 'test-notification']:

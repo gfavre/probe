@@ -1,4 +1,4 @@
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 from datetime import timedelta
 from django.conf import settings
 from django.contrib import messages
@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+from django.views.decorators.debug import sensitive_post_parameters
 from .auth import operator_required
 from .permissions import probe_editor_required, platform_admin_required
 from .forms import TargetForm
@@ -104,6 +105,7 @@ def target_detail(request, pk, tab='overview'):
 
 
 @probe_editor_required
+@sensitive_post_parameters()
 def target_form(request, pk=None):
     target = get_object_or_404(Target, pk=pk) if pk else None
     form = TargetForm(request.POST or None, instance=target)
@@ -113,7 +115,7 @@ def target_form(request, pk=None):
         return redirect('target_detail', pk=target.pk)
     sections = [
         ('general', _('Général'), _('L’URL surveillée et son nom dans le tableau de bord.'), ['name', 'url', 'notes', 'enabled']),
-        ('checks', _('Contrôles'), _('Un contrôle à chaque échéance, sans retry.'), ['interval_minutes', 'timeout_seconds', 'ip_version', 'verify_tls', 'follow_redirects', 'cache_buster']),
+        ('checks', _('Contrôles'), _('Au premier échec, confirmation après 60 s avant toute alerte.'), ['interval_minutes', 'timeout_seconds', 'ip_version', 'verify_tls', 'follow_redirects', 'cache_buster']),
         ('request', _('Requête HTTP'), _('Les données envoyées au service à chaque contrôle.'), ['method', 'auth_type', 'auth_username', 'auth_password', 'auth_token', 'body_type', 'body', 'request_headers']),
         ('response', _('Réponse attendue'), _('Un contrôle réussit si tous les critères sont remplis.'), ['expected_status_codes', 'keyword', 'keyword_ignore_case', 'response_headers']),
         ('alerts', _('Alertes'), _('Un canal par probe. Aucun rappel pendant une panne.'), ['notification_channel', 'email_to', 'telegram_chat_id', 'failure_threshold', 'notification_delay_minutes']),
@@ -152,6 +154,27 @@ def notification_test(request, pk):
     else:
         messages.success(request, _('Message accepté. Vérifiez sa réception.'))
     return redirect('target_alerts', pk=pk)
+
+
+@probe_editor_required
+@require_POST
+def simulate_outage(request, pk):
+    target = get_object_or_404(Target, pk=pk)
+    destination = {'email': target.email_to, 'telegram': target.telegram_chat_id}.get(target.notification_channel, '')
+    body = '\n\n'.join([
+        _('Simulation de panne pour %(name)s.') % {'name': target.name}, target.url,
+        _('L’état de la sonde et son historique restent inchangés.'),
+    ])
+    try:
+        send_notification(
+            _('SIMULATION DE PANNE: %(name)s') % {'name': target.name},
+            body, target.notification_channel, destination,
+        )
+    except ValueError:
+        messages.error(request, _('Simulation refusée. Vérifiez les réglages du canal.'))
+    else:
+        messages.success(request, _('Simulation acceptée. Vérifiez sa réception.'))
+    return redirect('target_edit', pk=pk)
 
 
 @probe_editor_required
@@ -209,6 +232,7 @@ def revoke_invitation(request, pk):
     return redirect('invitations')
 
 
+@sensitive_post_parameters()
 def accept_invitation(request, token):
     from django.contrib.auth import login as auth_login
     from django.core.exceptions import ValidationError
@@ -267,6 +291,7 @@ def profile(request):
 
 
 @operator_required
+@sensitive_post_parameters()
 def profile_password(request):
     from django.contrib.auth import update_session_auth_hash
     from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
@@ -281,6 +306,7 @@ def profile_password(request):
 
 
 @platform_admin_required
+@sensitive_post_parameters()
 def platform_settings(request):
     from django.contrib.auth import get_user_model
     from .forms import PlatformSettingsForm

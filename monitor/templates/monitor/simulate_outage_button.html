@@ -1,0 +1,1 @@
+{% load i18n %}<div class="probe-simulation"><form method="post" action="{% url 'simulate_outage' target.pk %}">{% csrf_token %}<button class="button">{% translate 'Simuler une panne' %}</button></form><p class="footer-note">{% translate 'Envoie une alerte de simulation, sans créer d’incident ni modifier les statistiques.' %}</p></div>

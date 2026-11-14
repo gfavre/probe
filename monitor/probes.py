@@ -18,6 +18,22 @@ class ProbeResult:
     status_code: int | None = None
 
 
+def caused_by_dns_error(error):
+    """Inspect exception types without retaining potentially secret URL text."""
+    pending, seen = [error], set()
+    while pending:
+        current = pending.pop()
+        if id(current) in seen:
+            continue
+        seen.add(id(current))
+        if isinstance(current, socket.gaierror):
+            return True
+        pending.extend(value for value in (
+            current.__cause__, current.__context__, getattr(current, 'reason', None), *current.args,
+        ) if isinstance(value, BaseException))
+    return False
+
+
 def probe(target):
     started = time.monotonic()
     status = None
@@ -63,6 +79,12 @@ def probe(target):
     except requests.Timeout:
         detail = 'Délai de réponse dépassé'
         healthy = False
+    except requests.exceptions.SSLError:
+        healthy, detail = False, 'Erreur TLS'
+    except requests.exceptions.ConnectionError as exc:
+        healthy, detail = False, 'Erreur DNS' if caused_by_dns_error(exc) else 'Connexion impossible'
+    except requests.exceptions.TooManyRedirects:
+        healthy, detail = False, 'Trop de redirections'
     except (requests.RequestException, OSError):
         healthy = False
         detail = 'Erreur réseau, DNS ou TLS'
