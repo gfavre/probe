@@ -3,14 +3,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beyond the probe\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-14 20:49+0100\n"
+"POT-Creation-Date: 2026-11-14 20:55+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: monitor/auth.py:24
+#: monitor/auth.py:25
 msgid "Ce compte n’a pas accès à cette application."
 msgstr "This account does not have access to this application."
 
@@ -37,6 +37,14 @@ msgstr "The logo must be at most 256 KiB after conversion to PNG."
 #: monitor/branding.py:136
 msgid "Image invalide. Choisissez un fichier SVG, PNG, JPEG ou WebP."
 msgstr "Invalid image. Choose an SVG, PNG, JPEG or WebP file."
+
+#: monitor/errors.py:37
+msgid "Une erreur s’est produite"
+msgstr "Something went wrong"
+
+#: monitor/errors.py:44
+msgid "Page introuvable"
+msgstr "Page not found"
 
 #: monitor/forms.py:19 monitor/models.py:19
 msgid "URL HTTP(S)"
@@ -159,7 +167,6 @@ msgid "Utilisez un webhook entrant Slack en HTTPS."
 msgstr "Use an HTTPS Slack incoming webhook."
 
 #: monitor/forms.py:159
-#| msgid "Le corps doit contenir un JSON valide."
 msgid "Le nom doit tenir sur une seule ligne."
 msgstr "The name must fit on a single line."
 
@@ -177,7 +184,6 @@ msgstr "An account already exists for this email address."
 
 #: monitor/invitations.py:66
 #, python-format
-#| msgid "Invitation pour"
 msgid "Invitation à %(product)s"
 msgstr "Invitation to %(product)s"
 
@@ -187,7 +193,6 @@ msgid "Vous avez été invité à accéder à %(product)s."
 msgstr "You have been invited to access %(product)s."
 
 #: monitor/invitations.py:68
-#| msgid "Invitation envoyée. Le lien est valable 7 jours."
 msgid "Activez votre compte avec ce lien valable 7 jours:"
 msgstr "Activate your account using this link, valid for 7 days:"
 
@@ -542,7 +547,6 @@ msgid "Activer le compte local"
 msgstr "Activate local account"
 
 #: monitor/templates/monitor/access_denied.html:1
-#| msgid "Accès"
 msgid "Accès refusé"
 msgstr "Access denied"
 
@@ -556,6 +560,7 @@ msgstr "Use a Google account that has been invited to this application."
 
 #: monitor/templates/monitor/access_denied.html:1
 #: monitor/templates/monitor/invitation_invalid.html:1
+#: monitor/templates/monitor/social_login_error.html:5
 msgid "Revenir à la connexion"
 msgstr "Back to sign in"
 
@@ -641,20 +646,20 @@ msgstr "Current status"
 msgid "Temps de réponse"
 msgstr "Response time"
 
-#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:72
+#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:77
 msgid "24 heures"
 msgstr "24 hours"
 
-#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:72
+#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:77
 msgid "7 jours"
 msgstr "7 days"
 
-#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:72
+#: monitor/templates/monitor/dashboard.html:4 monitor/views.py:77
 msgid "30 jours"
 msgstr "30 days"
 
 #: monitor/templates/monitor/dashboard.html:4
-#: monitor/templates/monitor/detail.html:3 monitor/views.py:131
+#: monitor/templates/monitor/detail.html:3 monitor/views.py:136
 msgid "Alertes"
 msgstr "Alerts"
 
@@ -1046,6 +1051,15 @@ msgstr "Send a test"
 msgid "Le test envoie un vrai message sur le canal sélectionné. Le canal d’un incident est conservé jusqu’à son rétablissement."
 msgstr "The test sends a real message through the selected channel. Each incident keeps its channel until recovery."
 
+#: monitor/templates/monitor/error_base.html:12
+#| msgid "Revenir à la connexion"
+msgid "Revenir à l’accueil"
+msgstr "Return to the home page"
+
+#: monitor/templates/monitor/error_base.html:13
+msgid "Référence du problème:"
+msgstr "Problem reference:"
+
 #: monitor/templates/monitor/form.html:1 monitor/templates/monitor/form.html:2
 msgid "Paramètres de"
 msgstr "Settings for"
@@ -1261,6 +1275,10 @@ msgstr "Sign in"
 msgid "La connexion Google n’est pas encore configurée."
 msgstr "Google sign-in has not been configured yet."
 
+#: monitor/templates/monitor/not_found.html:3
+msgid "Cette page n’existe pas ou n’est plus disponible. Vérifiez l’adresse ou revenez à l’accueil."
+msgstr "This page does not exist or is no longer available. Check the address or return to the home page."
+
 #: monitor/templates/monitor/pagination.html:1
 msgid "Page"
 msgstr "Page"
@@ -1351,6 +1369,19 @@ msgstr "Change password"
 msgid "Définir un mot de passe local"
 msgstr "Set a local password"
 
+#: monitor/templates/monitor/server_error.html:3
+msgid "Nous sommes désolés pour cette interruption. Le problème a été enregistré pour analyse."
+msgstr "We are sorry for the interruption. The problem has been recorded for investigation."
+
+#: monitor/templates/monitor/server_error.html:4
+msgid "Un signalement automatique a été créé dans notre système de suivi."
+msgstr "An automatic report has been created in our error tracking system."
+
+#: monitor/templates/monitor/server_error.html:5
+#| msgid "Trop de tentatives. Réessayez dans quelques minutes."
+msgid "Vous pouvez revenir à l’accueil et réessayer dans quelques instants."
+msgstr "You can return to the home page and try again in a few moments."
+
 #: monitor/templates/monitor/simulate_outage_button.html:1
 msgid "Simuler une panne"
 msgstr "Simulate an outage"
@@ -1358,6 +1389,15 @@ msgstr "Simulate an outage"
 #: monitor/templates/monitor/simulate_outage_button.html:1
 msgid "Envoie une alerte de simulation, sans créer d’incident ni modifier les statistiques."
 msgstr "Sends a simulated alert without creating an incident or changing statistics."
+
+#: monitor/templates/monitor/social_login_error.html:3
+#| msgid "Connexion impossible"
+msgid "Connexion Google impossible"
+msgstr "Google sign-in failed"
+
+#: monitor/templates/monitor/social_login_error.html:4
+msgid "La connexion n’a pas pu aboutir. Revenez à l’accueil et réessayez avec le bon compte."
+msgstr "Sign-in could not be completed. Return to the login page and try again with the correct account."
 
 #: monitor/templates/monitor/test_result.html:1
 msgid "Test de"
@@ -1436,173 +1476,177 @@ msgstr "Enter a JSON object with header names and values as strings."
 msgid "Exemple de codes acceptés: 200-299,301,302."
 msgstr "Example accepted codes: 200-299,301,302."
 
-#: monitor/views.py:33
+#: monitor/views.py:26
+msgid "Connexion Google annulée. Vous pouvez choisir un autre compte."
+msgstr "Google sign-in cancelled. You can choose another account."
+
+#: monitor/views.py:38
 msgid "Suspendu"
 msgstr "Paused"
 
-#: monitor/views.py:33
+#: monitor/views.py:38
 msgid "Inconnu"
 msgstr "Unknown"
 
-#: monitor/views.py:35
+#: monitor/views.py:40
 msgid "Disponible"
 msgstr "Available"
 
-#: monitor/views.py:35
+#: monitor/views.py:40
 msgid "Indisponible"
 msgstr "Unavailable"
 
-#: monitor/views.py:73
+#: monitor/views.py:78
 msgid "90 jours"
 msgstr "90 days"
 
-#: monitor/views.py:73
+#: monitor/views.py:78
 msgid "365 jours"
 msgstr "365 days"
 
-#: monitor/views.py:83
+#: monitor/views.py:88
 msgid "couverture"
 msgstr "coverage"
 
-#: monitor/views.py:124
+#: monitor/views.py:129
 msgid "Probe enregistrée."
 msgstr "Probe saved."
 
-#: monitor/views.py:127
+#: monitor/views.py:132
 msgid "Général"
 msgstr "General"
 
-#: monitor/views.py:127
+#: monitor/views.py:132
 msgid "L’URL surveillée et son nom dans le tableau de bord."
 msgstr "The monitored URL and its dashboard name."
 
-#: monitor/views.py:128
+#: monitor/views.py:133
 msgid "Contrôles"
 msgstr "Checks"
 
-#: monitor/views.py:128
+#: monitor/views.py:133
 msgid "Au premier échec, confirmation après 60 s avant toute alerte."
 msgstr "After the first failure, confirm after 60 seconds before alerting."
 
-#: monitor/views.py:129
+#: monitor/views.py:134
 msgid "Requête HTTP"
 msgstr "HTTP request"
 
-#: monitor/views.py:129
+#: monitor/views.py:134
 msgid "Les données envoyées au service à chaque contrôle."
 msgstr "The data sent to the service on each check."
 
-#: monitor/views.py:130
+#: monitor/views.py:135
 msgid "Réponse attendue"
 msgstr "Expected response"
 
-#: monitor/views.py:130
+#: monitor/views.py:135
 msgid "Un contrôle réussit si tous les critères sont remplis."
 msgstr "A check succeeds when all criteria are met."
 
-#: monitor/views.py:131
+#: monitor/views.py:136
 msgid "Un canal par probe. Aucun rappel pendant une panne."
 msgstr "One channel per probe. No reminders during an outage."
 
-#: monitor/views.py:143
+#: monitor/views.py:148
 msgid "Surveillance activée."
 msgstr "Monitoring enabled."
 
-#: monitor/views.py:143
+#: monitor/views.py:148
 msgid "Surveillance suspendue."
 msgstr "Monitoring paused."
 
-#: monitor/views.py:163
+#: monitor/views.py:168
 msgid "Envoi refusé. Vérifiez la configuration du canal sur le serveur."
 msgstr "Message rejected. Check the channel configuration on the server."
 
-#: monitor/views.py:165
+#: monitor/views.py:170
 msgid "Message accepté. Vérifiez sa réception."
 msgstr "Message accepted. Check that it arrived."
 
-#: monitor/views.py:175
+#: monitor/views.py:180
 #, python-format
 msgid "Simulation de panne pour %(name)s."
 msgstr "Outage simulation for %(name)s."
 
-#: monitor/views.py:176
+#: monitor/views.py:181
 msgid "L’état de la sonde et son historique restent inchangés."
 msgstr "The probe status and history remain unchanged."
 
-#: monitor/views.py:180
+#: monitor/views.py:185
 #, python-format
 msgid "SIMULATION DE PANNE: %(name)s"
 msgstr "OUTAGE SIMULATION: %(name)s"
 
-#: monitor/views.py:184
+#: monitor/views.py:189
 msgid "Simulation refusée. Vérifiez les réglages du canal."
 msgstr "Simulation rejected. Check the channel settings."
 
-#: monitor/views.py:186
+#: monitor/views.py:191
 msgid "Simulation acceptée. Vérifiez sa réception."
 msgstr "Simulation accepted. Check that it was received."
 
-#: monitor/views.py:195
+#: monitor/views.py:200
 msgid "Probe et historique supprimés."
 msgstr "Probe and history deleted."
 
-#: monitor/views.py:228
+#: monitor/views.py:233
 msgid "Compte créé, mais l’email n’a pas été envoyé. Vous pouvez copier le lien ou renvoyer l’invitation."
 msgstr "Account created, but the email was not sent. Copy the link or resend the invitation."
 
-#: monitor/views.py:230
+#: monitor/views.py:235
 msgid "Invitation envoyée. Le lien est valable 7 jours."
 msgstr "Invitation sent. The link is valid for 7 days."
 
-#: monitor/views.py:241
+#: monitor/views.py:246
 msgid "Invitation révoquée."
 msgstr "Invitation revoked."
 
-#: monitor/views.py:261
+#: monitor/views.py:266
 msgid "Compte activé."
 msgstr "Account activated."
 
-#: monitor/views.py:298
+#: monitor/views.py:303
 msgid "Profil enregistré."
 msgstr "Profile saved."
 
-#: monitor/views.py:313
+#: monitor/views.py:318
 msgid "Mot de passe enregistré."
 msgstr "Password saved."
 
-#: monitor/views.py:328
+#: monitor/views.py:333
 msgid "Réglages plateforme enregistrés."
 msgstr "Platform settings saved."
 
-#: monitor/views.py:332
+#: monitor/views.py:337
 msgid "Identité visuelle"
 msgstr "Visual identity"
 
-#: monitor/views.py:361 monitor/views.py:385
+#: monitor/views.py:366 monitor/views.py:390
 msgid "Au moins un administrateur plateforme doit rester actif."
 msgstr "At least one platform administrator must remain active."
 
-#: monitor/views.py:366
+#: monitor/views.py:371
 msgid "Droits enregistrés."
 msgstr "Access level saved."
 
-#: monitor/views.py:383
+#: monitor/views.py:388
 msgid "Vous ne pouvez pas désactiver ou supprimer votre propre compte."
 msgstr "You cannot disable or delete your own account."
 
-#: monitor/views.py:388
+#: monitor/views.py:393
 msgid "Compte supprimé."
 msgstr "Account deleted."
 
-#: monitor/views.py:397
+#: monitor/views.py:402
 msgid "Compte désactivé."
 msgstr "Account disabled."
 
-#: monitor/views.py:399
+#: monitor/views.py:404
 msgid "Ce compte doit accepter une invitation avant son activation."
 msgstr "This account must accept an invitation before activation."
 
-#: monitor/views.py:403
+#: monitor/views.py:408
 msgid "Compte réactivé."
 msgstr "Account reactivated."
 

@@ -22,6 +22,11 @@ def login(request):
     return render(request, 'monitor/login.html', {'configured': bool(settings.GOOGLE_CLIENT_ID and settings.GOOGLE_CLIENT_SECRET and settings.OWNER_EMAIL)})
 
 
+def google_login_cancelled(request):
+    messages.info(request, _('Connexion Google annulée. Vous pouvez choisir un autre compte.'))
+    return redirect('login')
+
+
 @require_POST
 def signout(request):
     logout(request)

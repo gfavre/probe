@@ -136,3 +136,25 @@ IPv6 aggregation, forwarded-address spoofing and limiter outage behaviour,
 alongside business and access tests. Also inspect actual public response headers,
 Google sign-in and proxy logging after deployment. Passing tests is not a complete
 security audit or evidence that production infrastructure is configured correctly.
+
+## Error reporting and error pages
+
+`SENTRY_DSN` optionally enables error-only Sentry reporting for unhandled Django
+and Celery exceptions. Empty disables the SDK. `SENTRY_ENVIRONMENT` defaults to
+`production`; `SENTRY_RELEASE` can identify the deployed commit. Tracing,
+profiling, session tracking and SDK log export are disabled.
+
+Before sending an event, an allowlist retains exception classes and code locations
+(filename/module/function/line), plus event identity, level, environment and
+release. It drops exception values, source excerpts, frame locals, HTTP URLs,
+OAuth parameters, headers, cookies, request bodies, user identity, breadcrumbs,
+SQL and arbitrary extra/context data. This deliberately trades detailed runtime
+values for credential safety. Diagnose private runtime details on the protected
+server when necessary. SDK transport metadata is handled by Sentry itself.
+
+The 500 page uses no application context processors and falls back to built-in
+branding if database access fails. It displays a technical reference recorded in
+server logs. It mentions automatic reporting only if the SDK created an event;
+this does not guarantee remote receipt. A 404 neither claims to report an incident
+nor leaks the requested path. Google cancellation returns to login; invalid OAuth
+state remains rejected. Do not weaken state checks to handle cancellation.

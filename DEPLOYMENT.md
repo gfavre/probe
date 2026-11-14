@@ -429,3 +429,18 @@ recover deleted raw measurements. Retention changes do not affect existing
 backup rotation. Keep autovacuum enabled: ordinary deletion makes PostgreSQL
 space reusable without necessarily shrinking files on disk. Do not schedule
 `VACUUM FULL` as routine maintenance.
+
+## Sentry
+
+Set `SENTRY_DSN` to the project's Client Key DSN in the protected server `.env`.
+Do not commit a real DSN. Optionally set `SENTRY_ENVIRONMENT=production` and
+`SENTRY_RELEASE=<commit>`. Recreate web, worker and Beat after environment edits;
+restarting an existing container does not reload Compose environment values.
+Leaving the DSN empty disables external error reporting.
+
+Reporting covers uncaught Django/Celery exceptions, with strict payload filtering
+and no tracing or profiling. See [SECURITY.md](SECURITY.md#error-reporting-and-error-pages)
+for retained fields. A branded 500 page shows its reference; the branded 404 is
+an ordinary missing-page response. Expected Google cancellation is not a server
+error. Validate SDK transport with one intentional, caught diagnostic exception;
+do not add a public endpoint that deliberately crashes the application.

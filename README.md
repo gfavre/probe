@@ -350,3 +350,16 @@ Logo bytes and immutable versions are stored in PostgreSQL, included in the
 existing database backup and served as public images under `/branding/logo/`.
 No writable media directory or extra Docker volume is required. Older versions
 remain available to previously sent emails.
+
+## Authentication errors and diagnostics
+
+Cancelling Google consent returns to login with a cancellation notice. Invalid
+or expired OAuth state is rejected with a safe retry page, without displaying
+provider errors or callback parameters. Custom 404/500 pages use the shared theme
+and configured product name. The 500 page includes a reference and remains usable
+if the database or credential context processors are unavailable.
+
+Set `SENTRY_DSN` in the server environment to enable error-only reporting for web
+and Celery, optionally `SENTRY_ENVIRONMENT` and `SENTRY_RELEASE`. No request data,
+credentials or runtime variables are exported. See [DEPLOYMENT.md](DEPLOYMENT.md#sentry)
+and [SECURITY.md](SECURITY.md#error-reporting-and-error-pages).

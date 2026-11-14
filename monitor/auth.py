@@ -3,11 +3,12 @@ from functools import wraps
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.core.exceptions import ImmediateHttpResponse
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+from allauth.socialaccount.providers.base import AuthError
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.views import redirect_to_login
 from django.http import HttpResponseForbidden
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from .models import Invitation
 
 
@@ -32,6 +33,12 @@ class ClosedAccountAdapter(DefaultAccountAdapter):
 
 
 class OwnerSocialAdapter(DefaultSocialAccountAdapter):
+    def on_authentication_error(self, request, provider, error=None, exception=None, extra_context=None):
+        # Do not expose provider exceptions, OAuth parameters or account details.
+        if error == AuthError.CANCELLED:
+            raise ImmediateHttpResponse(redirect('socialaccount_login_cancelled'))
+        raise ImmediateHttpResponse(render(request, 'monitor/social_login_error.html', status=401))
+
     def get_app(self, request, provider, client_id=None):
         if provider == 'google':
             from allauth.socialaccount.models import SocialApp

@@ -1,0 +1,14 @@
+{% load i18n static %}<!doctype html>
+<html lang="{% get_current_language as language %}{{ language }}">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>{{ error_title }} · {{ product_name }}</title>
+<link rel="stylesheet" href="{% static 'monitor/app.css' %}"><link rel="stylesheet" href="{% static 'monitor/dark.css' %}">
+{% include 'monitor/favicon.html' %}{% include 'monitor/typography.html' %}</head>
+<body class="welcome-page">
+<header class="welcome-header"><a class="brand" href="{% url 'dashboard' %}">{% include 'monitor/logo.html' %}</a></header>
+<main class="welcome-grid"><section class="welcome-card" aria-labelledby="error-title">
+<p class="eyebrow">{{ error_code }}</p><h1 id="error-title">{{ error_title }}</h1>
+{% block error_content %}{% endblock %}
+<a class="button primary" href="{% url 'dashboard' %}">{% translate "Revenir à l’accueil" %}</a>
+{% if error_reference %}<p class="footer-note">{% translate "Référence du problème:" %} {{ error_reference }}</p>{% endif %}
+</section></main></body></html>

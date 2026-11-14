@@ -8,6 +8,8 @@ from monitor.branding import platform_logo
 from monitor.permissions import is_platform_admin
 
 admin.site.has_permission = lambda request: is_platform_admin(request.user)
+handler500 = 'monitor.errors.server_error'
+handler404 = 'monitor.errors.page_not_found'
 urlpatterns = [
     path('branding/logo/<slug:digest>/', platform_logo, name='platform_logo'),
     path('favicon.ico', RedirectView.as_view(url='/static/monitor/icons/favicon.ico', permanent=True)),
@@ -26,6 +28,7 @@ urlpatterns = [
     path('accounts/google/login/', google.oauth2_login, name='google_login'),
     path('accounts/google/login/callback/', google.oauth2_callback, name='google_callback'),
     path('accounts/social/signup/', RedirectView.as_view(pattern_name='login'), name='socialaccount_signup'),
+    path('accounts/social/login/cancelled/', views.google_login_cancelled, name='socialaccount_login_cancelled'),
     path('admin/', admin.site.urls),
     path('', views.home, name='dashboard'),
     path('incidents/', views.incidents, name='incidents'),

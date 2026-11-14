@@ -173,6 +173,9 @@ LOCALE_PATHS = [BASE_DIR / 'locale']
 USE_I18N = True
 MIDDLEWARE.insert(MIDDLEWARE.index('django.contrib.auth.middleware.AuthenticationMiddleware') + 1, 'monitor.middleware.ProfileLanguageMiddleware')
 PLATFORM_ENCRYPTION_KEY = os.getenv('PLATFORM_ENCRYPTION_KEY', '')
+SENTRY_DSN = os.getenv('SENTRY_DSN', '').strip()
+from monitor.error_reporting import configure_error_reporting
+configure_error_reporting(SENTRY_DSN)
 MIDDLEWARE.insert(1, 'monitor.security.SecurityHeadersMiddleware')
 MIDDLEWARE.insert(MIDDLEWARE.index('monitor.middleware.ProfileLanguageMiddleware') + 1,
                   'monitor.security.AuthenticationThrottleMiddleware')

@@ -1,0 +1,6 @@
+{% extends 'monitor/error_base.html' %}{% load i18n %}
+{% block error_content %}
+<p>{% translate "Nous sommes désolés pour cette interruption. Le problème a été enregistré pour analyse." %}</p>
+{% if error_reported %}<p>{% translate "Un signalement automatique a été créé dans notre système de suivi." %}</p>{% endif %}
+<p>{% translate "Vous pouvez revenir à l’accueil et réessayer dans quelques instants." %}</p>
+{% endblock %}

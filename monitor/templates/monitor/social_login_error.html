@@ -1,0 +1,6 @@
+{% extends 'monitor/login.html' %}{% load i18n %}
+{% block login_content %}
+<h1 id="login-title">{% translate "Connexion Google impossible" %}</h1>
+<p>{% translate "La connexion n’a pas pu aboutir. Revenez à l’accueil et réessayez avec le bon compte." %}</p>
+<a class="button primary" href="{% url 'login' %}">{% translate "Revenir à la connexion" %}</a>
+{% endblock %}

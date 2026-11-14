@@ -7,3 +7,4 @@ celery[redis]>=5.5,<5.7
 django-celery-beat>=2.8,<3
 django-allauth[socialaccount]>=65.13,<66
 Pillow>=12.1.1,<14
+sentry-sdk[django,celery]>=2.70,<3
