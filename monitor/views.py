@@ -322,13 +322,14 @@ def platform_settings(request):
     from .forms import PlatformSettingsForm
     from .models import UserProfile
     from .permissions import access_role
-    form = PlatformSettingsForm(request.POST or None)
+    form = PlatformSettingsForm(request.POST or None, request.FILES or None)
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, _('Réglages plateforme enregistrés.'))
         return redirect('platform_settings')
     accounts = [{'user': user, 'role': access_role(user) if user.is_active else getattr(getattr(user, 'profile', None), 'role', UserProfile.Role.VIEWER)} for user in get_user_model().objects.select_related('profile', 'invitation').order_by('username')]
     groups = [
+        (_('Identité visuelle'), ['logo', 'reset_logo']),
         ('Postmark', ['postmark_server_token', 'clear_postmark_server_token', 'email_from', 'email_to', 'postmark_message_stream']),
         ('Slack', ['slack_webhook_url', 'clear_slack_webhook_url']),
         ('Telegram', ['telegram_bot_token', 'clear_telegram_bot_token', 'telegram_chat_id']),

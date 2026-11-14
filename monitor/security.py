@@ -91,8 +91,11 @@ class SecurityHeadersMiddleware:
         )
         if settings.SECURE_SSL_REDIRECT:
             policy += '; upgrade-insecure-requests'
+        if getattr(response, 'branding_asset', False):
+            # Uploaded assets never inherit the script permissions of application pages.
+            policy = "sandbox; default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'"
         response['Content-Security-Policy'] = policy
         response['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=(), payment=(), usb=()'
-        if not request.path.startswith(settings.STATIC_URL):
+        if not request.path.startswith(settings.STATIC_URL) and not getattr(response, 'branding_asset', False):
             response['Cache-Control'] = 'private, no-store'
         return response

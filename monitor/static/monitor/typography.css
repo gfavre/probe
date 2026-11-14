@@ -88,9 +88,12 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 @media(max-width: 720px) { .sidebar .brand { font-size: 12px; } .welcome-card h1 { font-size: 18px; } h1 { font-size: 20px; } .metric-value { font-size: 30px; } }
 @media(prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 /* Supplied wordmark: intrinsic ratio, complete lettering, no duplicated title. */
-.brand-logo { display: block; width: 100%; max-width: 100%; height: auto; object-fit: contain; }
+.brand-logo { display: block; width: 100%; max-width: 100%; height: auto; max-height: 88px; object-fit: contain; }
+.welcome-header .brand-logo { max-height: 160px; }
+.brand-preview { max-width: 420px; padding: 20px; margin-bottom: 12px; background: var(--surface); border: 1px solid var(--control-border); border-radius: 8px; }
+.brand-preview .brand-logo { max-height: 144px; }
 .welcome-header .brand { display: block; width: min(420px, 100%); padding: 0; }
-#site-name .brand-logo { width: 320px; max-width: 100%; height: auto; }
+#site-name .brand-logo { width: 320px; max-width: 100%; height: auto; max-height: 80px; }
 #site-name a { display: block; max-width: 100%; }
 @media(max-width: 720px) {
   .sidebar .brand-logo { width: min(300px, 100%); }

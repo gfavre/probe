@@ -4,10 +4,12 @@ from django.urls import path
 from django.views.generic import RedirectView
 from django.contrib.auth.views import LoginView
 from monitor import views
+from monitor.branding import platform_logo
 from monitor.permissions import is_platform_admin
 
 admin.site.has_permission = lambda request: is_platform_admin(request.user)
 urlpatterns = [
+    path('branding/logo/<slug:digest>/', platform_logo, name='platform_logo'),
     path('favicon.ico', RedirectView.as_view(url='/static/monitor/icons/favicon.ico', permanent=True)),
     path('login/', views.login, name='login'),
     path('login/local/', LoginView.as_view(template_name='monitor/local_login.html', redirect_authenticated_user=True), name='local_login'),

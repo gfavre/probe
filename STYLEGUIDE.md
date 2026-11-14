@@ -210,3 +210,10 @@ Preserve the 1068:240 ratio, automatic height and maximum width of 100% of the
 container. The logo fills the sidebar’s usable width; the landing page may show
 it up to 420 px wide (340 px on small screens). Do not duplicate the product name
 beside it or use `object-fit: cover`. Alternative text uses the product name.
+
+Platform administrators may override this built-in logo in Platform settings.
+Use the shared `monitor/logo.html` include with its context-provided URL and
+intrinsic dimensions. Preserve proportions with `object-fit: contain`; constrain
+header height for square and tall logos instead of cropping or stretching them.
+The settings preview uses the same component on a dark surface. Keep the default
+asset as the fallback and retain immutable URLs for previously sent emails.

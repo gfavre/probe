@@ -194,7 +194,18 @@ class UserProfile(models.Model):
         return self.user.get_username()
 
 
+class BrandingLogo(models.Model):
+    digest = models.CharField(primary_key=True, max_length=64)
+    data = models.BinaryField()
+    content_type = models.CharField(max_length=30)
+    width = models.PositiveIntegerField()
+    height = models.PositiveIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 class PlatformSettings(models.Model):
+    logo = models.ForeignKey(BrandingLogo, on_delete=models.SET_NULL, null=True, blank=True,
+                             related_name='platform_settings')
     email_from = models.EmailField(blank=True)
     email_to = models.EmailField(blank=True)
     telegram_chat_id = models.CharField(max_length=100, blank=True)

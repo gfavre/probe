@@ -74,7 +74,7 @@ apostrophes as thousands separators.
 
 Core models are `Target` (probe configuration/state), `Check` (observation),
 `Incident` (confirmed outage and notifications), `Invitation` (email admission),
-`UserProfile` (role/language) and `PlatformSettings` (connectors). Checks and
+`UserProfile` (role/language) and `PlatformSettings` (connectors and logo). Checks and
 incidents are read-only in admin. Probe deletion removes its history after
 confirmation.
 
@@ -169,3 +169,14 @@ browser screenshots, ICMP/TCP/DNS checks, public subscribers, billing, AI or a
 connector catalogue. DNS/TLS/proxy deployment, Google credentials and real
 notification accounts are external configuration; do not claim validation
 without evidence.
+
+## Platform branding
+
+Only platform administrators may upload or reset the shared logo. Validate small
+static SVG/PNG/JPEG/WebP inputs; normalize raster images to metadata-free PNG.
+Store immutable image versions in PostgreSQL, not a writable media directory.
+Serve them as public images with isolated sandbox CSP, never inline SVG markup.
+Reuse the shared logo component on landing, navigation and Django admin. Raster
+logos also appear in incident emails; SVG uses the existing text fallback there.
+Preserve aspect ratios and bound header heights. Blank uploads preserve the
+current logo; explicit reset restores the built-in asset.

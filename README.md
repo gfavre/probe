@@ -326,3 +326,23 @@ login and admin. Reduced-motion preferences disable animations.
 The supplied SVG logo appears on the landing page, navigation and admin. Lettering
 is outlined to preserve Michroma rendering. Both original and production versions
 are kept in `monitor/static/monitor/brand/`.
+
+## Platform logo
+
+Platform administrators can upload a logo under **Platform → Visual identity**,
+preview the current image, replace it or restore the built-in logo. A blank file
+field preserves the current choice. Saving applies immediately to the landing
+page, shared navigation and Django admin, without rebuilding the image.
+
+Accepted formats are SVG, PNG, JPEG and WebP, up to 256 KiB. Images keep their
+proportions within bounded header heights. Raster images are validated and
+normalized to metadata-free PNG, and are also used in incident emails. SVG is
+reserved for the web interface; emails retain the text brand because SVG support
+is inconsistent across mail clients. Transparent logos with light lettering work
+best on the existing dark background. This setting changes the logo; the product
+name and favicons remain unchanged.
+
+Logo bytes and immutable versions are stored in PostgreSQL, included in the
+existing database backup and served as public images under `/branding/logo/`.
+No writable media directory or extra Docker volume is required. Older versions
+remain available to previously sent emails.

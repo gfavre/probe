@@ -27,7 +27,19 @@
   allowed form destination; connector API calls run server-side.
 - Application pages use `Cache-Control: private, no-store`, including login,
   profiles, invitations and platform settings. Static resources remain cacheable.
-- Request form bodies are limited to 1 MiB and 200 fields; file uploads are disabled.
+- Request form bodies are limited to 1 MiB and 200 fields. Only platform settings
+  accept a single uploaded logo, restricted to platform administrators. A bounded
+  in-memory upload handler rejects multipart bodies over 1 MiB; validated and
+  normalized logo payloads must be at most 256 KiB, 4,096 pixels per side and
+  two million pixels in total. All other upload routes reject files.
+- PNG/JPEG/WebP inputs are decoded and re-encoded as static PNG, without metadata.
+  SVG accepts UTF-8 XML without document types/entities, scripts, event handlers,
+  animation, embedded images or external references. SVG markup is never inserted
+  into application HTML. Public content-addressed image responses have a separate
+  sandbox CSP with no scripts, network resources or framing, plus MIME sniffing
+  protection. Existing page CSP and private/no-store behaviour remain unchanged.
+  Logos are public brand assets, not private file storage. Older versions remain
+  addressable so historical email images are not broken by a later replacement.
 - Credential forms mark POST data sensitive for Django error reports. The
   production Gunicorn access log omits URLs, query strings and request bodies so
   OAuth codes and invitation tokens are not written into access logs. Configure

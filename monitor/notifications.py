@@ -115,7 +115,15 @@ def incident_notification(target, incident, *, recovered=False):
     note = _('Les durées sont mesurées entre les contrôles; elles ne donnent pas l’instant exact de la panne.')
     body = title + '\n\n' + '\n'.join(f'{label}: {value}' for label, value in rows)
     body += f'\n\n{note}\n\n' + _('Voir la sonde') + f': {url}'
+    from .branding import logo_options
+    branding = logo_options(email=True)
+    if branding:
+        branding['platform_logo_url'] = settings.PUBLIC_URL.rstrip('/') + branding['platform_logo_url']
+        branding['platform_logo_email_width'] = min(260, branding['platform_logo_width'],
+                                                   max(1, round(96 * branding['platform_logo_width']
+                                                                / branding['platform_logo_height'])))
     html = render_to_string('monitor/email/incident.html', {
+        **branding,
         'title': title, 'service': service_name, 'rows': rows, 'url': url,
         'note': note, 'recovered': recovered, 'elapsed': elapsed,
     })

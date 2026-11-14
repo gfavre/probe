@@ -26,6 +26,7 @@ monitor/forms.py                input validation
 monitor/views.py                HTTP views, access checks and messages
 monitor/permissions.py          shared role checks
 monitor/platform.py             platform settings and secret encryption
+monitor/branding.py             bounded logo validation and public immutable image responses
 monitor/tasks.py                probe scheduling and orchestration
 monitor/probes.py               HTTP requests and TLS diagnostics
 monitor/network.py              per-session IP family selection

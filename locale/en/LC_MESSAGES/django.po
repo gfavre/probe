@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beyond the probe\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-14 08:26+0100\n"
+"POT-Creation-Date: 2026-11-14 20:09+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,6 +13,30 @@ msgstr ""
 #: monitor/auth.py:24
 msgid "Ce compte n’a pas accès à cette application."
 msgstr "This account does not have access to this application."
+
+#: monitor/branding.py:65
+msgid "Logo trop grand. Maximum 4'096 px par côté et 2 millions de pixels."
+msgstr "Logo too large. Maximum 4,096 px per side and 2 million pixels."
+
+#: monitor/branding.py:107
+msgid "SVG invalide ou actif. Utilisez un SVG autonome sans script ni ressource externe."
+msgstr "Invalid or active SVG. Use a self-contained SVG without scripts or external resources."
+
+#: monitor/branding.py:112 monitor/branding.py:115
+msgid "Le logo doit peser au maximum 256 Ko."
+msgstr "The logo must be at most 256 KiB."
+
+#: monitor/branding.py:122
+msgid "Utilisez un logo fixe, sans animation."
+msgstr "Use a static logo without animation."
+
+#: monitor/branding.py:132
+msgid "Le logo doit peser au maximum 256 Ko après conversion en PNG."
+msgstr "The logo must be at most 256 KiB after conversion to PNG."
+
+#: monitor/branding.py:135
+msgid "Image invalide. Choisissez un fichier SVG, PNG, JPEG ou WebP."
+msgstr "Invalid image. Choose an SVG, PNG, JPEG or WebP file."
 
 #: monitor/forms.py:19 monitor/models.py:17
 msgid "URL HTTP(S)"
@@ -62,57 +86,74 @@ msgstr "Name"
 msgid "Identifiant local"
 msgstr "Local username"
 
-#: monitor/forms.py:111
+#: monitor/forms.py:112
+msgid "Nouveau logo"
+msgstr "New logo"
+
+#: monitor/forms.py:113
+msgid "SVG, PNG, JPEG ou WebP · 256 Ko maximum. PNG/JPEG/WebP sont aussi utilisés dans les emails."
+msgstr "SVG, PNG, JPEG or WebP · up to 256 KiB. PNG/JPEG/WebP are also used in emails."
+
+#: monitor/forms.py:116
+#| msgid "Destinataire email par défaut"
+msgid "Revenir au logo par défaut"
+msgstr "Restore the default logo"
+
+#: monitor/forms.py:117
 msgid "Clé serveur Postmark"
 msgstr "Postmark server token"
 
-#: monitor/forms.py:112
+#: monitor/forms.py:118
 msgid "Expéditeur email"
 msgstr "Email sender"
 
-#: monitor/forms.py:113
+#: monitor/forms.py:119
 msgid "Destinataire email par défaut"
 msgstr "Default email recipient"
 
-#: monitor/forms.py:114
+#: monitor/forms.py:120
 msgid "Message Stream Postmark"
 msgstr "Postmark message stream"
 
-#: monitor/forms.py:115
+#: monitor/forms.py:121
 msgid "Webhook Slack"
 msgstr "Slack webhook"
 
-#: monitor/forms.py:116
+#: monitor/forms.py:122
 msgid "Token du bot Telegram"
 msgstr "Telegram bot token"
 
-#: monitor/forms.py:117
+#: monitor/forms.py:123
 msgid "Conversation Telegram par défaut"
 msgstr "Default Telegram chat"
 
-#: monitor/forms.py:118
+#: monitor/forms.py:124
 msgid "Client ID Google"
 msgstr "Google client ID"
 
-#: monitor/forms.py:119
+#: monitor/forms.py:125
 msgid "Client secret Google"
 msgstr "Google client secret"
 
-#: monitor/forms.py:127
+#: monitor/forms.py:133
 msgid "Configuré. Laisser vide pour conserver le secret."
 msgstr "Configured. Leave blank to keep the secret."
 
-#: monitor/forms.py:127
+#: monitor/forms.py:133
 msgid "Non configuré."
 msgstr "Not configured."
 
-#: monitor/forms.py:128
+#: monitor/forms.py:134
 msgid "Effacer ce secret"
 msgstr "Clear this secret"
 
-#: monitor/forms.py:136
+#: monitor/forms.py:142
 msgid "Utilisez un webhook entrant Slack en HTTPS."
 msgstr "Use an HTTPS Slack incoming webhook."
+
+#: monitor/forms.py:153
+msgid "Choisissez un nouveau logo ou le retour au logo par défaut."
+msgstr "Choose either a new logo or restoring the default logo."
 
 #: monitor/invitations.py:37
 msgid "Droits invalides."
@@ -761,7 +802,6 @@ msgid "Historique de disponibilité"
 msgstr "Availability history"
 
 #: monitor/templates/monitor/detail.html:7
-#| msgid "· 90 jours"
 msgid "· 90 jours UTC"
 msgstr "· 90 UTC days"
 
@@ -1041,7 +1081,6 @@ msgid "Supprimer la probe"
 msgstr "Delete probe"
 
 #: monitor/templates/monitor/history_status.html:3
-#| msgid "Conversation du serveur"
 msgid "Conservation de l’historique"
 msgstr "History retention"
 
@@ -1050,7 +1089,6 @@ msgid "Maintenance chaque nuit à 02:00, heure suisse."
 msgstr "Maintenance every night at 02:00 Swiss time."
 
 #: monitor/templates/monitor/history_status.html:6
-#| msgid "Contrôles échoués"
 msgid "Contrôles détaillés"
 msgstr "Detailed checks"
 
@@ -1058,7 +1096,6 @@ msgstr "Detailed checks"
 #: monitor/templates/monitor/history_status.html:7
 #: monitor/templates/monitor/history_status.html:8
 #: monitor/templates/monitor/history_status.html:9
-#| msgid "jour"
 msgid "jours"
 msgstr "days"
 
@@ -1075,7 +1112,6 @@ msgid "Dernier cycle terminé pour les sondes"
 msgstr "Last completed cycle across probes"
 
 #: monitor/templates/monitor/history_status.html:10
-#| msgid "Pas encore vérifié"
 msgid "Pas encore exécuté"
 msgstr "Not run yet"
 
@@ -1084,12 +1120,10 @@ msgid "Maintenance en erreur ou en retard de plus de 48 heures."
 msgstr "Maintenance failed or is more than 48 hours overdue."
 
 #: monitor/templates/monitor/history_status.html:13
-#| msgid "Disponibilité calculée sur les périodes observées. Les périodes sans contrôle restent inconnues."
 msgid "Les incidents sont conservés. Les périodes sans mesure restent inconnues."
 msgstr "Incidents are retained. Periods without observations remain unknown."
 
 #: monitor/templates/monitor/history_status.html:13
-#| msgid "Détails de la probe"
 msgid "Détail par sonde"
 msgstr "Details by probe"
 
@@ -1225,6 +1259,10 @@ msgstr "Connectors, credentials and access levels."
 #: monitor/templates/monitor/platform.html:1
 msgid "Administration Django"
 msgstr "Django administration"
+
+#: monitor/templates/monitor/platform.html:1
+msgid "Logo actuel. Aucun fichier choisi: le logo reste inchangé."
+msgstr "Current logo. Leave the file field empty to keep it."
 
 #: monitor/templates/monitor/platform.html:1
 msgid "Les secrets sont chiffrés en base et ne sont jamais réaffichés. Les changements prennent effet sans redémarrage."
@@ -1390,7 +1428,6 @@ msgid "90 jours"
 msgstr "90 days"
 
 #: monitor/views.py:73
-#| msgid "30 jours"
 msgid "365 jours"
 msgstr "365 days"
 
@@ -1508,30 +1545,34 @@ msgstr "Password saved."
 msgid "Réglages plateforme enregistrés."
 msgstr "Platform settings saved."
 
-#: monitor/views.py:360 monitor/views.py:384
+#: monitor/views.py:332
+msgid "Identité visuelle"
+msgstr "Visual identity"
+
+#: monitor/views.py:361 monitor/views.py:385
 msgid "Au moins un administrateur plateforme doit rester actif."
 msgstr "At least one platform administrator must remain active."
 
-#: monitor/views.py:365
+#: monitor/views.py:366
 msgid "Droits enregistrés."
 msgstr "Access level saved."
 
-#: monitor/views.py:382
+#: monitor/views.py:383
 msgid "Vous ne pouvez pas désactiver ou supprimer votre propre compte."
 msgstr "You cannot disable or delete your own account."
 
-#: monitor/views.py:387
+#: monitor/views.py:388
 msgid "Compte supprimé."
 msgstr "Account deleted."
 
-#: monitor/views.py:396
+#: monitor/views.py:397
 msgid "Compte désactivé."
 msgstr "Account disabled."
 
-#: monitor/views.py:398
+#: monitor/views.py:399
 msgid "Ce compte doit accepter une invitation avant son activation."
 msgstr "This account must accept an invitation before activation."
 
-#: monitor/views.py:402
+#: monitor/views.py:403
 msgid "Compte réactivé."
 msgstr "Account reactivated."

@@ -1,1 +1,1 @@
-{% load static %}<img class="brand-logo" src="{% static 'monitor/brand/logo.svg' %}" width="1068" height="240" alt="beyond the probe" decoding="async">
+{% load static %}<img class="brand-logo" src="{% if platform_logo_url %}{{ platform_logo_url }}{% else %}{% static 'monitor/brand/logo.svg' %}{% endif %}" width="{{ platform_logo_width|default:1068 }}" height="{{ platform_logo_height|default:240 }}" alt="beyond the probe" decoding="async">

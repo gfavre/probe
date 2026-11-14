@@ -108,6 +108,12 @@ class ProfileForm(forms.ModelForm):
 
 
 class PlatformSettingsForm(forms.Form):
+    logo = forms.FileField(
+        label=_('Nouveau logo'), required=False,
+        help_text=_('SVG, PNG, JPEG ou WebP · 256 Ko maximum. PNG/JPEG/WebP sont aussi utilisés dans les emails.'),
+        widget=forms.FileInput(attrs={'accept': '.svg,.png,.jpg,.jpeg,.webp'}),
+    )
+    reset_logo = forms.BooleanField(label=_('Revenir au logo par défaut'), required=False)
     postmark_server_token = forms.CharField(label=_('Clé serveur Postmark'), required=False, widget=forms.PasswordInput)
     email_from = forms.EmailField(label=_('Expéditeur email'), required=False)
     email_to = forms.EmailField(label=_('Destinataire email par défaut'), required=False)
@@ -136,10 +142,22 @@ class PlatformSettingsForm(forms.Form):
             raise forms.ValidationError(_('Utilisez un webhook entrant Slack en HTTPS.'))
         return value
 
+    def clean_logo(self):
+        from .branding import validate_logo
+        upload = self.cleaned_data['logo']
+        return validate_logo(upload) if upload else None
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get('logo') and cleaned.get('reset_logo'):
+            self.add_error('reset_logo', _('Choisissez un nouveau logo ou le retour au logo par défaut.'))
+        return cleaned
+
     def save(self):
         from django.db import transaction
         from .models import PlatformSettings
         from .platform import SETTINGS_PK, PUBLIC_FIELDS, SECRET_FIELDS, decrypt_secrets, encrypt_secrets
+        from .branding import save_logo
         with transaction.atomic():
             record, _created = PlatformSettings.objects.select_for_update().get_or_create(pk=SETTINGS_PK)
             secrets = decrypt_secrets(record.encrypted_secrets)
@@ -151,5 +169,9 @@ class PlatformSettingsForm(forms.Form):
                 elif self.cleaned_data[name]:
                     secrets[name] = self.cleaned_data[name]
             record.encrypted_secrets = encrypt_secrets(secrets)
+            if self.cleaned_data.get('reset_logo'):
+                record.logo = None
+            elif self.cleaned_data.get('logo'):
+                record.logo = save_logo(self.cleaned_data['logo'])
             record.save()
         return record
