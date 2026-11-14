@@ -1,0 +1,16 @@
+{% load i18n %}
+<div class="probe-cards">
+{% for row in rows %}
+<article class="panel probe-card" aria-labelledby="probe-card-{{ row.target.pk }}">
+  <a class="probe-card-title" href="{% url 'target_detail' row.target.pk %}"><h2 id="probe-card-{{ row.target.pk }}">{{ row.target.name }}</h2><span aria-hidden="true">↗</span></a>
+  <p class="probe-card-url">{{ row.target.url }}</p>
+  <div class="probe-card-status"><span class="status {{ row.tone }}"><span class="dot {{ row.tone }}" aria-hidden="true"></span>{{ row.status }}</span><span>{% if row.latest %}<strong>{{ row.latest.duration_ms }}</strong> ms{% else %}—{% endif %}</span></div>
+  <dl class="probe-card-windows">
+  {% for window in row.windows %}<div><dt>{% if forloop.counter == 1 %}{% translate "24 h" %}{% elif forloop.counter == 2 %}{% translate "7 j" %}{% else %}{% translate "30 j" %}{% endif %}</dt><dd>{{ window.uptime }}<small>{{ window.coverage }} {% translate "observés" %}</small></dd></div>{% endfor %}
+  </dl>
+  <div class="probe-card-footer"><span>{% translate "Chaque" %} {{ row.target.interval_minutes }} min · {{ row.target.get_notification_channel_display }}</span>{% if row.latest %}<time datetime="{{ row.latest.checked_at|date:'c' }}">{{ row.latest.checked_at|date:"d.m H:i" }}</time>{% endif %}</div>
+</article>
+{% empty %}
+<div class="panel empty"><h2>{% translate "Aucune probe pour le moment." %}</h2><p>{% translate "Ajoutez une URL pour commencer à suivre sa disponibilité." %}</p>{% if can_edit_probes %}<a href="{% url 'target_create' %}" class="button primary">{% translate "Ajouter une probe" %}</a>{% endif %}</div>
+{% endfor %}
+</div>

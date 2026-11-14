@@ -187,3 +187,13 @@ accessible labels, admin, incident emails and invitations. Escape it as text.
 A renamed installation without a custom logo uses a text wordmark. Do not rename
 internal identifiers, encryption-key derivation prefixes, URLs or cookie names
 when the public name changes.
+
+## Responsive interface
+
+Keep handset rules in `responsive.css`. Use the Menu drawer below 960 px with
+profile/language/logout, keyboard focus containment, Escape, inert background and
+focus return; without JavaScript navigation remains visible. Show probe cards
+below 1,320 px and stacked labelled table records below 760 px. Never require
+horizontal scrolling for the monitoring interface on phones. Preserve table
+semantics and server-side permissions. All page shells include the discreet
+publisher link `© beyond the wall` to `https://beyondthewall.ch`.

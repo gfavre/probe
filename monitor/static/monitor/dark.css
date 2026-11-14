@@ -101,18 +101,7 @@ tbody tr:hover { background: #182039; }
   .sidebar .brand { font-size: 14px; gap: 6px; }
   .sidebar .brand-icon { width: 26px; height: 26px; }
 }
-@media (max-width: 720px) {
-  .sidebar { flex-wrap: wrap; gap: 16px; }
-  .sidebar { width: auto; }
-  .shell { margin-left: 0; }
-  .sidebar .brand { min-height: 0; padding: 0 0 20px; margin-bottom: 0; }
-  .sidebar nav { flex-direction: row; width: 100%; justify-content: space-between; overflow-x: auto; }
-  .sidebar nav a { flex: 1 0 auto; justify-content: center; min-height: 44px; padding: 10px; white-space: nowrap; }
-  .sidebar .nav-icon { display: none; }
-  .sidebar-bottom { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; width: 100%; margin-top: 0; padding: 14px 0 0; }
-  .sidebar-bottom .account { flex: 1; padding-left: 0; margin: 0; }
-  .welcome-page { background-position: 58% center; }
-}
+
 /* Global grid background, with opaque surfaces above it. */
 body:not(.welcome-page):not(.login-page) {
   background: #080c1c url('grid-background.png') center bottom / cover fixed no-repeat;
@@ -157,12 +146,7 @@ body.welcome-page {
 .language-switch button:hover { color: var(--ink); background: #1b2339; }
 .language-switch button[aria-pressed=true] { border-color: #716191; background: #2b2347; color: #e2d8ff; box-shadow: inset 0 1px 0 #ffffff12; }
 .account-panel .logout-form { margin: 0; }
-@media(max-width:720px) {
-  .sidebar .account-panel { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px 12px; }
-  .account-identity { margin-bottom: 0; }
-  .language-switch { margin: 0; align-self: center; }
-  .account-panel .logout-form { grid-column: 1 / -1; }
-}
+
 a.account-identity { padding: 8px; margin: -8px -8px 12px; border-radius: 7px; color: var(--ink); }
 a.account-identity:hover { background: #1b223b; text-decoration: none; }
 .account-copy { flex: 1; }
@@ -171,4 +155,3 @@ a.account-identity:hover { background: #1b223b; text-decoration: none; }
 .profile-layout { display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: 22px; align-items: start; }
 .profile-password { max-width: 650px; }
 @media(max-width:1000px) { .profile-layout { grid-template-columns: 1fr; } }
-@media(max-width:720px) { a.account-identity { margin: -8px; } }

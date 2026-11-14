@@ -3,6 +3,7 @@ import ipaddress
 import logging
 import secrets
 import time
+import sentry_sdk
 
 from django.conf import settings
 from django.core.cache import cache
@@ -81,6 +82,7 @@ class SecurityHeadersMiddleware:
 
     def __call__(self, request):
         request.csp_nonce = secrets.token_urlsafe(24)
+        request.error_event_before = sentry_sdk.last_event_id()
         response = self.get_response(request)
         policy = (
             "default-src 'self'; "

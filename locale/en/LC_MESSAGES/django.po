@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beyond the probe\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-14 20:55+0100\n"
+"POT-Creation-Date: 2026-11-14 21:07+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -204,7 +204,7 @@ msgstr "You can use a local password or your Google account with the same email 
 msgid "Cette invitation n’est plus valable."
 msgstr "This invitation is no longer valid."
 
-#: monitor/models.py:17
+#: monitor/models.py:17 monitor/templates/monitor/invitations.html:1
 msgid "Email"
 msgstr "Email"
 
@@ -370,7 +370,7 @@ msgid "Probe"
 msgstr "Probe"
 
 #: monitor/models.py:58 monitor/templates/monitor/base.html:1
-#: monitor/templates/monitor/base.html:2
+#: monitor/templates/monitor/base.html:4
 #: monitor/templates/monitor/dashboard.html:1
 msgid "Probes"
 msgstr "Probes"
@@ -573,17 +573,30 @@ msgid "Se déconnecter"
 msgstr "Sign out"
 
 #: monitor/templates/monitor/base.html:2
+msgid "Menu"
+msgstr "Menu"
+
+#: monitor/templates/monitor/base.html:4
+msgid "Navigation principale"
+msgstr "Main navigation"
+
+#: monitor/templates/monitor/base.html:4
+#| msgid "Supprimer le compte"
+msgid "Fermer le menu"
+msgstr "Close menu"
+
+#: monitor/templates/monitor/base.html:4
 #: monitor/templates/monitor/detail.html:8
 #: monitor/templates/monitor/incidents.html:1
 msgid "Incidents"
 msgstr "Incidents"
 
-#: monitor/templates/monitor/base.html:2
+#: monitor/templates/monitor/base.html:4
 #: monitor/templates/monitor/invitations.html:1
 msgid "Invitations"
 msgstr "Invitations"
 
-#: monitor/templates/monitor/base.html:2
+#: monitor/templates/monitor/base.html:4
 #: monitor/templates/monitor/platform.html:1
 msgid "Plateforme"
 msgstr "Platform"
@@ -664,23 +677,28 @@ msgid "Alertes"
 msgstr "Alerts"
 
 #: monitor/templates/monitor/dashboard.html:4
+#: monitor/templates/monitor/probe_cards.html:11
 msgid "Chaque"
 msgstr "Every"
 
 #: monitor/templates/monitor/dashboard.html:4
+#: monitor/templates/monitor/probe_cards.html:9
 msgid "observés"
 msgstr "observed"
 
 #: monitor/templates/monitor/dashboard.html:4
+#: monitor/templates/monitor/probe_cards.html:14
 msgid "Aucune probe pour le moment."
 msgstr "No probes yet."
 
 #: monitor/templates/monitor/dashboard.html:4
+#: monitor/templates/monitor/probe_cards.html:14
 msgid "Ajoutez une URL pour commencer à suivre sa disponibilité."
 msgstr "Add a URL to start tracking its availability."
 
 #: monitor/templates/monitor/dashboard.html:4
 #: monitor/templates/monitor/form.html:1 monitor/templates/monitor/form.html:2
+#: monitor/templates/monitor/probe_cards.html:14
 msgid "Ajouter une probe"
 msgstr "Add a probe"
 
@@ -751,14 +769,17 @@ msgid "· millisecondes"
 msgstr "· milliseconds"
 
 #: monitor/templates/monitor/detail.html:5
+#: monitor/templates/monitor/probe_cards.html:9
 msgid "24 h"
 msgstr "24 h"
 
 #: monitor/templates/monitor/detail.html:5
+#: monitor/templates/monitor/probe_cards.html:9
 msgid "7 j"
 msgstr "7 d"
 
 #: monitor/templates/monitor/detail.html:5
+#: monitor/templates/monitor/probe_cards.html:9
 msgid "30 j"
 msgstr "30 d"
 
@@ -1052,7 +1073,6 @@ msgid "Le test envoie un vrai message sur le canal sélectionné. Le canal d’u
 msgstr "The test sends a real message through the selected channel. Each incident keeps its channel until recovery."
 
 #: monitor/templates/monitor/error_base.html:12
-#| msgid "Revenir à la connexion"
 msgid "Revenir à l’accueil"
 msgstr "Return to the home page"
 
@@ -1378,7 +1398,6 @@ msgid "Un signalement automatique a été créé dans notre système de suivi."
 msgstr "An automatic report has been created in our error tracking system."
 
 #: monitor/templates/monitor/server_error.html:5
-#| msgid "Trop de tentatives. Réessayez dans quelques minutes."
 msgid "Vous pouvez revenir à l’accueil et réessayer dans quelques instants."
 msgstr "You can return to the home page and try again in a few moments."
 
@@ -1391,7 +1410,6 @@ msgid "Envoie une alerte de simulation, sans créer d’incident ni modifier les
 msgstr "Sends a simulated alert without creating an incident or changing statistics."
 
 #: monitor/templates/monitor/social_login_error.html:3
-#| msgid "Connexion impossible"
 msgid "Connexion Google impossible"
 msgstr "Google sign-in failed"
 

@@ -222,3 +222,33 @@ The product name is a configurable text value. Use `product_name` from the share
 context in page titles and accessible labels. A renamed installation without a
 custom logo displays a Michroma text wordmark; uploaded logo artwork remains
 unchanged. Email text fallbacks and invitations also use the configured name.
+
+## Mobile and tablet layouts
+
+`monitor/static/monitor/responsive.css` owns responsive navigation and record
+layouts, loaded after the shared component styles. Do not restore competing
+handset sidebar rules in `app.css` or `dark.css`.
+
+At 960 px and below, use a sticky compact identity bar with a Menu button and a
+modal navigation drawer. Keep the profile, language switch and logout inside the
+drawer. Support Escape, a close button, backdrop dismissal, focus containment,
+focus return and inert background content. Without JavaScript, retain visible
+navigation links and account actions. Desktop keeps its sidebar.
+
+At 1,320 px and below, the probe dashboard uses real article cards instead of a
+scrolling table: name, URL, state, response time, three uptime/coverage windows,
+interval, notification channel and last check. Use two columns where space allows,
+one at 640 px and below. Compact dashboard counters on phones; preserve the full
+metrics on probe detail pages.
+
+At 760 px and below, tabular histories, statistics, accounts and invitations become
+stacked records with explicit field labels. Retain table roles and column headers
+for assistive technology. Long names, addresses and URLs wrap within their cells.
+Forms, filters, pagination and actions must fit without horizontal page scrolling.
+Use at least 44 px for primary controls and 16 px input text on phones. Probe tabs
+form a two-column grid, 90-day history forms three rows and chart labels remain
+readable outside the scaled SVG. Keep the established dark palette and fonts.
+
+All page shells, including login, errors and Django admin, include the quiet shared
+`© beyond the wall` link to `https://beyondthewall.ch` at the bottom. It identifies
+the publisher independently of the configurable product name.

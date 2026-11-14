@@ -29,7 +29,10 @@ def error_context():
 
 
 def server_error(request):
-    event_id = sentry_sdk.last_event_id() if sentry_sdk.get_client().is_active() else None
+    client = sentry_sdk.get_client()
+    event_id = sentry_sdk.last_event_id() if client.is_active() and getattr(client, 'transport', None) else None
+    if event_id == getattr(request, 'error_event_before', None):
+        event_id = None
     reference = event_id or uuid.uuid4().hex
     logger.error('Unhandled server error; reference=%s', reference)
     context = {

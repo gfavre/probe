@@ -116,6 +116,16 @@ class ErrorPageTests(TestCase):
         self.assertContains(response, 'signalement automatique', status_code=500)
         self.assertContains(response, 'a' * 32, status_code=500)
 
+    def test_previous_event_is_not_claimed_as_a_new_report(self):
+        request = RequestFactory().get('/broken/')
+        request.error_event_before = 'a' * 32
+        with (patch('monitor.errors.sentry_sdk.get_client') as client,
+              patch('monitor.errors.sentry_sdk.last_event_id', return_value='a' * 32)):
+            client.return_value.is_active.return_value = True
+            response = server_error(request)
+        self.assertNotContains(response, 'signalement automatique', status_code=500)
+        self.assertNotContains(response, 'a' * 32, status_code=500)
+
     def test_sentry_captures_real_django_exception_without_private_runtime_data(self):
         envelopes = []
 

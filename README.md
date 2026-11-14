@@ -363,3 +363,12 @@ Set `SENTRY_DSN` in the server environment to enable error-only reporting for we
 and Celery, optionally `SENTRY_ENVIRONMENT` and `SENTRY_RELEASE`. No request data,
 credentials or runtime variables are exported. See [DEPLOYMENT.md](DEPLOYMENT.md#sentry)
 and [SECURITY.md](SECURITY.md#error-reporting-and-error-pages).
+
+## Mobile interface
+
+Phones and tablets use a Menu drawer containing navigation, profile, language and
+logout. Probe cards replace the wide dashboard table on smaller screens; incident
+history, statistics, accounts and invitations stack into labelled records. The
+drawer supports keyboard focus containment and Escape, with visible navigation
+as a no-JavaScript fallback. The shared publisher credit appears at the bottom of
+public, authenticated, error and administration pages.
