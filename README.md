@@ -4,6 +4,9 @@ A small HTTP monitoring application for a private shared workspace.
 Server-rendered Django, PostgreSQL, Celery/Beat and Redis share a small deployment.
 Application services use one Python slim image, without Node or dependency compilation.
 
+Current stable version: **1.0.0** ([VERSION](VERSION)).
+See [CHANGELOG.md](CHANGELOG.md) for release notes following Keep a Changelog.
+
 ## Design documentation
 
 - [AGENTS.md](AGENTS.md): product context, architecture and business invariants.
@@ -25,7 +28,7 @@ The interface supports French and English.
 - Personal profile and FR/EN interface with automatically saved language preference.
 - Create, edit, pause and delete probes through the interface.
 - Probe details: response chart, average and latest response, TLS expiration,
-  90-day history and statistics over 24 hours, 7, 30 and 90 days.
+  90-day history and statistics over 24 hours, 7, 30, 90 and 365 days.
 - Paginated failure history filtered by HTTP status or network error.
 - Incidents with start, confirmation, end, duration and notification tracking.
 - One notification channel per probe: **Postmark email, Slack or Telegram**.

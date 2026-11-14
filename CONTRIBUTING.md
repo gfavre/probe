@@ -181,3 +181,15 @@ transactions bounded, and coordinate with the existing probe lock. Maintenance
 must be resumable, idempotent and must not send notifications or make HTTP calls.
 Tests must cover missing data, boundaries, paused probes and recovery after
 source deletion. Nightly scheduling uses Europe/Zurich, buckets use UTC.
+
+## Releases and changelog
+
+Maintain [CHANGELOG.md](CHANGELOG.md) in English using
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and Semantic Versioning.
+Write concise, user-facing entries under `Unreleased`, grouped as applicable into
+`Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` and `Security`. Do not dump
+commit logs or add empty category headings.
+
+For a release, move pending entries into a version section dated `YYYY-MM-DD`,
+update the root `VERSION` file and changelog comparison links, and create an
+annotated `v<version>` Git tag on the release commit. Keep `Unreleased` at the top.

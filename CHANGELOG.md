@@ -1,0 +1,57 @@
+# Changelog
+
+This file records notable changes for users and operators.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [1.0.0] - 2026-11-14
+
+### Added
+
+- HTTP(S) probes with configurable 1–5 minute intervals, request methods,
+  authentication, headers, bodies, IP version, TLS validation, redirects and
+  expected responses.
+- Durable failure confirmation after 60 seconds, confirmed incidents and one
+  outage alert followed by recovery through Postmark, Slack or Telegram.
+- HTML and plain-text incident emails with failure diagnostics, readable dates
+  and durations, service identity and links to probe details.
+- Time-weighted uptime, observation coverage, response charts, TLS expiration,
+  filtered failure history and incident statistics. Isolated failures count
+  toward downtime without triggering notifications.
+- Nightly history compaction at 02:00 Europe/Zurich: seven days of detailed checks,
+  30 days of failed checks and hourly statistics, and 365 days of daily statistics.
+  Incident diagnostics remain available after source observations are removed.
+- Invitation-only local and Google authentication, viewer/editor/platform-admin
+  roles, account management, profiles and saved French/English preferences.
+- Configurable product name and logo, shared dark visual identity, mobile
+  navigation drawer, probe cards and stacked histories on small screens.
+- Explicit request tests and outage notification simulations without changing
+  monitoring state or statistics.
+- Optional Sentry reporting for Django and Celery, branded 404/500 pages and
+  technical references for server errors.
+- Docker Compose deployment with PostgreSQL, Redis and Celery Beat, bounded
+  resources, restart support, backup tooling and operational documentation.
+
+### Fixed
+
+- Google consent cancellation returns to login instead of causing a server error;
+  invalid OAuth state remains rejected.
+- HTTPS form submissions preserve same-origin referrers for CSRF validation.
+- Content-hashed assets prevent stale styles after deployment.
+
+### Security
+
+- Enforce server-side roles, CSRF protection, authentication throttling, secure
+  production cookies and browser security headers.
+- Encrypt platform credentials, preserve secrets during settings edits and omit
+  sensitive URLs and request bodies from production access logs.
+- Validate bounded logo uploads, remove raster metadata and isolate public SVG
+  responses with a sandbox policy.
+- Filter Sentry events to omit request data, OAuth parameters, user identity,
+  exception values, source excerpts and local variables.
+
+[Unreleased]: https://github.com/gfavre/probe/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/gfavre/probe/tree/v1.0.0
