@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils import timezone
 from .models import Invitation, UserProfile
 from .notifications import send_notification
+from .platform import product_name
 
 SALT = 'monitor.invitation.v1'
 
@@ -61,11 +62,12 @@ def create_invitation(email, role=None):
 
 
 def send_invitation(invitation):
-    send_notification('Invitation à beyond the probe',
-                      f'Vous avez été invité à accéder à beyond the probe.\n\n'
-                      f'Activez votre compte avec ce lien valable 7 jours:\n{invitation_url(invitation)}\n\n'
-                      'Vous pourrez utiliser un mot de passe local ou votre compte Google avec cette même adresse.',
-                      'email', invitation.email)
+    name = product_name()
+    subject = _('Invitation à %(product)s') % {'product': name}
+    body = _('Vous avez été invité à accéder à %(product)s.') % {'product': name}
+    body += '\n\n' + _('Activez votre compte avec ce lien valable 7 jours:') + '\n' + invitation_url(invitation)
+    body += '\n\n' + _('Vous pourrez utiliser un mot de passe local ou votre compte Google avec cette même adresse.')
+    send_notification(subject, body, 'email', invitation.email)
 
 
 @transaction.atomic

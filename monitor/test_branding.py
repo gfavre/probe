@@ -197,4 +197,84 @@ class BrandingTests(TestCase):
         self.settings.save()
         _, _, html = incident_notification(target, incident)
         self.assertNotIn('/branding/logo/', html)
-        self.assertIn('BEYOND THE PROBE', html)
+        self.assertIn('beyond the probe', html)
+
+
+class ProductNameTests(TestCase):
+    def setUp(self):
+        self.admin = get_user_model().objects.create_user('admin', is_staff=True, is_superuser=True)
+        self.client.force_login(self.admin)
+        self.settings = PlatformSettings.objects.create(pk=1)
+        self.data = {'postmark_message_stream': 'outbound', 'product_name': 'Twisted probe'}
+
+    def test_saved_name_is_shared_by_pages_admin_and_public_landing(self):
+        response = self.client.post('/platform/', self.data)
+        self.assertEqual(response.status_code, 302)
+        self.settings.refresh_from_db()
+        self.assertEqual(self.settings.product_name, 'Twisted probe')
+        for page in ('/', '/platform/', '/admin/', '/login/'):
+            response = self.client.get(page)
+            self.assertContains(response, 'Twisted probe')
+            self.assertNotContains(response, '· beyond the probe')
+        # A built-in wordmark must not display the old name on a renamed installation.
+        self.assertContains(self.client.get('/login/'), 'class="brand-name"')
+        self.client.logout()
+        self.assertContains(self.client.get('/login/'), '<title>Twisted probe</title>', html=True)
+
+    def test_name_is_used_in_email_fallback_plain_text_and_logo_alt(self):
+        self.settings.product_name = 'Twisted probe'
+        self.settings.save()
+        target = Target.objects.create(name='Service', url='https://example.org')
+        incident = Incident.objects.create(target=target, started_at=timezone.now(), confirmed_at=timezone.now())
+        _, body, html = incident_notification(target, incident)
+        self.assertIn('Twisted probe', body)
+        self.assertIn('Twisted probe', html)
+        self.assertNotIn('beyond the probe', html)
+        self.settings.logo = save_logo(validate_logo(raster_upload()))
+        self.settings.save()
+        _, _, html = incident_notification(target, incident)
+        self.assertIn('alt="Twisted probe"', html)
+        self.assertContains(self.client.get('/login/'), 'alt="Twisted probe"')
+        self.assertNotContains(self.client.get('/login/'), 'class="brand-name"')
+
+    def test_missing_name_preserves_it_and_explicit_blank_restores_default(self):
+        self.settings.product_name = 'Twisted probe'
+        self.settings.save()
+        self.client.post('/platform/', {'postmark_message_stream': 'outbound'})
+        self.settings.refresh_from_db()
+        self.assertEqual(self.settings.product_name, 'Twisted probe')
+        self.client.post('/platform/', {**self.data, 'product_name': '  '})
+        self.settings.refresh_from_db()
+        self.assertEqual(self.settings.product_name, 'beyond the probe')
+
+    def test_name_is_escaped_and_invalid_names_are_not_saved(self):
+        name = '<script>alert("brand")</script>'
+        self.client.post('/platform/', {**self.data, 'product_name': name})
+        response = self.client.get('/login/')
+        self.assertNotContains(response, name)
+        self.assertContains(response, '&lt;script&gt;')
+        for invalid in ('x' * 81, 'first\nsecond'):
+            response = self.client.post('/platform/', {**self.data, 'product_name': invalid})
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.context['form']['product_name'].errors)
+        self.settings.refresh_from_db()
+        self.assertEqual(self.settings.product_name, name)
+
+    def test_only_platform_administrators_can_rename(self):
+        user = get_user_model().objects.create_user('editor')
+        UserProfile.objects.create(user=user, role=UserProfile.Role.EDITOR)
+        self.client.force_login(user)
+        self.assertEqual(self.client.post('/platform/', self.data).status_code, 403)
+        self.settings.refresh_from_db()
+        self.assertEqual(self.settings.product_name, 'beyond the probe')
+
+    def test_invitations_use_the_saved_product_name_without_sending_real_mail(self):
+        from unittest.mock import patch
+        from .invitations import create_invitation, send_invitation
+        self.settings.product_name = 'Twisted probe'
+        self.settings.save()
+        invitation = create_invitation('invited@example.org')
+        with patch('monitor.invitations.send_notification') as send:
+            send_invitation(invitation)
+        self.assertIn('Twisted probe', send.call_args.args[0])
+        self.assertIn('Twisted probe', send.call_args.args[1])

@@ -327,9 +327,10 @@ The supplied SVG logo appears on the landing page, navigation and admin. Letteri
 is outlined to preserve Michroma rendering. Both original and production versions
 are kept in `monitor/static/monitor/brand/`.
 
-## Platform logo
+## Platform identity
 
-Platform administrators can upload a logo under **Platform → Visual identity**,
+Platform administrators can edit the product name and upload a logo under
+**Platform → Visual identity**,
 preview the current image, replace it or restore the built-in logo. A blank file
 field preserves the current choice. Saving applies immediately to the landing
 page, shared navigation and Django admin, without rebuilding the image.
@@ -339,8 +340,11 @@ proportions within bounded header heights. Raster images are validated and
 normalized to metadata-free PNG, and are also used in incident emails. SVG is
 reserved for the web interface; emails retain the text brand because SVG support
 is inconsistent across mail clients. Transparent logos with light lettering work
-best on the existing dark background. This setting changes the logo; the product
-name and favicons remain unchanged.
+best on the existing dark background. The name is applied to browser titles, accessible branding, Django admin,
+incident emails and invitations. Blank restores the built-in product name;
+omitted fields in older requests preserve the saved name. Without a custom logo,
+a renamed installation displays its name as text instead of the old built-in
+wordmark. A custom logo retains its own artwork. Favicons remain unchanged.
 
 Logo bytes and immutable versions are stored in PostgreSQL, included in the
 existing database backup and served as public images under `/branding/logo/`.

@@ -2,7 +2,7 @@ from django.utils.translation import gettext_lazy as _
 import re
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import Target, UserProfile
+from .models import DEFAULT_PRODUCT_NAME, Target, UserProfile
 
 
 class ProbeURLField(forms.URLField):
@@ -108,6 +108,10 @@ class ProfileForm(forms.ModelForm):
 
 
 class PlatformSettingsForm(forms.Form):
+    product_name = forms.CharField(
+        label=_('Nom du produit'), required=False, max_length=80,
+        help_text=_('Utilisé dans l’interface et les emails. Vide: retour au nom par défaut.'),
+    )
     logo = forms.FileField(
         label=_('Nouveau logo'), required=False,
         help_text=_('SVG, PNG, JPEG ou WebP · 256 Ko maximum. PNG/JPEG/WebP sont aussi utilisés dans les emails.'),
@@ -146,6 +150,14 @@ class PlatformSettingsForm(forms.Form):
         from .branding import validate_logo
         upload = self.cleaned_data['logo']
         return validate_logo(upload) if upload else None
+
+    def clean_product_name(self):
+        # Older clients saving connectors or logos need not overwrite a saved brand name.
+        value = (self.cleaned_data['product_name'] if 'product_name' in self.data
+                 else self.initial.get('product_name', DEFAULT_PRODUCT_NAME))
+        if any(ord(char) < 32 or ord(char) == 127 for char in value):
+            raise forms.ValidationError(_('Le nom doit tenir sur une seule ligne.'))
+        return value or DEFAULT_PRODUCT_NAME
 
     def clean(self):
         cleaned = super().clean()

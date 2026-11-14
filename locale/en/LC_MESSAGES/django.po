@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beyond the probe\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-14 20:09+0100\n"
+"POT-Creation-Date: 2026-11-14 20:49+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,23 +22,23 @@ msgstr "Logo too large. Maximum 4,096 px per side and 2 million pixels."
 msgid "SVG invalide ou actif. Utilisez un SVG autonome sans script ni ressource externe."
 msgstr "Invalid or active SVG. Use a self-contained SVG without scripts or external resources."
 
-#: monitor/branding.py:112 monitor/branding.py:115
+#: monitor/branding.py:113 monitor/branding.py:116
 msgid "Le logo doit peser au maximum 256 Ko."
 msgstr "The logo must be at most 256 KiB."
 
-#: monitor/branding.py:122
+#: monitor/branding.py:123
 msgid "Utilisez un logo fixe, sans animation."
 msgstr "Use a static logo without animation."
 
-#: monitor/branding.py:132
+#: monitor/branding.py:133
 msgid "Le logo doit peser au maximum 256 Ko après conversion en PNG."
 msgstr "The logo must be at most 256 KiB after conversion to PNG."
 
-#: monitor/branding.py:135
+#: monitor/branding.py:136
 msgid "Image invalide. Choisissez un fichier SVG, PNG, JPEG ou WebP."
 msgstr "Invalid image. Choose an SVG, PNG, JPEG or WebP file."
 
-#: monitor/forms.py:19 monitor/models.py:17
+#: monitor/forms.py:19 monitor/models.py:19
 msgid "URL HTTP(S)"
 msgstr "HTTP(S) URL"
 
@@ -78,7 +78,7 @@ msgstr "Without a saved preference, the interface follows your browser language.
 msgid "Prénom"
 msgstr "First name"
 
-#: monitor/forms.py:100 monitor/models.py:16
+#: monitor/forms.py:100 monitor/models.py:18
 msgid "Nom"
 msgstr "Name"
 
@@ -87,294 +87,326 @@ msgid "Identifiant local"
 msgstr "Local username"
 
 #: monitor/forms.py:112
+msgid "Nom du produit"
+msgstr "Product name"
+
+#: monitor/forms.py:113
+msgid "Utilisé dans l’interface et les emails. Vide: retour au nom par défaut."
+msgstr "Used in the interface and emails. Leave blank to restore the default name."
+
+#: monitor/forms.py:116
 msgid "Nouveau logo"
 msgstr "New logo"
 
-#: monitor/forms.py:113
+#: monitor/forms.py:117
 msgid "SVG, PNG, JPEG ou WebP · 256 Ko maximum. PNG/JPEG/WebP sont aussi utilisés dans les emails."
 msgstr "SVG, PNG, JPEG or WebP · up to 256 KiB. PNG/JPEG/WebP are also used in emails."
 
-#: monitor/forms.py:116
-#| msgid "Destinataire email par défaut"
+#: monitor/forms.py:120
 msgid "Revenir au logo par défaut"
 msgstr "Restore the default logo"
 
-#: monitor/forms.py:117
+#: monitor/forms.py:121
 msgid "Clé serveur Postmark"
 msgstr "Postmark server token"
 
-#: monitor/forms.py:118
+#: monitor/forms.py:122
 msgid "Expéditeur email"
 msgstr "Email sender"
 
-#: monitor/forms.py:119
+#: monitor/forms.py:123
 msgid "Destinataire email par défaut"
 msgstr "Default email recipient"
 
-#: monitor/forms.py:120
+#: monitor/forms.py:124
 msgid "Message Stream Postmark"
 msgstr "Postmark message stream"
 
-#: monitor/forms.py:121
+#: monitor/forms.py:125
 msgid "Webhook Slack"
 msgstr "Slack webhook"
 
-#: monitor/forms.py:122
+#: monitor/forms.py:126
 msgid "Token du bot Telegram"
 msgstr "Telegram bot token"
 
-#: monitor/forms.py:123
+#: monitor/forms.py:127
 msgid "Conversation Telegram par défaut"
 msgstr "Default Telegram chat"
 
-#: monitor/forms.py:124
+#: monitor/forms.py:128
 msgid "Client ID Google"
 msgstr "Google client ID"
 
-#: monitor/forms.py:125
+#: monitor/forms.py:129
 msgid "Client secret Google"
 msgstr "Google client secret"
 
-#: monitor/forms.py:133
+#: monitor/forms.py:137
 msgid "Configuré. Laisser vide pour conserver le secret."
 msgstr "Configured. Leave blank to keep the secret."
 
-#: monitor/forms.py:133
+#: monitor/forms.py:137
 msgid "Non configuré."
 msgstr "Not configured."
 
-#: monitor/forms.py:134
+#: monitor/forms.py:138
 msgid "Effacer ce secret"
 msgstr "Clear this secret"
 
-#: monitor/forms.py:142
+#: monitor/forms.py:146
 msgid "Utilisez un webhook entrant Slack en HTTPS."
 msgstr "Use an HTTPS Slack incoming webhook."
 
-#: monitor/forms.py:153
+#: monitor/forms.py:159
+#| msgid "Le corps doit contenir un JSON valide."
+msgid "Le nom doit tenir sur une seule ligne."
+msgstr "The name must fit on a single line."
+
+#: monitor/forms.py:165
 msgid "Choisissez un nouveau logo ou le retour au logo par défaut."
 msgstr "Choose either a new logo or restoring the default logo."
 
-#: monitor/invitations.py:37
+#: monitor/invitations.py:38
 msgid "Droits invalides."
 msgstr "Invalid access level."
 
-#: monitor/invitations.py:42
+#: monitor/invitations.py:43
 msgid "Un compte existe déjà pour cette adresse."
 msgstr "An account already exists for this email address."
 
-#: monitor/invitations.py:75
+#: monitor/invitations.py:66
+#, python-format
+#| msgid "Invitation pour"
+msgid "Invitation à %(product)s"
+msgstr "Invitation to %(product)s"
+
+#: monitor/invitations.py:67
+#, python-format
+msgid "Vous avez été invité à accéder à %(product)s."
+msgstr "You have been invited to access %(product)s."
+
+#: monitor/invitations.py:68
+#| msgid "Invitation envoyée. Le lien est valable 7 jours."
+msgid "Activez votre compte avec ce lien valable 7 jours:"
+msgstr "Activate your account using this link, valid for 7 days:"
+
+#: monitor/invitations.py:69
+msgid "Vous pourrez utiliser un mot de passe local ou votre compte Google avec cette même adresse."
+msgstr "You can use a local password or your Google account with the same email address."
+
+#: monitor/invitations.py:77
 msgid "Cette invitation n’est plus valable."
 msgstr "This invitation is no longer valid."
 
-#: monitor/models.py:15
+#: monitor/models.py:17
 msgid "Email"
 msgstr "Email"
 
-#: monitor/models.py:15
+#: monitor/models.py:17
 msgid "Slack"
 msgstr "Slack"
 
-#: monitor/models.py:15
+#: monitor/models.py:17
 msgid "Telegram"
 msgstr "Telegram"
 
-#: monitor/models.py:18 monitor/templates/monitor/detail.html:9
+#: monitor/models.py:20 monitor/templates/monitor/detail.html:9
 msgid "Notes"
 msgstr "Notes"
 
-#: monitor/models.py:19
+#: monitor/models.py:21
 msgid "Surveillance active"
 msgstr "Monitoring enabled"
 
-#: monitor/models.py:20
+#: monitor/models.py:22
 msgid "Intervalle en minutes"
 msgstr "Interval in minutes"
 
-#: monitor/models.py:22
+#: monitor/models.py:24
 msgid "Échecs consécutifs avant alerte"
 msgstr "Consecutive failures before alert"
 
-#: monitor/models.py:23
+#: monitor/models.py:25
 msgid "Au moins deux échecs avant de confirmer une panne."
 msgstr "At least two failures before confirming an outage."
 
-#: monitor/models.py:25
+#: monitor/models.py:27
 msgid "Délai avant alerte en minutes"
 msgstr "Notification delay in minutes"
 
-#: monitor/models.py:26
+#: monitor/models.py:28
 msgid "Canal de notification"
 msgstr "Notification channel"
 
-#: monitor/models.py:27
+#: monitor/models.py:29
 msgid "Destinataire email"
 msgstr "Email recipient"
 
-#: monitor/models.py:27
+#: monitor/models.py:29
 msgid "Vide: utiliser le destinataire configuré sur le serveur."
 msgstr "Leave blank to use the default server recipient."
 
-#: monitor/models.py:28
+#: monitor/models.py:30
 msgid "Conversation Telegram"
 msgstr "Telegram chat"
 
-#: monitor/models.py:28
+#: monitor/models.py:30
 msgid "Vide: utiliser la conversation configurée sur le serveur."
 msgstr "Leave blank to use the default server chat."
 
-#: monitor/models.py:29
+#: monitor/models.py:31
 msgid "Timeout en secondes"
 msgstr "Timeout in seconds"
 
-#: monitor/models.py:30
+#: monitor/models.py:32
 msgid "Version IP"
 msgstr "IP version"
 
-#: monitor/models.py:30
+#: monitor/models.py:32
 msgid "IPv4 ou IPv6"
 msgstr "IPv4 or IPv6"
 
-#: monitor/models.py:30
+#: monitor/models.py:32
 msgid "IPv4"
 msgstr "IPv4"
 
-#: monitor/models.py:30
+#: monitor/models.py:32
 msgid "IPv6"
 msgstr "IPv6"
 
-#: monitor/models.py:31
+#: monitor/models.py:33
 msgid "Vérifier le certificat TLS"
 msgstr "Verify TLS certificate"
 
-#: monitor/models.py:32
+#: monitor/models.py:34
 msgid "Suivre les redirections"
 msgstr "Follow redirects"
 
-#: monitor/models.py:33
+#: monitor/models.py:35
 msgid "Contourner le cache"
 msgstr "Bypass cache"
 
-#: monitor/models.py:34
+#: monitor/models.py:36
 msgid "Méthode HTTP"
 msgstr "HTTP method"
 
-#: monitor/models.py:35
+#: monitor/models.py:37
 msgid "Authentification HTTP"
 msgstr "HTTP authentication"
 
-#: monitor/models.py:35
+#: monitor/models.py:37
 msgid "Aucune"
 msgstr "None"
 
-#: monitor/models.py:35
+#: monitor/models.py:37
 msgid "Basic"
 msgstr "Basic"
 
-#: monitor/models.py:35
+#: monitor/models.py:37
 msgid "Bearer"
 msgstr "Bearer"
 
-#: monitor/models.py:36
+#: monitor/models.py:38
 msgid "Identifiant HTTP"
 msgstr "HTTP username"
 
-#: monitor/models.py:37
+#: monitor/models.py:39
 msgid "Mot de passe HTTP"
 msgstr "HTTP password"
 
-#: monitor/models.py:38
+#: monitor/models.py:40
 msgid "Jeton Bearer"
 msgstr "Bearer token"
 
-#: monitor/models.py:39
+#: monitor/models.py:41
 msgid "Format du corps"
 msgstr "Body format"
 
-#: monitor/models.py:39
+#: monitor/models.py:41
 msgid "Texte brut"
 msgstr "Raw text"
 
-#: monitor/models.py:39
+#: monitor/models.py:41
 msgid "JSON"
 msgstr "JSON"
 
-#: monitor/models.py:39
+#: monitor/models.py:41
 msgid "Formulaire"
 msgstr "Form data"
 
-#: monitor/models.py:40
+#: monitor/models.py:42
 msgid "Corps de la requête"
 msgstr "Request body"
 
-#: monitor/models.py:41
+#: monitor/models.py:43
 msgid "En-têtes de la requête"
 msgstr "Request headers"
 
-#: monitor/models.py:42
+#: monitor/models.py:44
 msgid "Codes HTTP acceptés"
 msgstr "Accepted HTTP status codes"
 
-#: monitor/models.py:43
+#: monitor/models.py:45
 msgid "Texte attendu dans la réponse"
 msgstr "Expected response text"
 
-#: monitor/models.py:44
+#: monitor/models.py:46
 msgid "Ignorer la casse"
 msgstr "Ignore case"
 
-#: monitor/models.py:45
+#: monitor/models.py:47
 msgid "En-têtes attendus dans la réponse"
 msgstr "Expected response headers"
 
-#: monitor/models.py:55 monitor/templates/monitor/dashboard.html:4
+#: monitor/models.py:57 monitor/templates/monitor/dashboard.html:4
 #: monitor/templates/monitor/incidents.html:1
 msgid "Probe"
 msgstr "Probe"
 
-#: monitor/models.py:56 monitor/templates/monitor/base.html:1
+#: monitor/models.py:58 monitor/templates/monitor/base.html:1
 #: monitor/templates/monitor/base.html:2
 #: monitor/templates/monitor/dashboard.html:1
 msgid "Probes"
 msgstr "Probes"
 
-#: monitor/models.py:70
+#: monitor/models.py:72
 msgid "Le corps doit contenir un JSON valide."
 msgstr "The body must contain valid JSON."
 
-#: monitor/models.py:75
+#: monitor/models.py:77
 msgid "Utilisez le format clé=valeur&autre=valeur."
 msgstr "Use the key=value&other=value format."
 
-#: monitor/models.py:77
+#: monitor/models.py:79
 msgid "Indiquez l’identifiant HTTP."
 msgstr "Enter the HTTP username."
 
-#: monitor/models.py:79
+#: monitor/models.py:81
 msgid "Indiquez le jeton Bearer."
 msgstr "Enter the Bearer token."
 
-#: monitor/models.py:81
+#: monitor/models.py:83
 msgid "Un contrôle HEAD ne renvoie pas de corps. Choisissez GET pour chercher un texte."
 msgstr "HEAD checks do not return a body. Choose GET to search for text."
 
-#: monitor/models.py:181
+#: monitor/models.py:183
 msgid "Consultation"
 msgstr "Read-only"
 
-#: monitor/models.py:182
+#: monitor/models.py:184
 msgid "Gestion des sondes"
 msgstr "Probe management"
 
-#: monitor/models.py:183
+#: monitor/models.py:185
 msgid "Administration plateforme"
 msgstr "Platform administration"
 
-#: monitor/models.py:186
+#: monitor/models.py:188
 msgid "Français"
 msgstr "Français"
 
-#: monitor/models.py:187
+#: monitor/models.py:189
 msgid "English"
 msgstr "English"
 
@@ -468,7 +500,7 @@ msgstr "Incident"
 msgid "Les durées sont mesurées entre les contrôles; elles ne donnent pas l’instant exact de la panne."
 msgstr "Durations are measured between checks; they do not identify the exact moment of an outage."
 
-#: monitor/notifications.py:117 monitor/templates/monitor/email/incident.html:9
+#: monitor/notifications.py:118 monitor/templates/monitor/email/incident.html:9
 msgid "Voir la sonde"
 msgstr "View probe"
 
@@ -510,8 +542,9 @@ msgid "Activer le compte local"
 msgstr "Activate local account"
 
 #: monitor/templates/monitor/access_denied.html:1
-msgid "Accès refusé · beyond the probe"
-msgstr "Access denied · beyond the probe"
+#| msgid "Accès"
+msgid "Accès refusé"
+msgstr "Access denied"
 
 #: monitor/templates/monitor/access_denied.html:1
 msgid "Ce compte n’a pas accès."
@@ -533,10 +566,6 @@ msgstr "Edit profile"
 #: monitor/templates/monitor/account_panel.html:1
 msgid "Se déconnecter"
 msgstr "Sign out"
-
-#: monitor/templates/monitor/base.html:1
-msgid "· beyond the probe"
-msgstr "· beyond the probe"
 
 #: monitor/templates/monitor/base.html:2
 #: monitor/templates/monitor/detail.html:8
@@ -1576,3 +1605,9 @@ msgstr "This account must accept an invitation before activation."
 #: monitor/views.py:403
 msgid "Compte réactivé."
 msgstr "Account reactivated."
+
+#~ msgid "Accès refusé · beyond the probe"
+#~ msgstr "Access denied · beyond the probe"
+
+#~ msgid "· beyond the probe"
+#~ msgstr "· beyond the probe"

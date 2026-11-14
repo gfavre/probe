@@ -217,3 +217,8 @@ intrinsic dimensions. Preserve proportions with `object-fit: contain`; constrain
 header height for square and tall logos instead of cropping or stretching them.
 The settings preview uses the same component on a dark surface. Keep the default
 asset as the fallback and retain immutable URLs for previously sent emails.
+
+The product name is a configurable text value. Use `product_name` from the shared
+context in page titles and accessible labels. A renamed installation without a
+custom logo displays a Michroma text wordmark; uploaded logo artwork remains
+unchanged. Email text fallbacks and invitations also use the configured name.

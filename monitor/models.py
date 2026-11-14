@@ -9,6 +9,8 @@ from django.db.models import Q
 from django.utils import timezone
 from .validators import validate_target_url, validate_headers, validate_status_codes
 
+DEFAULT_PRODUCT_NAME = 'beyond the probe'
+
 
 class Target(models.Model):
     CONFIRMATION_DELAY_SECONDS = 60
@@ -204,6 +206,7 @@ class BrandingLogo(models.Model):
 
 
 class PlatformSettings(models.Model):
+    product_name = models.CharField(max_length=80, default=DEFAULT_PRODUCT_NAME)
     logo = models.ForeignKey(BrandingLogo, on_delete=models.SET_NULL, null=True, blank=True,
                              related_name='platform_settings')
     email_from = models.EmailField(blank=True)
@@ -215,4 +218,4 @@ class PlatformSettings(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return 'beyond the probe'
+        return self.product_name

@@ -99,3 +99,7 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   .sidebar .brand-logo { width: min(300px, 100%); }
   .welcome-header .brand { width: min(340px, 100%); }
 }
+
+/* A renamed installation without a custom wordmark uses its display name. */
+.brand-name { display: block; font-family: var(--font-heading); font-size: 16px; line-height: 1.6; overflow-wrap: anywhere; }
+.welcome-header .brand-name { font-size: 24px; }

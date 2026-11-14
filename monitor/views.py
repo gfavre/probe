@@ -329,7 +329,7 @@ def platform_settings(request):
         return redirect('platform_settings')
     accounts = [{'user': user, 'role': access_role(user) if user.is_active else getattr(getattr(user, 'profile', None), 'role', UserProfile.Role.VIEWER)} for user in get_user_model().objects.select_related('profile', 'invitation').order_by('username')]
     groups = [
-        (_('Identité visuelle'), ['logo', 'reset_logo']),
+        (_('Identité visuelle'), ['product_name', 'logo', 'reset_logo']),
         ('Postmark', ['postmark_server_token', 'clear_postmark_server_token', 'email_from', 'email_to', 'postmark_message_stream']),
         ('Slack', ['slack_webhook_url', 'clear_slack_webhook_url']),
         ('Telegram', ['telegram_bot_token', 'clear_telegram_bot_token', 'telegram_chat_id']),

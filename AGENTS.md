@@ -180,3 +180,10 @@ Reuse the shared logo component on landing, navigation and Django admin. Raster
 logos also appear in incident emails; SVG uses the existing text fallback there.
 Preserve aspect ratios and bound header heights. Blank uploads preserve the
 current logo; explicit reset restores the built-in asset.
+
+The public product name is editable alongside the logo, defaults to the built-in
+name and is limited to one line of 80 characters. Reuse the saved name in titles,
+accessible labels, admin, incident emails and invitations. Escape it as text.
+A renamed installation without a custom logo uses a text wordmark. Do not rename
+internal identifiers, encryption-key derivation prefixes, URLs or cookie names
+when the public name changes.

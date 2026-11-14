@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.formats import date_format, number_format
 from django.utils.translation import gettext as _
-from .platform import platform_values
+from .platform import platform_values, product_name
 
 
 @sensitive_variables()
@@ -113,7 +113,8 @@ def incident_notification(target, incident, *, recovered=False):
     rows.append((_('Incident'), f'#{incident.pk}'))
     url = settings.PUBLIC_URL.rstrip('/') + reverse('target_detail', args=[target.pk])
     note = _('Les durées sont mesurées entre les contrôles; elles ne donnent pas l’instant exact de la panne.')
-    body = title + '\n\n' + '\n'.join(f'{label}: {value}' for label, value in rows)
+    brand_name = product_name()
+    body = brand_name + '\n\n' + title + '\n\n' + '\n'.join(f'{label}: {value}' for label, value in rows)
     body += f'\n\n{note}\n\n' + _('Voir la sonde') + f': {url}'
     from .branding import logo_options
     branding = logo_options(email=True)
@@ -124,6 +125,7 @@ def incident_notification(target, incident, *, recovered=False):
                                                                 / branding['platform_logo_height'])))
     html = render_to_string('monitor/email/incident.html', {
         **branding,
+        'product_name': brand_name,
         'title': title, 'service': service_name, 'rows': rows, 'url': url,
         'note': note, 'recovered': recovered, 'elapsed': elapsed,
     })

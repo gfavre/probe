@@ -1,1 +1,2 @@
-{% load static %}<img class="brand-logo" src="{% if platform_logo_url %}{{ platform_logo_url }}{% else %}{% static 'monitor/brand/logo.svg' %}{% endif %}" width="{{ platform_logo_width|default:1068 }}" height="{{ platform_logo_height|default:240 }}" alt="beyond the probe" decoding="async">
+{% load static %}{% if product_name_custom and not platform_logo_custom %}<span class="brand-name">{{ product_name }}</span>{% else %}<img class="brand-logo" src="{% if platform_logo_url %}{{ platform_logo_url }}{% else %}{% static 'monitor/brand/logo.svg' %}{% endif %}" width="{{ platform_logo_width|default:1068 }}" height="{{ platform_logo_height|default:240 }}" alt="{{ product_name }}" decoding="async">
+{% endif %}
