@@ -4,7 +4,7 @@ A small HTTP monitoring application for a private shared workspace.
 Server-rendered Django, PostgreSQL, Celery/Beat and Redis share a small deployment.
 Application services use one Python slim image, without Node or dependency compilation.
 
-Current stable version: **1.0.0** ([VERSION](VERSION)).
+Current stable version: **1.0.1** ([VERSION](VERSION)).
 See [CHANGELOG.md](CHANGELOG.md) for release notes following Keep a Changelog.
 
 ## Design documentation
@@ -246,8 +246,9 @@ response time. Incidents retain their timestamps and accepted notifications.
 Failure history supports pagination and filtering.
 
 A result covers time until the next check, capped at the interval configured
-when that result was recorded. Uptime is healthy time divided by observed time;
-coverage is observed time divided by the reporting period. Time before probe
+when that result was recorded. Uptime is healthy time divided by observed time.
+Internally, coverage is observed time divided by the reporting period; this
+secondary percentage is not displayed in the interface. Time before probe
 creation is excluded. Unobserved periods remain unknown, never assumed healthy.
 Every failed check counts toward uptime, including failures below the alert
 threshold. Incident duration reflects confirmed incidents and can differ from

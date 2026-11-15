@@ -147,6 +147,15 @@ class ErrorPageTests(TestCase):
 
 
 class ErrorReportingTests(SimpleTestCase):
+    def test_static_history_error_code_survives_redaction_without_exception_runtime_values(self):
+        from .exceptions import HistoryErrorCode, HistoryIntegrityError
+        error = HistoryIntegrityError(HistoryErrorCode.MISSING_HOURLY)
+        error.args = ('private-credential-value',)
+        event = {'exception': {'values': [{'type': 'HistoryIntegrityError', 'value': str(error)}]}}
+        safe = private_error_event(event, {'exc_info': (type(error), error, None)})
+        self.assertEqual(safe['exception']['values'][0]['value'], HistoryErrorCode.MISSING_HOURLY.value)
+        self.assertNotIn('private-credential-value', json.dumps(safe))
+
     def test_disabled_reporting_does_not_initialize_sdk(self):
         with patch('monitor.error_reporting.sentry_sdk.init') as initialize:
             configure_error_reporting('')

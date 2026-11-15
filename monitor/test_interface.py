@@ -63,3 +63,10 @@ class InterfaceTests(TestCase):
         cells = [attrs for tag, attrs in elements if tag == 'td' and 'colspan' not in attrs]
         self.assertTrue(cells)
         self.assertTrue(all(attrs.get('role') == 'cell' and attrs.get('data-label') for attrs in cells))
+
+    def test_monitoring_pages_show_availability_without_secondary_coverage_percentage(self):
+        self.client.force_login(self.admin)
+        for page in ('/', f'/probes/{self.target.pk}/'):
+            response = self.client.get(page)
+            self.assertNotContains(response, 'observés')
+            self.assertNotContains(response, 'Couverture')

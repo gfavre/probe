@@ -5,6 +5,7 @@ import sentry_sdk
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
+from .exceptions import HistoryIntegrityError
 
 # Keep code locations for diagnosis, never frame locals or captured HTTP/SQL breadcrumbs.
 FRAME_FIELDS = ('filename', 'module', 'function', 'lineno', 'in_app')
@@ -15,12 +16,15 @@ def private_error_event(event, hint):
     """Allowlist outgoing fields instead of guessing every possible secret key."""
     result = {key: event[key] for key in EVENT_FIELDS if key in event}
     values = []
+    exception = (hint.get('exc_info') or (None, None, None))[1]
     for error in event.get('exception', {}).get('values', []):
         frames = [{key: frame[key] for key in FRAME_FIELDS if key in frame}
                   for frame in error.get('stacktrace', {}).get('frames', [])]
         values.append({
             'type': error.get('type', 'Error'), 'module': error.get('module'),
-            'value': 'Unhandled error; runtime values omitted to protect credentials.',
+            'value': (exception.code.value
+                      if isinstance(exception, HistoryIntegrityError) and error.get('type') == 'HistoryIntegrityError'
+                      else 'Unhandled error; runtime values omitted to protect credentials.'),
             'stacktrace': {'frames': frames},
             'mechanism': {'type': 'generic', 'handled': False},
         })

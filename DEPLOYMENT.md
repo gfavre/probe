@@ -416,7 +416,7 @@ For the first rollout, back up PostgreSQL, apply migrations, run `--no-purge`,
 compare raw and aggregated statistics, then run normal maintenance. Each hourly
 batch is checked against its raw source. Missing aggregates refuse the related
 purge, and a failed batch does not advance its watermark. Worker failures are
-recorded as exception class names without secret diagnostics. The platform page
+recorded as static integrity codes or exception class names without secret diagnostics. The platform page
 shows retention, row counts, table/index sizes, failures and delays over 48 hours;
 Django admin exposes read-only per-probe progress. Check the worker logs for
 unexpected failures.

@@ -60,6 +60,51 @@ class HistoryTests(TestCase):
         self.assertTrue(self.target.checks.filter(healthy=False, checked_at=recent_failure).exists())
         self.assertFalse(self.target.checks.filter(healthy=False, checked_at__lt=self.now - DAY * 30).exists())
 
+    def make_recent_probe(self, age=2):
+        self.start = self.now - DAY * age
+        Target.objects.filter(pk=self.target.pk).update(created_at=self.start)
+        self.target.refresh_from_db()
+
+    def test_next_night_accepts_existing_cutoffs_older_than_probe_creation(self):
+        self.make_recent_probe()
+        self.check(self.start + timedelta(minutes=1))
+        self.check(self.now - timedelta(minutes=1))
+        self.run_maintenance()
+        state = HistoryState.objects.get(target=self.target)
+        self.assertLess(state.raw_before, self.target.created_at)
+        HistoryState.objects.filter(pk=state.pk).update(last_error='ValueError')
+        self.now += DAY
+        self.run_maintenance()
+        state.refresh_from_db()
+        self.assertEqual(state.last_error, '')
+        self.assertEqual(state.last_success_at, self.now)
+        self.assertEqual(state.deleted_checks, 0)
+        self.assertEqual(self.target.checks.count(), 2)
+
+    def test_young_probe_without_checks_stays_unknown_across_nightly_runs(self):
+        self.make_recent_probe(age=1)
+        self.run_maintenance()
+        self.now += DAY
+        self.run_maintenance()
+        stats = HistoryReader(self.target, self.now).stats(self.start, self.now)
+        self.assertEqual(stats['uptime'], '—')
+        self.assertEqual(stats['coverage'], '0.0%')
+        self.assertFalse(self.target.checks.exists())
+
+    def test_young_probe_can_age_into_raw_retention_without_losing_statistics(self):
+        self.make_recent_probe()
+        for offset in (1, 4, 7):
+            self.check(self.start + timedelta(minutes=offset))
+        self.run_maintenance()
+        self.now += DAY * 8
+        self.check(self.now - timedelta(minutes=1))
+        expected = availability(list(self.target.checks.order_by('checked_at')), self.start, self.now)
+        self.run_maintenance()
+        stats = HistoryReader(self.target, self.now).stats(self.start, self.now)
+        self.assertEqual(stats['uptime'], expected['uptime'])
+        self.assertEqual(stats['coverage'], expected['coverage'])
+        self.assertEqual(HistoryState.objects.get(target=self.target).deleted_checks, 2)
+
     def test_crossing_midnight_and_hour_uses_split_durations_but_single_count(self):
         boundary = self.start + DAY
         self.check(boundary - timedelta(seconds=30), False, coverage=60)
@@ -188,7 +233,7 @@ class HistoryTests(TestCase):
             maintain_target(self.target.pk, now=self.now)
         self.assertTrue(Check.objects.filter(pk=check.pk).exists())
         self.assertIsNone(HistoryState.objects.get(target=self.target).raw_before)
-        self.assertEqual(HistoryState.objects.get(target=self.target).last_error, 'ValueError')
+        self.assertEqual(HistoryState.objects.get(target=self.target).last_error, 'MISSING_HOURLY')
 
     def test_spring_clock_change_has_a_three_oclock_catch_up_only_that_night(self):
         from .tasks import maintain_history_dst

@@ -83,8 +83,8 @@ confirmation.
 - Distinguish current status, confirmed incidents and missing observations.
 - Uptime describes observed time. A check covers at most its configured interval;
   unobserved periods remain unknown.
-- Show coverage alongside uptime. Never report a paused probe, future period or
-  absence of data as 100% available.
+- Keep observation coverage as an internal calculation, without a secondary
+  percentage in the interface. Never report missing data as 100% available.
 - Every failure affects uptime, even before the alert threshold.
 - Statistics use all relevant observations; charts may reduce displayed points.
 - Periodic checks cannot measure exact outage duration between observations.

@@ -146,10 +146,11 @@ profiling, session tracking and SDK log export are disabled.
 
 Before sending an event, an allowlist retains exception classes and code locations
 (filename/module/function/line), plus event identity, level, environment and
-release. It drops exception values, source excerpts, frame locals, HTTP URLs,
+release. It drops runtime exception values, source excerpts, frame locals, HTTP URLs,
 OAuth parameters, headers, cookies, request bodies, user identity, breadcrumbs,
-SQL and arbitrary extra/context data. This deliberately trades detailed runtime
-values for credential safety. Diagnose private runtime details on the protected
+SQL and arbitrary extra/context data. Static history-integrity error codes remain readable; they are validated enum
+values, never arbitrary exception messages. This deliberately trades detailed
+runtime values for credential safety. Diagnose private runtime details on the protected
 server when necessary. SDK transport metadata is handled by Sentry itself.
 
 The 500 page uses no application context processors and falls back to built-in

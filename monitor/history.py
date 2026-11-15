@@ -7,6 +7,7 @@ from django.db.models import Min, Q
 from django.utils import timezone
 
 from .models import Check, DailyProbeStats, HistoryState, HourlyProbeStats, Target
+from .exceptions import HistoryErrorCode, HistoryIntegrityError
 
 HOUR = timedelta(hours=1)
 DAY = timedelta(days=1)
@@ -96,7 +97,7 @@ def observation_stats(checks, start, end, created_at):
 def validate_stats(values):
     known = values['up_seconds'] + values['down_seconds']
     if known < 0 or known > values['observable_seconds'] + 0.001:
-        raise ValueError('Invalid observation coverage')
+        raise HistoryIntegrityError(HistoryErrorCode.INVALID_COVERAGE)
 
 
 def maintenance_status(now):
@@ -141,7 +142,8 @@ def maintain_target(pk, *, now=None, purge=True):
         HistoryState.objects.filter(target_id=pk).update(last_started_at=now)
         return _maintain_target(pk, now, purge)
     except Exception as exc:
-        HistoryState.objects.filter(target_id=pk).update(last_error=type(exc).__name__)
+        error = exc.code.name if isinstance(exc, HistoryIntegrityError) else type(exc).__name__
+        HistoryState.objects.filter(target_id=pk).update(last_error=error)
         raise
     finally:
         with connection.cursor() as cursor:
@@ -174,7 +176,7 @@ def _maintain_target(pk, now, purge):
             direct = observation_stats(checks, start, end, target.created_at)
             rolled = combine(rows)
             if any(abs(direct[field] - rolled[field]) > 0.001 for field in SUM_FIELDS):
-                raise ValueError('Hourly rollup differs from source observations')
+                raise HistoryIntegrityError(HistoryErrorCode.HOURLY_MISMATCH)
             HourlyProbeStats.objects.bulk_create(rows, update_conflicts=True, unique_fields=['target', 'started_at'],
                                                  update_fields=[*SUM_FIELDS, 'response_min_ms', 'response_max_ms',
                                                                 'calculated_at', 'calculation_version'])
@@ -187,7 +189,7 @@ def _maintain_target(pk, now, purge):
             hours = list(HourlyProbeStats.objects.filter(target=target, started_at__gte=start, started_at__lt=end))
             expected = int((end - max(start, origin)).total_seconds() / 3600)
             if len(hours) != expected:
-                raise ValueError('Incomplete hourly source')
+                raise HistoryIntegrityError(HistoryErrorCode.INCOMPLETE_HOURS)
             values = combine(hours)
             validate_stats(values)
             DailyProbeStats.objects.update_or_create(target=target, started_at=start, defaults=values)
@@ -207,19 +209,21 @@ def _maintain_target(pk, now, purge):
             daily_cutoff = day_start(now - DAY * settings.DAILY_RETENTION_DAYS)
             raw_cutoff = max(state.raw_before or raw_cutoff, raw_cutoff)
             hourly_cutoff = max(state.hourly_before or hourly_cutoff, hourly_cutoff)
-            required_start = max(state.raw_before or origin, state.hourly_before or origin)
+            # A young probe may have retention cutoffs earlier than its creation.
+            # Never require aggregate rows for time before its first possible bucket.
+            required_start = max(origin, state.raw_before or origin, state.hourly_before or origin)
             expected = max(0, int((raw_cutoff - required_start).total_seconds() / 3600))
             available = HourlyProbeStats.objects.filter(
                 target=target, started_at__gte=required_start, started_at__lt=raw_cutoff,
             ).count()
             if available != expected:
-                raise ValueError('Missing hourly aggregates; purge refused')
+                raise HistoryIntegrityError(HistoryErrorCode.MISSING_HOURLY)
             required_start = max(day_start(origin), state.hourly_before or day_start(origin))
             expected = max(0, (hourly_cutoff - required_start).days)
             if DailyProbeStats.objects.filter(
                 target=target, started_at__gte=required_start, started_at__lt=hourly_cutoff,
             ).count() != expected:
-                raise ValueError('Missing daily aggregates; purge refused')
+                raise HistoryIntegrityError(HistoryErrorCode.MISSING_DAILY)
             # Retain the left-boundary anchor and latest observation, including paused probes.
             anchor = target.checks.filter(checked_at__lt=raw_cutoff).order_by('-checked_at', '-pk').first()
             latest = target.checks.order_by('-checked_at', '-pk').first()

@@ -6,7 +6,7 @@
   <p class="probe-card-url">{{ row.target.url }}</p>
   <div class="probe-card-status"><span class="status {{ row.tone }}"><span class="dot {{ row.tone }}" aria-hidden="true"></span>{{ row.status }}</span><span>{% if row.latest %}<strong>{{ row.latest.duration_ms }}</strong> ms{% else %}—{% endif %}</span></div>
   <dl class="probe-card-windows">
-  {% for window in row.windows %}<div><dt>{% if forloop.counter == 1 %}{% translate "24 h" %}{% elif forloop.counter == 2 %}{% translate "7 j" %}{% else %}{% translate "30 j" %}{% endif %}</dt><dd>{{ window.uptime }}<small>{{ window.coverage }} {% translate "observés" %}</small></dd></div>{% endfor %}
+  {% for window in row.windows %}<div><dt>{% if forloop.counter == 1 %}{% translate "24 h" %}{% elif forloop.counter == 2 %}{% translate "7 j" %}{% else %}{% translate "30 j" %}{% endif %}</dt><dd>{{ window.uptime }}</dd></div>{% endfor %}
   </dl>
   <div class="probe-card-footer"><span>{% translate "Chaque" %} {{ row.target.interval_minutes }} min · {{ row.target.get_notification_channel_display }}</span>{% if row.latest %}<time datetime="{{ row.latest.checked_at|date:'c' }}">{{ row.latest.checked_at|date:"d.m H:i" }}</time>{% endif %}</div>
 </article>

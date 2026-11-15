@@ -114,7 +114,8 @@ Start each page with an informative heading and, where useful, a back link and
 one primary action. Keep useful technical labels beside their values instead
 of adding a redundant header.
 
-The dashboard shows status, latest observation, uptime and coverage. Probe
+The dashboard shows status, latest observation and availability. Do not display
+a second observation-coverage percentage. Probe
 pages organize overview, failed checks, alerts and settings. There is no location tab.
 
 The landing page stays minimal: logo, illustration, Google and local sign-in.
@@ -236,7 +237,7 @@ focus return and inert background content. Without JavaScript, retain visible
 navigation links and account actions. Desktop keeps its sidebar.
 
 At 1,320 px and below, the probe dashboard uses real article cards instead of a
-scrolling table: name, URL, state, response time, three uptime/coverage windows,
+scrolling table: name, URL, state, response time, three availability windows,
 interval, notification channel and last check. Use two columns where space allows,
 one at 640 px and below. Compact dashboard counters on phones; preserve the full
 metrics on probe detail pages.

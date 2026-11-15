@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-15
+
+### Fixed
+
+- Nightly history maintenance no longer requires aggregate buckets from before
+  a probe was created. Existing young probes recover without altering statistics
+  or disabling missing-aggregate safeguards.
+- Preserve static maintenance-integrity diagnostics in Sentry while continuing
+  to exclude arbitrary exception messages and private runtime values.
+
+### Removed
+
+- Secondary observation-coverage percentages from the dashboard, probe cards,
+  detail statistics and history tooltips. Availability calculations still
+  distinguish failed observations from missing data.
+
 ## [1.0.0] - 2026-11-14
 
 ### Added
@@ -53,5 +69,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Filter Sentry events to omit request data, OAuth parameters, user identity,
   exception values, source excerpts and local variables.
 
-[Unreleased]: https://github.com/gfavre/probe/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/gfavre/probe/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/gfavre/probe/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/gfavre/probe/tree/v1.0.0

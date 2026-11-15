@@ -85,7 +85,7 @@ def target_detail(request, pk, tab='overview'):
             end = min(start + DAY, now)
             stats = reader.stats(max(start, target.created_at), end)
             tone = 'unknown' if stats['uptime'] == '—' else ('down' if stats['down_seconds'] else 'up')
-            context['history'].append({'tone': tone, 'label': f'{start:%d.%m}: {stats["uptime"]}, {_("couverture")} {stats["coverage"]}'})
+            context['history'].append({'tone': tone, 'label': f'{start:%d.%m}: {stats["uptime"]}'})
         chart_days = {'1': 1, '7': 7, '30': 30}.get(request.GET.get('range'), 1)
         start = reader.period_start(chart_days)
         recent = reader.response_points(start, now)
