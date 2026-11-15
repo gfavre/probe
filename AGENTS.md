@@ -197,3 +197,13 @@ below 1,320 px and stacked labelled table records below 760 px. Never require
 horizontal scrolling for the monitoring interface on phones. Preserve table
 semantics and server-side permissions. All page shells include the discreet
 publisher link `© beyond the wall` to `https://beyondthewall.ch`.
+
+## Container distribution
+
+Use the source Compose file for local builds and `compose.registry.yaml` for
+versioned GHCR images. Release tags matching `VERSION` trigger PostgreSQL tests
+and multi-platform image publication through GitHub Actions. Keep registry and
+source service settings equivalent. Images must exclude all `.env*` files except
+the example, databases and local credentials. Never pass application secrets to
+image builds. Pin release tags or digests, keep one Beat and preserve the Compose
+project/volume identity when switching a deployment to published images.

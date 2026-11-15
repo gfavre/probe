@@ -193,3 +193,10 @@ commit logs or add empty category headings.
 For a release, move pending entries into a version section dated `YYYY-MM-DD`,
 update the root `VERSION` file and changelog comparison links, and create an
 annotated `v<version>` Git tag on the release commit. Keep `Unreleased` at the top.
+
+Published images start with 1.0.2. Before tagging, update `VERSION`, the README
+version/download links, `.env.example`'s `PROBE_IMAGE`, the registry Compose default
+and changelog. Keep `compose.registry.yaml` in sync with the source Compose file
+except for `build` and application image references. Tagged commits run the full
+PostgreSQL suite before publishing x86-64/ARM64 images. Do not move published Git
+tags or rebuild a changed release under an existing version.

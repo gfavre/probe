@@ -43,12 +43,12 @@ reducing further. Defaults avoid extra worker processes and a frontend build.
 Use three- or five-minute probe intervals where one-minute detection is not
 needed. A single worker runs checks sequentially. Many slow/time-out checks,
 TLS diagnostics or connector delays can delay other probes; queue tasks expire
-after 30 seconds. Monitor observation coverage before increasing the probe count.
+after 30 seconds. Monitor stale probe states and worker delays before increasing the probe count.
 Increase concurrency to two only if the schedule falls behind and RAM permits it.
 Low dashboard traffic alone does not determine probe workload.
 
 Storage grows with retained observations: ten probes at three-minute intervals
-produce about 4'800 checks per day. There is no automatic purge. Check database,
+produce about 4'800 checks per day. Nightly compaction bounds raw history. Check database,
 Docker and backup sizes rather than assuming the initial disk will last forever.
 
 ## 1. Prepare the VM
@@ -285,7 +285,7 @@ HSTS, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff` and
 Its callback is `https://status.example.com/accounts/google/login/callback/`.
 
 Configure a channel on Platform, add one probe and explicitly send a notification
-test. Verify receipt and observation coverage after several scheduled checks.
+test. Verify receipt and recent probe results after several scheduled checks.
 Test an outage/recovery against a disposable endpoint, not by stopping a real
 service. The monitor cannot detect its own host outage; add an independent
 external check.
@@ -444,3 +444,68 @@ for retained fields. A branded 500 page shows its reference; the branded 404 is
 an ordinary missing-page response. Expected Google cancellation is not a server
 error. Validate SDK transport with one intentional, caught diagnostic exception;
 do not add a public endpoint that deliberately crashes the application.
+
+## Published images
+
+Use `ghcr.io/gfavre/probe:1.0.2` for a versioned image supporting x86-64 and ARM64.
+The registry Compose file has the same services, resource limits, protected ports
+and persistent PostgreSQL volume as the source-build configuration, without any
+`build` entry. `PROBE_IMAGE` selects a release or immutable `@sha256:` digest.
+
+For a fresh deployment, follow VM/Docker preparation in sections 1–2, then use the
+[README image installation](README.md#install-a-published-image) instead of cloning
+and building. Generate secrets and configure the domain as in section 3; continue
+with reverse proxy/TLS and acceptance checks in sections 5–6. The downloaded
+registry file is saved as `compose.yaml`, so the existing backup and systemd
+commands continue to work without a source checkout. Preserve the deployment
+directory/project name: changing it can select a different PostgreSQL volume.
+
+Images are public only once the package's visibility is set to Public in GitHub
+Packages. GitHub initially creates new packages as private, even for a public
+repository; this one-time visibility setting is separate from workflow permissions.
+For intentionally private copies, the operator needs package access and
+`docker login ghcr.io` using a classic token with `read:packages`. Never put that
+token in the application `.env` or the Compose file.
+
+## Published-image upgrades
+
+For a standalone installation using the downloaded `compose.yaml`:
+
+1. Read the changelog and retain a verified database/environment backup.
+2. Set `PROBE_IMAGE` in `.env` to the desired version or digest.
+3. Pull the complete release before stopping application services.
+4. Stop the scheduler, worker and web, apply migrations and start the release.
+
+```sh
+docker compose pull
+docker compose stop --timeout 60 beat worker web
+docker compose run --rm --no-deps migrate
+docker compose up -d --no-build
+docker compose ps -a
+```
+
+In a source checkout, add `-f compose.registry.yaml` to every command. Alternatively
+set `COMPOSE_FILE=compose.registry.yaml` in the protected deployment `.env`; all
+existing Compose, backup and systemd commands then use that file. Keep the same
+Compose project name and volume; do not run `down -v`. When environment settings
+change, `up` may also recreate supporting services; their persistent volumes stay
+attached. Do not run multiple Beat instances against the same database.
+
+Leave `SENTRY_RELEASE` empty to use the published image's `APP_VERSION` automatically,
+or override it explicitly. Registry availability is needed for pulls, not for
+normal operation or restarting already downloaded images. Keep a previous image
+and backup; an image rollback alone does not reverse database migrations.
+
+## Image publication
+
+`.github/workflows/publish-image.yml` tests pull requests, main and version tags
+using PostgreSQL inside the Python 3.13 application image. A successful `v<version>`
+tag matching `VERSION` publishes `ghcr.io/gfavre/probe:<version>` and a `sha-<commit>`
+alias, with OCI source/version/revision labels, provenance and an SBOM. GitHub
+Actions builds both architectures; the small production VM does not compile them.
+
+Publication uses the repository-scoped `GITHUB_TOKEN` with `packages: write` only
+in the publishing job. No personal registry token or application secrets are
+required. Actions are pinned to full commit SHAs. Manual workflow runs on a version
+tag can rebuild that release; runs on main only test. Treat published version tags
+as immutable: release a new patch version when the contents change.

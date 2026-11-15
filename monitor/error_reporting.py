@@ -41,7 +41,7 @@ def configure_error_reporting(dsn):
     sentry_sdk.init(
         dsn=dsn,
         environment=os.getenv('SENTRY_ENVIRONMENT', 'production'),
-        release=os.getenv('SENTRY_RELEASE') or None,
+        release=os.getenv('SENTRY_RELEASE') or os.getenv('APP_VERSION') or None,
         integrations=[DjangoIntegration(transaction_style='function_name'),
                       CeleryIntegration(monitor_beat_tasks=False),
                       LoggingIntegration(level=None, event_level=None)],

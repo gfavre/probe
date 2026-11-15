@@ -4,7 +4,7 @@ A small HTTP monitoring application for a private shared workspace.
 Server-rendered Django, PostgreSQL, Celery/Beat and Redis share a small deployment.
 Application services use one Python slim image, without Node or dependency compilation.
 
-Current stable version: **1.0.1** ([VERSION](VERSION)).
+Current stable version: **1.0.2** ([VERSION](VERSION)).
 See [CHANGELOG.md](CHANGELOG.md) for release notes following Keep a Changelog.
 
 ## Design documentation
@@ -43,6 +43,44 @@ The interface supports French and English.
 The application is a simple shared workspace. Multiple monitoring locations,
 subscribers, billing, an integration catalogue, screenshots, ICMP, TCP, DNS, RUM
 and cron monitoring are outside this version’s scope.
+
+## Install a published image
+
+Release images are published to `ghcr.io/gfavre/probe` for `linux/amd64` and
+`linux/arm64`, starting with version **1.0.2**. All application services use the
+same image; PostgreSQL and Redis remain separate services. The image contains
+code and dependencies, never your database, accounts or production `.env`.
+
+On a server with Docker Compose installed, create an empty deployment directory:
+
+```sh
+mkdir -p http-monitor
+cd http-monitor
+umask 077
+curl --fail --location https://raw.githubusercontent.com/gfavre/probe/v1.0.2/compose.registry.yaml --output compose.yaml
+curl --fail --location https://raw.githubusercontent.com/gfavre/probe/v1.0.2/.env.example --output .env
+chmod 600 .env
+```
+
+Edit `.env` with unique secrets, your domain and deployment settings, as described
+in [DEPLOYMENT.md](DEPLOYMENT.md#3-install-the-application-and-configure-secrets).
+Then pull and start; no compiler, source checkout or image build is needed:
+
+```sh
+docker compose pull
+docker compose up -d --no-build
+docker compose exec web python manage.py createsuperuser
+```
+
+Configure HTTPS using the [reverse-proxy instructions](DEPLOYMENT.md#5-dns-reverse-proxy-and-tls).
+The application binds to `127.0.0.1:8000`; it is not exposed directly to the
+Internet. Keep exactly one Beat service. For existing source checkouts, use
+`docker compose -f compose.registry.yaml ...` instead of the default build file.
+
+`PROBE_IMAGE` pins an exact release or digest; there is deliberately no `latest`
+alias. Back up before upgrades, pull the new image before stopping workers and
+run migrations before restarting the application. See
+[registry upgrades](DEPLOYMENT.md#published-image-upgrades).
 
 ## Installation
 

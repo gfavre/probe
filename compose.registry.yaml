@@ -1,0 +1,67 @@
+x-app: &app
+  image: ${PROBE_IMAGE:-ghcr.io/gfavre/probe:1.0.2}
+  env_file: ${ENV_FILE:-.env}
+  restart: unless-stopped
+  init: true
+  read_only: true
+  tmpfs: [/tmp]
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  logging:
+    options:
+      max-size: "5m"
+      max-file: "2"
+  depends_on:
+    db:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+    migrate:
+      condition: service_completed_successfully
+
+services:
+  db:
+    image: postgres:17-alpine
+    command: [postgres, -c, shared_buffers=64MB, -c, work_mem=2MB, -c, maintenance_work_mem=32MB, -c, max_connections=30]
+    env_file: ${ENV_FILE:-.env}
+    restart: unless-stopped
+    mem_limit: 384m
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    mem_limit: 128m
+    command: [redis-server, --save, "", --appendonly, "no", --maxmemory, 64mb, --maxmemory-policy, noeviction]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  migrate:
+    image: ${PROBE_IMAGE:-ghcr.io/gfavre/probe:1.0.2}
+    env_file: ${ENV_FILE:-.env}
+    command: [python, manage.py, migrate, --noinput]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+  web:
+    <<: *app
+    ports: ["127.0.0.1:8000:8000"]
+    mem_limit: 192m
+  worker:
+    <<: *app
+    command: [celery, -A, config, worker, --loglevel=INFO, --concurrency=1, --without-gossip, --without-mingle]
+    mem_limit: 320m
+  beat:
+    <<: *app
+    command: [celery, -A, config, beat, --loglevel=INFO, --pidfile=/tmp/celerybeat.pid]
+    mem_limit: 128m
+
+volumes:
+  postgres-data:

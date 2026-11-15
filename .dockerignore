@@ -1,4 +1,11 @@
-.env
+.env*
+!.env.example
+.ssh
+.aws
+.codex
+.agents
+*.dump
+*.sql
 .git
 .idea
 .venv

@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-11-15
+
+### Added
+
+- Versioned x86-64 and ARM64 container images published to GitHub Container
+  Registry after PostgreSQL tests pass on release tags.
+- A standalone registry Compose configuration and installation/upgrade
+  instructions that require no source checkout or local image build.
+- OCI version/revision labels, build provenance and a software bill of materials;
+  published image versions provide the default Sentry release identifier.
+
+### Security
+
+- Exclude environment variants, local credentials and database dumps from image
+  build contexts; keep registry publication permissions scoped to its CI job.
+
 ## [1.0.1] - 2026-11-15
 
 ### Fixed
@@ -69,6 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Filter Sentry events to omit request data, OAuth parameters, user identity,
   exception values, source excerpts and local variables.
 
-[Unreleased]: https://github.com/gfavre/probe/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/gfavre/probe/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/gfavre/probe/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/gfavre/probe/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/gfavre/probe/tree/v1.0.0
