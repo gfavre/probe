@@ -12,6 +12,7 @@ from .exceptions import HistoryErrorCode, HistoryIntegrityError
 HOUR = timedelta(hours=1)
 DAY = timedelta(days=1)
 DELETE_BATCH = 5000
+HOURLY_SETTLE_DELAY = timedelta(minutes=5)
 SUM_FIELDS = ('up_seconds', 'down_seconds', 'observable_seconds', 'success_count',
               'failure_count', 'response_sum_ms')
 
@@ -22,6 +23,11 @@ def hour_start(value):
 
 def day_start(value):
     return hour_start(value).replace(hour=0)
+
+
+def completed_hour(now):
+    """Leave the maximum observation interval behind the hourly rollup boundary."""
+    return hour_start(now - HOURLY_SETTLE_DELAY)
 
 
 def result_snapshot(result):
@@ -123,12 +129,13 @@ def maintenance_status(now):
     }
 
 
-def maintain_target(pk, *, now=None, purge=True):
+def maintain_target(pk, *, now=None, purge=True, hours_only=False):
     """Process at most one UTC day or one deletion batch. Return whether more work remains.
 
     A session advisory lock prevents overlapping manual/Celery maintenance. Each
     transaction also locks the probe, like the writer and notification sender.
     No source purge precedes validated, committed aggregates and incident snapshots.
+    hours_only advances hourly aggregates without daily work, snapshots or purge.
     """
     now = now or timezone.now()
     with connection.cursor() as cursor:
@@ -140,7 +147,7 @@ def maintain_target(pk, *, now=None, purge=True):
             return False
         HistoryState.objects.get_or_create(target_id=pk)
         HistoryState.objects.filter(target_id=pk).update(last_started_at=now)
-        return _maintain_target(pk, now, purge)
+        return _maintain_target(pk, now, purge, hours_only)
     except Exception as exc:
         error = exc.code.name if isinstance(exc, HistoryIntegrityError) else type(exc).__name__
         HistoryState.objects.filter(target_id=pk).update(last_error=error)
@@ -150,7 +157,7 @@ def maintain_target(pk, *, now=None, purge=True):
             cursor.execute('SELECT pg_advisory_unlock(734218, %s)', [pk])
 
 
-def _maintain_target(pk, now, purge):
+def _maintain_target(pk, now, purge, hours_only=False):
     with transaction.atomic():
         target = Target.objects.select_for_update().filter(pk=pk).first()
         if target is None:
@@ -158,7 +165,7 @@ def _maintain_target(pk, now, purge):
         state, _ = HistoryState.objects.get_or_create(target=target)
         state.last_started_at = now
         # The latest bucket must be closed beyond the maximum recorded check interval.
-        closed_hour = hour_start(now - timedelta(minutes=5))
+        closed_hour = completed_hour(now)
         closed_day = day_start(closed_hour)
         first = target.checks.order_by('checked_at').first()
         origin = hour_start(min(target.created_at, first.checked_at)) if first else hour_start(target.created_at)
@@ -183,6 +190,8 @@ def _maintain_target(pk, now, purge):
             state.hourly_until = end
             state.save()
             return True
+        if hours_only:
+            return False
         start = state.daily_until or day_start(origin)
         if start < closed_day:
             end = start + DAY

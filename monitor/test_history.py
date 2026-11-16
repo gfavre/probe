@@ -297,9 +297,9 @@ class MaintenanceConcurrencyTests(TransactionTestCase):
     def test_another_connection_cannot_compact_the_same_probe(self):
         target = Target.objects.create(name='Concurrent', url='https://concurrent.example.com')
 
-        def competing_maintenance():
+        def competing_maintenance(hours_only):
             try:
-                return maintain_target(target.pk)
+                return maintain_target(target.pk, hours_only=hours_only)
             finally:
                 connections.close_all()
 
@@ -307,7 +307,9 @@ class MaintenanceConcurrencyTests(TransactionTestCase):
             cursor.execute('SELECT pg_advisory_lock(734218, %s)', [target.pk])
         try:
             with ThreadPoolExecutor(max_workers=1) as pool:
-                self.assertFalse(pool.submit(competing_maintenance).result(timeout=5))
+                for hours_only in (False, True):
+                    with self.subTest(hours_only=hours_only):
+                        self.assertFalse(pool.submit(competing_maintenance, hours_only).result(timeout=5))
         finally:
             with connection.cursor() as cursor:
                 cursor.execute('SELECT pg_advisory_unlock(734218, %s)', [target.pk])

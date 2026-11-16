@@ -99,7 +99,10 @@ class Check(models.Model):
     status_code = models.PositiveSmallIntegerField(null=True)
 
     class Meta:
-        indexes = [models.Index(fields=['target', '-checked_at'])]
+        indexes = [models.Index(
+            fields=['target', '-checked_at', '-id'], include=['healthy', 'coverage_seconds'],
+            name='check_observation_timeline',
+        )]
 
 
 class Incident(models.Model):

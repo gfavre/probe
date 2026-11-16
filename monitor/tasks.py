@@ -4,12 +4,13 @@ from celery import shared_task
 from django.conf import settings
 from django.core.cache import cache
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 from .models import Check, Incident, Target
 from .notifications import send_notification, incident_notification
 from .probes import probe, certificate_expiry
 from .platform import platform_values
-from .history import maintain_target, result_snapshot
+from .history import completed_hour, maintain_target, result_snapshot
 from .health import DISPATCH_HEARTBEAT_KEY, HEALTH_GRACE_SECONDS
 
 logger = logging.getLogger(__name__)
@@ -112,6 +113,25 @@ def check_target(pk):
         target = Target.objects.select_for_update().filter(pk=pk).first()
         if target:
             notify_pending(target)
+
+
+@shared_task(max_retries=0)
+def aggregate_hours():
+    cutoff = completed_hour(timezone.now())
+    due = Target.objects.filter(
+        Q(history_state__hourly_until__isnull=True) | Q(history_state__hourly_until__lt=cutoff),
+    )
+    for pk in due.values_list('pk', flat=True):
+        aggregate_target_hours.apply_async(args=[pk], expires=settings.HOURLY_AGGREGATION_INTERVAL_SECONDS, retry=False)
+
+
+@shared_task(max_retries=0)
+def aggregate_target_hours(pk):
+    # Share the maintenance/observation locks and yield between at most one day's buckets.
+    if maintain_target(pk, purge=False, hours_only=True):
+        aggregate_target_hours.apply_async(
+            args=[pk], countdown=1, expires=settings.HOURLY_AGGREGATION_INTERVAL_SECONDS, retry=False,
+        )
 
 
 @shared_task(max_retries=0)

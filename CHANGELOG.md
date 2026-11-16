@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-11-16
+
+### Changed
+
+- Calculate dashboard availability in PostgreSQL using grouped reads instead of
+  loading each probe's observation history into Python. Cache availability for
+  up to 15 seconds while reading current probe state live; fall back to database
+  calculation when the cache is unavailable.
+- Replace the observation timeline index with a covering index for availability
+  and latest-check reads, built concurrently before removing its predecessor.
+- Refresh completed hourly statistics progressively every five minutes in bounded
+  background tasks. The dashboard reuses complete hours and reads only the recent
+  tail and exact sliding-window edges, falling back to retained observations if
+  recent aggregates are incomplete. Nightly retention and purge remain unchanged.
+
 ## [1.0.5] - 2026-11-16
 
 ### Added
@@ -112,7 +127,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Filter Sentry events to omit request data, OAuth parameters, user identity,
   exception values, source excerpts and local variables.
 
-[Unreleased]: https://github.com/gfavre/probe/compare/v1.0.5...HEAD
+[Unreleased]: https://github.com/gfavre/probe/compare/v1.0.6...HEAD
+[1.0.6]: https://github.com/gfavre/probe/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/gfavre/probe/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/gfavre/probe/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/gfavre/probe/compare/v1.0.2...v1.0.3

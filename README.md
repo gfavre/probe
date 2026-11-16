@@ -4,7 +4,7 @@ A small HTTP monitoring application for a private shared workspace.
 Server-rendered Django, PostgreSQL, Celery/Beat and Redis share a small deployment.
 Application services use one Python slim image, without Node or dependency compilation.
 
-Current stable version: **1.0.5** ([VERSION](VERSION)).
+Current stable version: **1.0.6** ([VERSION](VERSION)).
 See [CHANGELOG.md](CHANGELOG.md) for release notes following Keep a Changelog.
 
 ## Design documentation
@@ -57,8 +57,8 @@ On a server with Docker Compose installed, create an empty deployment directory:
 mkdir -p http-monitor
 cd http-monitor
 umask 077
-curl --fail --location https://raw.githubusercontent.com/gfavre/probe/v1.0.5/compose.registry.yaml --output compose.yaml
-curl --fail --location https://raw.githubusercontent.com/gfavre/probe/v1.0.5/.env.example --output .env
+curl --fail --location https://raw.githubusercontent.com/gfavre/probe/v1.0.6/compose.registry.yaml --output compose.yaml
+curl --fail --location https://raw.githubusercontent.com/gfavre/probe/v1.0.6/.env.example --output .env
 chmod 600 .env
 ```
 
@@ -302,6 +302,14 @@ Incidents retain their service identity and diagnostic snapshots without expiry.
 The latest observation and one boundary anchor are preserved even for paused
 probes. Cleanup is conservative around UTC bucket boundaries and only follows
 validated aggregation. It never sends alerts or creates observations.
+
+Completed hours are also aggregated progressively through Celery every five
+minutes, with a five-minute settling margin and bounded catch-up. The dashboard
+reuses those hours and reads raw observations only for its recent tail and
+partial window edges. Only its availability statistics are cached for 15 seconds;
+current state and permissions remain live. Retention and deletion stay nightly.
+See [dashboard reads](DEPLOYMENT.md#dashboard-reads-and-statistics-cache) for
+fallback behaviour and reproducible measurements.
 
 Availability and coverage combine disjoint raw, hourly and daily ranges using
 persisted compaction boundaries. Durations and response-time sums/counts are

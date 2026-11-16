@@ -16,6 +16,7 @@ from .history import DAY, day_start, maintenance_status
 from .models import Target, Incident
 from .notifications import send_notification
 from .probes import probe
+from .dashboard import dashboard_targets, dashboard_windows
 
 
 def login(request):
@@ -33,8 +34,8 @@ def signout(request):
     return redirect('login')
 
 
-def summary(target, now):
-    latest = target.checks.order_by('-checked_at').first()
+def summary(target, now, *, checks=None):
+    latest = target.checks.order_by('-checked_at').first() if checks is None else checks.get(target.pk)
     status, tone = (_('Suspendu'), 'paused') if not target.enabled else (_('Inconnu'), 'unknown')
     if target.enabled and latest and latest.checked_at + timedelta(seconds=latest.coverage_seconds + 15) >= now:
         status, tone = (_('Disponible'), 'up') if latest.healthy else (_('Indisponible'), 'down')
@@ -44,11 +45,12 @@ def summary(target, now):
 @operator_required
 def dashboard(request):
     now = timezone.now()
+    targets, checks = dashboard_targets()
+    windows = dashboard_windows(targets, now)
     rows = []
-    for target in Target.objects.all():
-        row = summary(target, now)
-        reader = HistoryReader(target, now)
-        row['windows'] = [reader.stats(reader.period_start(d), now) for d in (1, 7, 30)]
+    for target in targets:
+        row = summary(target, now, checks=checks)
+        row['windows'] = windows[target.pk]
         rows.append(row)
     counts = {tone: sum(r['tone'] == tone for r in rows) for tone in ('up', 'down', 'unknown', 'paused')}
     return render(request, 'monitor/dashboard.html', {'rows': rows, 'counts': counts, 'now': now})

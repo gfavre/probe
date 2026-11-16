@@ -102,6 +102,7 @@ CACHES = {'default': {
     else 'django.core.cache.backends.locmem.LocMemCache',
     'LOCATION': os.getenv('CACHE_URL', CELERY_BROKER_URL) if SESSION_COOKIE_SECURE else 'local-security',
     'KEY_PREFIX': 'probe-security',
+    'OPTIONS': {'socket_connect_timeout': 1, 'socket_timeout': 1} if SESSION_COOKIE_SECURE else {},
 }}
 CELERY_TASK_IGNORE_RESULT = True
 CELERY_TASK_PUBLISH_RETRY = False
@@ -111,7 +112,13 @@ CELERY_TASK_SOFT_TIME_LIMIT = 40
 CELERY_TASK_TIME_LIMIT = 45
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_TIMEZONE = TIME_ZONE
+HOURLY_AGGREGATION_INTERVAL_SECONDS = 300
 CELERY_BEAT_SCHEDULE = {
+    'aggregate-hours': {
+        'task': 'monitor.tasks.aggregate_hours',
+        'schedule': float(HOURLY_AGGREGATION_INTERVAL_SECONDS),
+        'options': {'expires': HOURLY_AGGREGATION_INTERVAL_SECONDS},
+    },
     'maintain-history': {
         'task': 'monitor.tasks.maintain_history',
         'schedule': crontab(hour=2, minute=0),

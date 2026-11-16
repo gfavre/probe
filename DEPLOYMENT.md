@@ -399,6 +399,104 @@ confirmation delay before expecting an alert. Connector delivery and TLS renewal
 are not tested by this endpoint. An external monitor is required to detect a
 complete host or network outage.
 
+## Dashboard reads and statistics cache
+
+The dashboard fetches probe configurations and latest observations in two
+queries, then calculates the 1/7/30-day availability windows in one PostgreSQL
+statement. It reads persisted cutoffs, aggregates and raw observations from the
+same statement snapshot, including the left-boundary anchor. No observation
+history is materialized as Python model instances for these calculations.
+
+Beat dispatches progressive hourly aggregation every five minutes through the
+existing worker. This reuses `HistoryState.hourly_until` and the hourly rows,
+with no additional model or worker. A bucket closes only after a five-minute
+settling margin; queue delays can extend the recent raw tail. Each task builds
+at most one UTC day's buckets and yields before continuing its catch-up. It
+shares the advisory and probe locks, validation and atomic watermark updates
+with nightly maintenance. Progressive work does not purge, snapshot incidents,
+build daily rows, send notifications or run HTTP requests; it does not mark
+nightly maintenance successful. Missed/expired work is picked up by later scans.
+
+The dashboard sums completed hourly buckets, then reads observations only for
+the unaggregated recent tail and partial hours at sliding-window left edges.
+The partial creation hour is counted once through its aggregate. It verifies
+that the recent hourly range is complete before trusting the watermark; if not,
+it falls back to retained raw observations for that range. Reads during initial
+catch-up therefore remain correct but cost more. Nightly retention cutoffs still
+select older hourly/daily ranges and are not advanced by progressive tasks.
+
+Only the resulting statistics are cached, for at most 15 seconds, in Django's
+existing cache (Redis in production). Probe state, latest response, configuration
+and permissions are read on every request. A changed probe set uses a different
+cache key. Cache errors fall back to SQL; after a failed read, no cache write is
+attempted. Redis cache socket connection/read timeouts are one second. This does
+not change authentication's fail-closed behaviour or cache HTTP page responses.
+There is no extra worker, timer or invalidation task for this cache.
+
+Migration `0011` replaces the observation index with a covering timeline index.
+It builds the replacement concurrently before dropping the old index concurrently,
+so allow temporary disk space for both. Keep normal PostgreSQL autovacuum enabled
+so index-only reads can avoid fetching older observations from the table heap.
+
+For reproducible measurements, create a fresh isolated PostgreSQL database whose
+name starts with `benchmark_` and point the application settings at it. Use a
+dedicated Redis instance/database when measuring the production cache. Run:
+
+```sh
+python manage.py migrate --noinput
+python manage.py benchmark_dashboard --mode seed --probes 50 --interval 180
+python manage.py benchmark_dashboard --mode reference --iterations 5
+python manage.py benchmark_dashboard --mode cold --iterations 5
+python manage.py benchmark_dashboard --mode cached --iterations 5
+python manage.py benchmark_dashboard --mode rollup
+python manage.py benchmark_dashboard --mode cold --iterations 5
+python manage.py benchmark_dashboard --mode cached --iterations 5
+```
+
+Seeding refuses a nonempty database. It creates synthetic probes with seven days
+of raw observations, hourly/daily history, missing observations and failures;
+it does not make HTTP requests or send notifications. Use another fresh database
+for 100 probes or `--interval 60`. The `reference` mode reproduces the former
+dashboard reads using `HistoryReader`; `cold` removes only this dashboard's
+statistics key before each request; `cached` warms it first. Measurements include
+the authenticated Django page render, SQL count/time and process peak RSS, but
+exclude browser rendering, HTTP proxy and network latency. Run each mode in a
+fresh process for comparable peak RSS. Results depend on hardware, database
+visibility maps, page cache and competing work; they are not a production SLA.
+The `rollup` mode catches up the hourly aggregates and verifies all three windows
+at one fixed timestamp against the pre-rollup values, without purging data.
+
+Initial grouped-read measurements, before progressive refresh, were taken on
+16 November 2026 with source mounted into the existing
+Python 3.13.18 runtime image, PostgreSQL 17 and a separate Redis cache. Each
+application process was limited to 1 CPU/192 MiB and PostgreSQL to 1 CPU/384 MiB
+on Docker Desktop; these are per-container caps, not a whole-VM 1-CPU test.
+Five requests per mode, with database pages generally warm, gave:
+
+| Probes / interval | Reference median | SQL dashboard median | SQL dashboard maximum | Cached median | Queries reference / SQL / cached | Peak RSS reference / SQL |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 50 / 3 minutes | 1,813 ms | 170 ms | 832 ms | 13 ms | 357 / 9 / 8 | 103 / 96 MiB |
+| 100 / 3 minutes | 3,713 ms | 333 ms | 467 ms | 24 ms | 707 / 9 / 8 | 105 / 98 MiB |
+| 50 / 1 minute | 4,637 ms | 461 ms | 615 ms | 13 ms | 357 / 9 / 8 | 113 / 96 MiB |
+
+Here "SQL dashboard" means an empty statistics cache, not an empty PostgreSQL
+page cache. Maximum values include initial-request setup. These short synthetic
+measurements do not establish percentiles, sustained concurrent-user capacity,
+or latency under disk pressure or a backlog in nightly maintenance.
+
+With progressive aggregation caught up, using fresh synthetic databases and
+the same runtime, cache and resource caps, five requests per mode gave:
+
+| Probes / interval | Uncached median | Uncached maximum | Cached median | Queries uncached / cached | Peak RSS uncached |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 50 / 1 minute | 39 ms | 89 ms | 14 ms | 9 / 8 | 96 MiB |
+| 100 / 3 minutes | 75 ms | 120 ms | 23 ms | 9 / 8 | 97 MiB |
+
+These figures include the complete authenticated page render. Before catch-up,
+the fallback path on these datasets took 920 ms and 399 ms respectively. A
+full seven-day catch-up was performed and all windows were checked before and
+after it at the same reference timestamp. No source observations were deleted.
+
 ## Nightly history maintenance
 
 Celery Beat schedules `monitor.tasks.maintain_history` at **02:00 Europe/Zurich**.
@@ -466,7 +564,7 @@ do not add a public endpoint that deliberately crashes the application.
 
 ## Published images
 
-Use `ghcr.io/gfavre/probe:1.0.5` for a versioned image supporting x86-64 and ARM64.
+Use `ghcr.io/gfavre/probe:1.0.6` for a versioned image supporting x86-64 and ARM64.
 The registry Compose file has the same services, resource limits, protected ports
 and persistent PostgreSQL volume as the source-build configuration, without any
 `build` entry. `PROBE_IMAGE` selects a release or immutable `@sha256:` digest.
