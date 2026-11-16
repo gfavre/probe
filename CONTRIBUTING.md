@@ -109,7 +109,8 @@ not to introduce an abstract architecture.
   confirmation checks after 60 seconds until the threshold (minimum two) is met.
   Use `next_check_at`, not a worker sleep or in-memory delayed-task state.
   Record the initial failure for uptime even if confirmation succeeds silently.
-  Keep the normal interval once an incident is confirmed or a check succeeds.
+  Continue checking every 60 seconds while failing, including confirmed incidents.
+  Restore the configured interval only when a check succeeds.
   Respect the schedule and per-probe lock.
 - Expire obsolete tasks rather than building a backlog of old checks.
 - Configure timeouts, redirects and TLS explicitly. IPv4/IPv6 selection is local

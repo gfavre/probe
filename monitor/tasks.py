@@ -57,8 +57,8 @@ def record_result(target, now, result):
             incident.latest_failure = result_snapshot(result)
             incident.save(update_fields=['latest_failure'])
     interval_seconds = target.interval_minutes * 60
-    if not result.healthy and incident is None:
-        interval_seconds = Target.CONFIRMATION_DELAY_SECONDS
+    if not result.healthy:
+        interval_seconds = Target.OUTAGE_CHECK_INTERVAL_SECONDS
     target.next_check_at = now + timedelta(seconds=interval_seconds)
     Check.objects.create(target=target, checked_at=now, healthy=result.healthy, detail=result.detail,
                          duration_ms=result.duration_ms, status_code=result.status_code,

@@ -14,6 +14,7 @@ DEFAULT_PRODUCT_NAME = 'beyond the probe'
 
 class Target(models.Model):
     CONFIRMATION_DELAY_SECONDS = 60
+    OUTAGE_CHECK_INTERVAL_SECONDS = 60
     CHANNELS = [('email', _('Email')), ('slack', _('Slack')), ('telegram', _('Telegram'))]
     name = models.CharField(_('Nom'), max_length=200)
     url = models.URLField(_('URL HTTP(S)'), max_length=2000, unique=True, validators=[validate_target_url])

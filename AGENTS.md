@@ -47,7 +47,8 @@ apostrophes as thousands separators.
 3. **No HTTP or Celery automatic retries.** A failed observation schedules a
    confirmation after 60 seconds through durable `next_check_at`, without sleeping
    in the worker. Keep confirming at that interval until the failure threshold
-   (at least two) is reached; then return to the normal probe interval.
+   (at least two) is reached. Continue checking every 60 seconds throughout the
+   outage; restore the configured interval at the first healthy check.
 4. Prevent concurrent checks of one probe with PostgreSQL locking. Expire queued
    tasks rather than catching up in a burst after an interruption.
 5. Record observations before attempting notification delivery. A connector

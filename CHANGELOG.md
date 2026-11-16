@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-11-16
+
+### Changed
+
+- Check failing probes every 60 seconds throughout an outage, including after
+  confirmation; restore the configured interval after the first healthy check.
+  Alert confirmation, deduplication and uptime accounting remain unchanged.
+
 ## [1.0.2] - 2026-11-15
 
 ### Added
@@ -85,7 +93,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Filter Sentry events to omit request data, OAuth parameters, user identity,
   exception values, source excerpts and local variables.
 
-[Unreleased]: https://github.com/gfavre/probe/compare/v1.0.2...HEAD
+[Unreleased]: https://github.com/gfavre/probe/compare/v1.0.3...HEAD
+[1.0.3]: https://github.com/gfavre/probe/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/gfavre/probe/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/gfavre/probe/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/gfavre/probe/tree/v1.0.0

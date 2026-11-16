@@ -4,7 +4,7 @@ A small HTTP monitoring application for a private shared workspace.
 Server-rendered Django, PostgreSQL, Celery/Beat and Redis share a small deployment.
 Application services use one Python slim image, without Node or dependency compilation.
 
-Current stable version: **1.0.2** ([VERSION](VERSION)).
+Current stable version: **1.0.3** ([VERSION](VERSION)).
 See [CHANGELOG.md](CHANGELOG.md) for release notes following Keep a Changelog.
 
 ## Design documentation
@@ -57,8 +57,8 @@ On a server with Docker Compose installed, create an empty deployment directory:
 mkdir -p http-monitor
 cd http-monitor
 umask 077
-curl --fail --location https://raw.githubusercontent.com/gfavre/probe/v1.0.2/compose.registry.yaml --output compose.yaml
-curl --fail --location https://raw.githubusercontent.com/gfavre/probe/v1.0.2/.env.example --output .env
+curl --fail --location https://raw.githubusercontent.com/gfavre/probe/v1.0.3/compose.registry.yaml --output compose.yaml
+curl --fail --location https://raw.githubusercontent.com/gfavre/probe/v1.0.3/.env.example --output .env
 chmod 600 .env
 ```
 
@@ -233,11 +233,11 @@ Beat dispatches due checks every 15 seconds. PostgreSQL locking prevents
 simultaneous checks of a probe. Queued tasks expire after 30 seconds. There are
 no automatic HTTP or Celery retries. A failure schedules a confirmation check
 after 60 seconds using durable database state, without sleeping in the worker.
-Until the configured threshold is reached, further failures keep that shorter
-confirmation interval. With the default threshold, one failed check followed by
-a healthy confirmation affects uptime but sends no messages. After confirmation
-or recovery, the normal interval resumes. Worker load and dispatching can add a
-small delay: confirmation typically starts after 60–75 seconds, not at an exact
+Further failures keep that shorter interval throughout the outage, including
+after the incident is confirmed. With the default threshold, one failed check
+followed by a healthy confirmation affects uptime but sends no messages. The
+configured interval resumes at the first healthy check. Worker load and dispatching
+can add a small delay: outage checks typically start after 60–75 seconds, not at an exact
 deadline. Results become stale after their recorded coverage interval plus a
 15-second dispatch margin.
 

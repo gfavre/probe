@@ -136,7 +136,34 @@ class MonitoringTests(TestCase):
         self.assertEqual(request.call_count, 2)
         send.assert_called_once()
         self.target.refresh_from_db()
-        self.assertEqual(self.target.next_check_at, start + timedelta(seconds=360))
+        self.assertEqual(self.target.next_check_at, start + timedelta(seconds=120))
+
+    @patch('monitor.tasks.send_notification')
+    def test_confirmed_outage_checks_every_minute_until_recovery_then_restores_interval(self, send):
+        Target.objects.filter(pk=self.target.pk).update(interval_minutes=3)
+        start = timezone.now()
+        for offset, healthy in ((0, False), (60, False), (120, False), (180, True)):
+            with patch('monitor.tasks.timezone.now', return_value=start + timedelta(seconds=offset)), \
+                    patch('monitor.tasks.probe', return_value=ProbeResult(
+                        healthy, 'HTTP 200' if healthy else 'HTTP 503', 10, 200 if healthy else 503,
+                    )):
+                check_target(self.target.pk)
+            self.target.refresh_from_db()
+            interval = 180 if healthy else 60
+            self.assertEqual(self.target.next_check_at, start + timedelta(seconds=offset + interval))
+            self.assertEqual(self.target.checks.order_by('-checked_at').first().coverage_seconds, interval)
+            self.assertEqual(send.call_count, 0 if offset == 0 else 2 if healthy else 1)
+
+        incident = Incident.objects.get()
+        self.assertEqual(incident.started_at, start)
+        self.assertEqual(incident.ended_at, start + timedelta(seconds=180))
+        self.assertEqual(Check.objects.count(), 4)
+        stats = availability(list(Check.objects.order_by('checked_at')), start, start + timedelta(seconds=360))
+        self.assertEqual(stats, {'uptime': '50.00%', 'coverage': '100.0%'})
+        with patch('monitor.tasks.timezone.now', return_value=start + timedelta(seconds=240)), \
+                patch('monitor.tasks.probe') as request:
+            check_target(self.target.pk)
+        request.assert_not_called()
 
     @patch('monitor.tasks.send_notification')
     def test_isolated_failure_counts_as_downtime_without_outage_or_recovery_alert(self, send):
