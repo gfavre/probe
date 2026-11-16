@@ -6,11 +6,13 @@ from django.contrib.auth.views import LoginView
 from monitor import views
 from monitor.branding import platform_logo
 from monitor.permissions import is_platform_admin
+from monitor.health import health
 
 admin.site.has_permission = lambda request: is_platform_admin(request.user)
 handler500 = 'monitor.errors.server_error'
 handler404 = 'monitor.errors.page_not_found'
 urlpatterns = [
+    path('health/', health, name='health'),
     path('branding/logo/<slug:digest>/', platform_logo, name='platform_logo'),
     path('favicon.ico', RedirectView.as_view(url='/static/monitor/icons/favicon.ico', permanent=True)),
     path('login/', views.login, name='login'),

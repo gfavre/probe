@@ -2,6 +2,7 @@ import logging
 from datetime import timedelta, timezone as dt_timezone
 from celery import shared_task
 from django.conf import settings
+from django.core.cache import cache
 from django.db import transaction
 from django.utils import timezone
 from .models import Check, Incident, Target
@@ -9,6 +10,7 @@ from .notifications import send_notification, incident_notification
 from .probes import probe, certificate_expiry
 from .platform import platform_values
 from .history import maintain_target, result_snapshot
+from .health import DISPATCH_HEARTBEAT_KEY, HEALTH_GRACE_SECONDS
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +19,10 @@ logger = logging.getLogger(__name__)
 def dispatch_checks():
     for pk in Target.objects.filter(enabled=True, next_check_at__lte=timezone.now()).values_list('pk', flat=True):
         check_target.apply_async(args=[pk], expires=30, retry=False)
+    try:
+        cache.set(DISPATCH_HEARTBEAT_KEY, timezone.now().timestamp(), timeout=HEALTH_GRACE_SECONDS)
+    except Exception:
+        logger.warning('Unable to persist monitoring health heartbeat.')
 
 
 def record_result(target, now, result):

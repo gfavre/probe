@@ -380,6 +380,25 @@ used RAM with an empty production database. This is an idle observation, not a
 capacity or load test. Provider firewall, DNS and resource use must still be checked
 for each new installation.
 
+## External health monitoring
+
+Configure an independent monitor to request `https://<your-domain>/health/`
+every minute and require HTTP 200. The public GET/HEAD endpoint returns only
+`status` and `version`; it does not run checks, send notifications or write data.
+It returns HTTP 503 if PostgreSQL or the shared cache fails, if the dispatch task
+has not completed within 180 seconds, or if an enabled probe is more than
+180 seconds overdue. Monitored service outages do not themselves make it fail.
+
+Beat sends the dispatch task every 15 seconds through the broker to the worker.
+After successful dispatch, the worker refreshes a shared-cache heartbeat, even
+with no enabled probes. Production must use the configured shared Redis cache;
+the development process-local cache cannot share worker heartbeats. On initial
+startup or after a cache reset, health stays unavailable until dispatch runs.
+Allow the three-minute grace period plus the external monitor's polling and
+confirmation delay before expecting an alert. Connector delivery and TLS renewal
+are not tested by this endpoint. An external monitor is required to detect a
+complete host or network outage.
+
 ## Nightly history maintenance
 
 Celery Beat schedules `monitor.tasks.maintain_history` at **02:00 Europe/Zurich**.
@@ -447,7 +466,7 @@ do not add a public endpoint that deliberately crashes the application.
 
 ## Published images
 
-Use `ghcr.io/gfavre/probe:1.0.4` for a versioned image supporting x86-64 and ARM64.
+Use `ghcr.io/gfavre/probe:1.0.5` for a versioned image supporting x86-64 and ARM64.
 The registry Compose file has the same services, resource limits, protected ports
 and persistent PostgreSQL volume as the source-build configuration, without any
 `build` entry. `PROBE_IMAGE` selects a release or immutable `@sha256:` digest.

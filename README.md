@@ -4,7 +4,7 @@ A small HTTP monitoring application for a private shared workspace.
 Server-rendered Django, PostgreSQL, Celery/Beat and Redis share a small deployment.
 Application services use one Python slim image, without Node or dependency compilation.
 
-Current stable version: **1.0.4** ([VERSION](VERSION)).
+Current stable version: **1.0.5** ([VERSION](VERSION)).
 See [CHANGELOG.md](CHANGELOG.md) for release notes following Keep a Changelog.
 
 ## Design documentation
@@ -57,8 +57,8 @@ On a server with Docker Compose installed, create an empty deployment directory:
 mkdir -p http-monitor
 cd http-monitor
 umask 077
-curl --fail --location https://raw.githubusercontent.com/gfavre/probe/v1.0.4/compose.registry.yaml --output compose.yaml
-curl --fail --location https://raw.githubusercontent.com/gfavre/probe/v1.0.4/.env.example --output .env
+curl --fail --location https://raw.githubusercontent.com/gfavre/probe/v1.0.5/compose.registry.yaml --output compose.yaml
+curl --fail --location https://raw.githubusercontent.com/gfavre/probe/v1.0.5/.env.example --output .env
 chmod 600 .env
 ```
 

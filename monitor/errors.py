@@ -4,6 +4,7 @@ import uuid
 
 import sentry_sdk
 from django.http import HttpResponse
+from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 
@@ -14,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 def error_context():
     context = {
+        'app_version': settings.APP_VERSION,
         'product_name': DEFAULT_PRODUCT_NAME, 'product_name_custom': False,
     }
     try:

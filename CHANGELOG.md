@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-11-16
+
+### Added
+
+- Public, read-only `/health/` endpoint for independent monitoring. Return HTTP
+  503 when PostgreSQL or the shared cache is unavailable, dispatch has not run
+  within three minutes, or an active probe is over three minutes overdue.
+
+### Fixed
+
+- Include the application version on fallback error pages as well.
+
 ## [1.0.4] - 2026-11-16
 
 ### Added
@@ -100,7 +112,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Filter Sentry events to omit request data, OAuth parameters, user identity,
   exception values, source excerpts and local variables.
 
-[Unreleased]: https://github.com/gfavre/probe/compare/v1.0.4...HEAD
+[Unreleased]: https://github.com/gfavre/probe/compare/v1.0.5...HEAD
+[1.0.5]: https://github.com/gfavre/probe/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/gfavre/probe/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/gfavre/probe/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/gfavre/probe/compare/v1.0.1...v1.0.2

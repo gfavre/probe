@@ -100,6 +100,13 @@ application, and no external deployment has been validated here.
 
 ## Credentials and network boundaries
 
+`/health/` is public and read-only (GET/HEAD). It exposes only a static health
+status and application version, with no probe identities, destinations, counts
+or dependency diagnostics. Responses are not cached. It reads PostgreSQL and
+the shared dispatch heartbeat without sending work or notifications. HTTP 503
+also covers startup before the first dispatch heartbeat. Use an independent
+external monitor; see DEPLOYMENT.md for timing and limitations.
+
 Platform connector credentials are encrypted in PostgreSQL and are never rendered
 back into forms. Blank fields preserve saved credentials; explicit clearing
 disables them. Keep `PLATFORM_ENCRYPTION_KEY`, `DJANGO_SECRET_KEY`, database
