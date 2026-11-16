@@ -5,6 +5,7 @@
 .site-credit { padding: 18px 24px; text-align: center; font: 400 11px/1.6 var(--font-body); color: var(--muted); }
 .site-credit a { display: inline-block; padding: 8px; color: inherit; }
 .site-credit a:hover { color: var(--cyan); }
+.site-credit .app-version { display: inline-block; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .login-page { grid-template-rows: minmax(0, 1fr) auto; }
 .mobile-header, .menu-close, .navigation-backdrop { display: none; }
 .probe-cards { display: none; }

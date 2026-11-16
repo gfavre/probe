@@ -447,7 +447,7 @@ do not add a public endpoint that deliberately crashes the application.
 
 ## Published images
 
-Use `ghcr.io/gfavre/probe:1.0.3` for a versioned image supporting x86-64 and ARM64.
+Use `ghcr.io/gfavre/probe:1.0.4` for a versioned image supporting x86-64 and ARM64.
 The registry Compose file has the same services, resource limits, protected ports
 and persistent PostgreSQL volume as the source-build configuration, without any
 `build` entry. `PROBE_IMAGE` selects a release or immutable `@sha256:` digest.

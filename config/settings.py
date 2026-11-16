@@ -3,6 +3,9 @@ from pathlib import Path
 from celery.schedules import crontab
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+APP_VERSION = os.getenv('APP_VERSION', '').strip()
+if not APP_VERSION or APP_VERSION == 'development':
+    APP_VERSION = (BASE_DIR / 'VERSION').read_text().strip()
 SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 DEBUG = False
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')

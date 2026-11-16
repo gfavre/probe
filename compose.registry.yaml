@@ -1,5 +1,5 @@
 x-app: &app
-  image: ${PROBE_IMAGE:-ghcr.io/gfavre/probe:1.0.3}
+  image: ${PROBE_IMAGE:-ghcr.io/gfavre/probe:1.0.4}
   env_file: ${ENV_FILE:-.env}
   restart: unless-stopped
   init: true
@@ -43,7 +43,7 @@ services:
       timeout: 3s
       retries: 20
   migrate:
-    image: ${PROBE_IMAGE:-ghcr.io/gfavre/probe:1.0.3}
+    image: ${PROBE_IMAGE:-ghcr.io/gfavre/probe:1.0.4}
     env_file: ${ENV_FILE:-.env}
     command: [python, manage.py, migrate, --noinput]
     depends_on:

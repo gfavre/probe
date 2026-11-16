@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from .permissions import can_edit_probes, is_platform_admin
 from .platform import platform_values
 from .branding import logo_options
@@ -8,6 +10,7 @@ def auth_options(request):
     values = platform_values()
     user = getattr(request, 'user', None)
     return {
+        'app_version': settings.APP_VERSION,
         **logo_options(),
         'product_name': values['product_name'],
         'product_name_custom': values['product_name'] != DEFAULT_PRODUCT_NAME,
